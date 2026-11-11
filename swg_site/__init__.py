@@ -1,1 +1,1 @@
-"""Build tooling for the Soul Wager Guide."""
+"""Build tooling for the BrownDust II Library."""

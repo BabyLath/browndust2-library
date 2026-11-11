@@ -1,19 +1,150 @@
-# Gear sold in the Battle Shop. Fill in effect (and shape for tiles) as you confirm them.
+# Gear sold in the Battle Shop.
+#
+# Each piece is written in block style so its effect can span several lines:
+#
+#   - id: knights-sword
+#     name: "Knight's Sword"
+#     price: 6
+#     effect: |
+#       Equip on an Attacking Character.
+#       Close-range: +2 DMG.
+#
+#       - Stacks with [[Strength]].
+#
+# Under "effect: |", indent every line by the same amount (6 spaces here). Each line shows as
+# its own line, a blank line starts a new paragraph, and "- " lines become a bullet list.
+# Leave it empty until you know the effect; the Effect column appears once any piece has one.
+#
+# Icon: put a picture at lib/images/gear/<id>.png (or .webp, .svg, .jpg) and it appears
+#   beside the name. Add "image: other-name.png" under a piece to use a different file name.
 
 verified_for: s2
 source: BD2 Tactical Compendium price table (page dated 2026-10-22)
 
 gear:
-  - { id: demons-forbidden-book, name: "Demon's Forbidden Book", price: 15, effect: "" }
-  - { id: evil-dragons-blade, name: "Evil Dragon's Blade", price: 15, effect: "" }
-  - { id: god-kings-silver-arm, name: "God-King's Silver Arm", price: 12, effect: "" }
-  - { id: heros-staff, name: "Hero's Staff", price: 9, effect: "" }
-  - { id: heros-sword, name: "Hero's Sword", price: 9, effect: "" }
-  - { id: invulnerable-armor, name: Invulnerable Armor, price: 15, effect: "" }
-  - { id: knights-necklace, name: "Knight's Necklace", price: 5, effect: "" }
-  - { id: knights-staff, name: "Knight's Staff", price: 6, effect: "" }
-  - { id: knights-sword, name: "Knight's Sword", price: 6, effect: "" }
-  - { id: mercenary-armor, name: Mercenary Armor, price: 4, effect: "" }
-  - { id: mercenary-staff, name: Mercenary Staff, price: 4, effect: "" }
-  - { id: mercenary-sword, name: Mercenary Sword, price: 4, effect: "" }
-  - { id: peerless-javelin, name: Peerless Javelin, price: 15, effect: "" }
+  - id: demons-forbidden-book
+    name: "Demon's Forbidden Book"
+    price: 15
+    effect: |
+              When equipped by an Attacking Character:
+              When an equipped Attacking Character lands an attack: Gain 1 [[SP]].
+
+              When equipped by Other Characters:
+              Upon Battle Start: Gain 8 [[SP]].
+
+  - id: evil-dragons-blade
+    name: "Evil Dragon's Blade"
+    price: 15
+    effect: |
+              When equipped by an Attacking Character:
+              When an equipped Attacking Character lands an attack: Increase DMG dealt by equipped Characters by 1.
+
+              When equipped by Other Characters:
+              Upon Battle Start: Gain 3 [[Strength]].
+
+  - id: god-kings-silver-arm
+    name: "God-King's Silver Arm"
+    price: 12
+    effect: |
+              When equipped by an Attacking Character:
+              When an equipped Attacking Character lands an attack: Gain 12 [[Energy Guard]].
+
+              When equipped by Other Characters:
+              Upon Battle Start: Increase Action Speed of equipped Characters by 25%.
+
+  - id: heros-staff
+    name: "Hero's Staff"
+    price: 9
+    effect: |
+              When equipped by an Attacking Character:
+              When an equipped Attacking Character lands an attack: 50% chance of applying 1 [[Darkness]] to the opponent.
+
+  - id: heros-sword
+    name: "Hero's Sword"
+    price: 9
+    effect: |
+              When equipped by an Attacking Character:
+              When an equipped Attacking Character lands an attack: Increase DMG dealt by equipped Characters by 4.
+
+              When equipped by Other Characters:
+              Battle Start: Gain 4 random Buff(s).
+
+  - id: invulnerable-armor
+    name: "Invulnerable Armor"
+    price: 15
+    effect: |
+              When equipped by a Utility Character:
+              Upon Battle Start: Gain 80 [[Energy Guard]].
+
+              When equipped by Other Characters:
+              Upon Battle Start: Gain 8 [[Energy Guard]].
+
+  - id: knights-necklace
+    name: "Knight's Necklace"
+    price: 5
+    effect: |
+              When equipped by a Curse Character:
+              Every cooldown of an equipped Character: 50% chance to apply 1 [[Poison]] to the opponent.
+
+              When equipped by Other Characters:
+              Every cooldown of an equipped Character: 35% chance to gain 1 [[SP]].
+  
+  - id: knights-staff
+    name: "Knight's Staff"
+    price: 6
+    effect: |
+              When equipped by an Attacking Character:
+              When an equipped Attacking Character lands an attack: 50% chance of applying 1 [[Frost]] to the opponent.
+
+              When equipped by Other Characters:
+              Upon Battle Start: Apply 4 [[Frost]] to the opponent.
+
+  - id: knights-sword
+    name: "Knight's Sword"
+    price: 6
+    effect: |
+              When equipped by an Attacking Character:
+              Upon Battle Start: Increase DMG dealt by equipped Characters by 3.
+
+              When equipped by Other Characters:
+              Battle Start: Gain 3 random Buff(s).
+
+  - id: mercenary-armor
+    name: "Mercenary Armor"
+    price: 4
+    effect: |
+              When equipped by a Utility Character:
+              Upon Battle Start: Gain 20 [[Energy Guard]].
+
+              When equipped by Other Characters:
+              Upon Battle Start: Gain 2 [[Energy Guard]].
+
+  - id: mercenary-staff
+    name: "Mercenary Staff"
+    price: 4
+    effect: |
+              When equipped by an Attacking Character:
+              When an equipped Attacking Character lands an attack: 50% chance of applying 1 [[Poison]] to the opponent.
+
+              When equipped by Other Characters:
+              Upon Battle Start: Apply 3 [[Poison]] to the opponent.
+
+  - id: mercenary-sword
+    name: "Mercenary Sword"
+    price: 4
+    effect: |
+              When equipped by an Attacking Character:
+              When an equipped Attacking Character lands an attack: 50% chance of applying 1 [[Poison]] to the opponent.
+
+              When equipped by Other Characters:
+              Upon Battle Start: Apply 3 [[Poison]] to the opponent.
+
+  - id: peerless-javelin
+    name: "Peerless Javelin"
+    price: 15
+    effect: |
+              When equipped by an Attacking Character:
+              Upon Battle Start: Increase Accuracy Rate of equipped Attacking Characters by 200% and Crit Rate by 20%.
+
+              When equipped by Other Characters:
+              Upon Battle Start: Gain 5 [[Focus]].

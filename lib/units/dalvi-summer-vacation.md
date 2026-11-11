@@ -1,8 +1,9 @@
 ---
 unit: dalvi-summer-vacation
-role: debuffer
-summary: Applies Laceration, which raises the enemy's Stamina costs.
+tagline: Applies Laceration, which raises the enemy's Stamina costs.
+roles: [debuffer]
 ---
+
 
 ## What she does
 

@@ -1,6 +1,8 @@
 ---
 title: Calculators
 description: Reroll cost, discount and sell value, and End Game damage at any second.
+order: 2
+icon: lucide/calculator
 ---
 
 # Calculators

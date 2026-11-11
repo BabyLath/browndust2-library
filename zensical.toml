@@ -3,27 +3,22 @@
 # Edit this file; never edit the generated one.
 
 [project]
-site_name = "Soul Wager Guide"
-site_url = "https://babylath.github.io/soul-wager-guide/"
-site_description = "Board, shop and battle guide for The Soul Wager in Brown Dust 2: unit prices, builds, seasons and calculators."
+site_name = "BrownDust II Library"
+site_url = "https://babylath.github.io/browndust2-library/"
+site_description = "Guides and data for Brown Dust 2, starting with The Soul Wager: unit prices, builds, seasons and calculators."
 site_author = "babylath"
-repo_url = "https://github.com/babylath/soul-wager-guide"
-repo_name = "babylath/soul-wager-guide"
-edit_uri = "edit/main/lib/"
 copyright = "Fan site. Brown Dust 2 is a trademark of NEOWIZ and GAMFS N; not affiliated with or endorsed by them. Mechanics adapted from BD2 Tactical Compendium (CC BY 4.0)."
 
 extra_css = ["styles/extra.css"]
-extra_javascript = ["javascripts/site.js"]
+extra_javascript = ["javascripts/site.js", "javascripts/planner.js"]   # planner.js does nothing on pages without the planner
 
 [project.theme]
 language = "en"
 custom_dir = "overrides"
 logo = "images/logo.svg"
-favicon = "images/logo.svg"
-font.text = "Atkinson Hyperlegible"
-font.code = "JetBrains Mono"
+favicon = "images/favicon-32.png"   # SVG and iOS icons are added in overrides/main.html; lib/favicon.ico covers /favicon.ico
+font = false   # fonts are self-hosted in lib/fonts, see lib/styles/extra.css
 features = [
-  "content.action.edit",
   "content.tooltips",
   "navigation.footer",
   "navigation.indexes",
@@ -56,7 +51,7 @@ generator = false
 
 [[project.extra.social]]
 icon = "fontawesome/brands/github"
-link = "https://github.com/babylath/soul-wager-guide"
+link = "https://github.com/babylath/browndust2-library"
 
 [project.markdown_extensions]
 abbr = {}
@@ -65,6 +60,7 @@ attr_list = {}
 def_list = {}
 footnotes = {}
 md_in_html = {}
+nl2br = {}   # a single line break in Markdown stays a line break, like effects in the YAML files
 tables = {}
 toc.permalink = true
 pymdownx.details = {}

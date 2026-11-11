@@ -3,9 +3,9 @@ requires = ["setuptools>=80"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "soul-wager-guide"
+name = "browndust2-library"
 version = "0.2.0"
-description = "Fan guide for The Soul Wager in Brown Dust 2."
+description = "BrownDust II Library: fan guides and data for Brown Dust 2."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -18,6 +18,7 @@ dependencies = [
 swg-check = "swg_site.cli:check_main"
 swg-serve = "swg_site.cli:serve_main"
 swg-build = "swg_site.cli:build_main"
+swg-new-unit = "swg_site.cli:new_unit_main"
 
 [tool.setuptools]
 packages = ["swg_site"]

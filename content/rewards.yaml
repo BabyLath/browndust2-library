@@ -1,0 +1,30 @@
+# Alea Chip rewards and the Alea Chip shop. Shown on the "Alea Chip shop" page (lib/guide/rewards.md).
+#
+# Leave a number blank (or write ?) until you've checked it in game. The page shows "?" for it
+# and swg-check lists what's still missing. Totals are worked out for you.
+#
+#   clears:  Alea Chips for clearing each Board, one line per Board.
+#     board: the Board's name or number, as the game shows it
+#     chips: Alea Chips for clearing it
+#
+#   shop:    what the Alea Chip shop sells this season.
+#     item:  name as the shop shows it
+#     price: Alea Chips for one
+#     limit: how many you can buy this season, or unlimited
+#     note:  optional, one short line
+
+season: s3
+
+clears:
+  - { board: "Board 1", chips: }
+  - { board: "Board 2", chips: }
+  - { board: "Board 3", chips: }
+  - { board: "Board 4", chips: }
+  - { board: "Board 5: Tainted Hunting Grounds", chips: }
+
+shop:
+  - { item: "★5 Recruit Contract", price: , limit: , note: "Worth it even for veterans." }
+  - { item: Light Magic Crystal, price: , limit: }
+  - { item: Tear of Goddess, price: , limit: }
+  - { item: Refining Powder, price: , limit: }
+  - { item: Gold, price: , limit: }

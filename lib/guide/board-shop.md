@@ -2,6 +2,7 @@
 title: Board and shop
 description: Main Field, View Formation, Battle Shop odds, reserving, discounts, rerolls, selling and Storage.
 order: 1
+icon: lucide/dices
 ---
 
 # Board and shop

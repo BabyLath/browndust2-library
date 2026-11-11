@@ -1,86 +1,169 @@
-/* Soul Wager Guide styles.
+/* BrownDust II Library styles.
    Colours are tokens at the top; change them there, not in components. */
-@import url("https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,700&display=swap");
-
-/* ---------- tokens ---------- */
+/* Fonts are bundled in lib/fonts (SIL Open Font License) so every browser,
+   preview and screenshot renders the same faces. No Google Fonts request. */
+@font-face { font-family: "Bodoni Moda"; src: url("../fonts/bodoni-moda-latin-opsz.woff2") format("woff2");
+  font-weight: 400 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url("../fonts/atkinson-hyperlegible-latin-400-normal.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url("../fonts/atkinson-hyperlegible-latin-400-italic.woff2") format("woff2");
+  font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url("../fonts/atkinson-hyperlegible-latin-700-normal.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap; }
+/* Bodoni Moda changes its design with size (the opsz axis). At headline sizes it
+   picks a high-contrast cut whose hairlines nearly vanish, so every use of the
+   display face is pinned to the sturdier text cut. Raise the number for more contrast. */
+.md-typeset h1, .md-typeset h2, .md-typeset h3, .swg-hero h1, .md-header__topic, .md-nav__title,
+.swg-piece, .swg-rating dd, .swg-status dt, .swg-team__title, .swg-team__name, .swg-guide__rank {
+  font-optical-sizing: none;
+  font-variation-settings: "opsz" 11;
+}
 :root {
-  --swg-brass: #8a6413;
-  --swg-soul: #1f7f73;
-  --swg-rose: #b2414c;
-  --swg-ink: #231a2e;
-  --swg-felt: #ebe7f1;
-  --swg-seam: #d3cddc;
-  --swg-piece-ink: #231a2e;
-  --swg-display: "Bodoni Moda", "Didot", Georgia, serif;
-  --swg-r: 8px;
+  --md-text-font: "Atkinson Hyperlegible";
+  --md-code-font: ui-monospace, "SFMono-Regular", Menlo, Consolas;
+}
 
-  /* unit hues for board diagrams */
+/* ---------- tokens ----------
+   Decisions, so nobody "fixes" them back into defaults:
+   - Warm paper and dark ink in light mode, neutral charcoal in dark mode.
+   - One interface accent per scheme, used only for links and the active nav item:
+     blue on paper, Alea Chip gold on charcoal.
+   - Game colours (gold, Soul Token teal, rose) appear only on board pieces and
+     board diagrams, where they stand for the game's own pieces. Nowhere else.
+   - No coloured stripes, bars or tinted cards. Structure comes from thin rules.
+     Exception, on purpose: the small role chips on team cards are tinted by archetype
+     (attacker, support, defender), and rank letters by tier.
+   - Radius is 3px for containers and 2px for small labels and inputs.
+   Text tokens are AA (4.5:1) or better on the page background. */
+:root {
+  --swg-display: "Bodoni Moda", "Didot", Georgia, serif;
+  --swg-r: 3px;
+  --swg-r-sm: 2px;
+  --swg-piece-ink: #23201c;   /* text on board pieces and diagram cells */
   --swg-h0: #d1a94f; --swg-h1: #72d1c4; --swg-h2: #e48a90;
   --swg-h3: #a99be0; --swg-h4: #9ccc7a; --swg-h5: #e3a46a;
 }
 
 [data-md-color-scheme="default"] {
-  --md-primary-fg-color: var(--swg-brass);
-  --md-primary-fg-color--light: #a8822f;
-  --md-primary-fg-color--dark: #6b4c0c;
-  --md-accent-fg-color: var(--swg-soul);
-  --md-accent-fg-color--transparent: rgba(31, 127, 115, .1);
-  --md-typeset-a-color: var(--swg-brass);
-  --md-default-bg-color: #f7f5fa;
-  --md-default-fg-color: rgba(35, 26, 46, .9);
+  --swg-ink: #2b2c30;
+  --swg-muted: #56575d;
+  --swg-link: #2456b8;
+  --swg-rule: #cbc6bb;
+  --swg-rule-strong: #2b2c30;
+  --swg-surface: #e8e5de;      /* table header row and the home board only */
+  --swg-field: #fbfaf7;
+  --swg-field-edge: #827d73;
+  --swg-plain: #fbfaf7;
+  --swg-plain-edge: #b3ada1;
+  --swg-chart: #9e2f3b;
+
+  --md-default-bg-color: #f0eee9;  /* unslop-ignore: warm paper, a deliberate choice */
+  --md-default-bg-color--light: #f0eee9;  /* unslop-ignore */
+  --md-default-fg-color: var(--swg-ink);
+  --md-default-fg-color--light: var(--swg-muted);
+  --md-default-fg-color--lighter: rgba(43, 44, 48, .42);
+  --md-default-fg-color--lightest: rgba(43, 44, 48, .08);
+  --md-primary-fg-color: var(--swg-link);
+  --md-primary-fg-color--light: #4a74c9;
+  --md-primary-fg-color--dark: #1b4594;
+  --md-primary-bg-color: #ffffff;
+  --md-accent-fg-color: var(--swg-link);
+  --md-accent-fg-color--transparent: rgba(43, 44, 48, .06);
+  --md-typeset-a-color: var(--swg-link);
+  --md-code-bg-color: #e8e5de;
+  --md-code-fg-color: #2b2c30;
 }
 
 [data-md-color-scheme="slate"] {
-  --swg-brass: #d1a94f;
-  --swg-soul: #72d1c4;
-  --swg-rose: #e48a90;
-  --swg-felt: #221b2d;
-  --swg-seam: #3a3048;
-  --md-hue: 270;
-  --md-default-bg-color: #17121f;
-  --md-default-bg-color--light: #1d1727;
-  --md-default-fg-color: rgba(236, 228, 214, .88);
-  --md-default-fg-color--light: rgba(236, 228, 214, .62);
-  --md-default-fg-color--lighter: rgba(236, 228, 214, .32);
-  --md-default-fg-color--lightest: rgba(236, 228, 214, .12);
-  --md-primary-fg-color: var(--swg-brass);
+  --swg-ink: #ece8e1;
+  --swg-muted: #a9a59e;
+  --swg-link: #d1a94f;
+  --swg-rule: #3a3b41;
+  --swg-rule-strong: #ece8e1;
+  --swg-surface: #26272c;
+  --swg-field: #26272c;
+  --swg-field-edge: #6b6c72;
+  --swg-plain: #ece4d6;
+  --swg-plain-edge: transparent;
+  --swg-chart: #e48a90;
+
+  --md-default-bg-color: #1f2024;   /* charcoal */
+  --md-default-bg-color--light: #1f2024;
+  --md-default-fg-color: var(--swg-ink);
+  --md-default-fg-color--light: var(--swg-muted);
+  --md-default-fg-color--lighter: rgba(236, 232, 225, .32);
+  --md-default-fg-color--lightest: rgba(236, 232, 225, .08);
+  --md-primary-fg-color: var(--swg-link);
   --md-primary-fg-color--light: #e3c375;
   --md-primary-fg-color--dark: #a8822f;
-  --md-accent-fg-color: var(--swg-soul);
-  --md-accent-fg-color--transparent: rgba(114, 209, 196, .1);
-  --md-typeset-a-color: var(--swg-brass);
-  --md-code-bg-color: #221b2d;
+  --md-accent-fg-color: var(--swg-link);
+  --md-accent-fg-color--transparent: rgba(236, 232, 225, .06);
+  --md-typeset-a-color: var(--swg-link);
+  --md-code-bg-color: #26272c;
 }
 
 /* ---------- type ---------- */
-.md-typeset h1, .md-typeset h2, .md-typeset h3, .swg-hero h1 {
-  font-family: var(--swg-display);
-  letter-spacing: -.01em;
-}
-.md-typeset h1 { font-weight: 700; font-size: 2.4em; color: var(--md-default-fg-color); }
+.md-typeset h1, .md-typeset h2, .md-typeset h3, .swg-hero h1 { font-family: var(--swg-display); letter-spacing: -.01em; }
+.md-typeset h1, .swg-hero h1 { font-weight: 700; font-size: 2.4em; color: var(--swg-ink); }
 .md-typeset h2 { font-weight: 700; }
 .md-typeset h3 { font-weight: 500; }
 .md-header__topic, .md-nav__title { font-family: var(--swg-display); font-weight: 700; }
 .md-typeset .num, .md-typeset td.num, .md-typeset th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.md-typeset .headerlink { color: var(--swg-muted); }
+.md-typeset h2 abbr, .md-typeset h3 abbr { text-decoration: none; border: 0; cursor: inherit; }
+
+/* ---------- theme chrome: flat, no tinted highlights ---------- */
+.md-header, .md-tabs { background: var(--md-default-bg-color); color: var(--swg-ink); box-shadow: 0 1px 0 var(--swg-rule); }
+.md-search__form { background: var(--swg-surface); border-radius: var(--swg-r); }
+.md-search__input::placeholder { color: var(--swg-muted); }
+.md-footer, .md-footer-meta { background: var(--md-default-bg-color); color: var(--swg-muted); border-top: 1px solid var(--swg-rule); }
+.md-footer-meta a, .md-footer__link { color: var(--swg-ink); }
+.md-nav__link, .md-nav__link:hover, .md-nav__link--active { background: none !important; border-radius: 0; }
+.md-nav__link--active, .md-nav__item .md-nav__link--active { color: var(--swg-link); font-weight: 700; }
+.md-content__button { border-radius: var(--swg-r); }
+.md-content__inner:has(.swg-hero) > .md-content__button { display: none; }
+
+/* Collapsible sidebar items (Units, Builds): the label and the
+   arrow are two separate rounded buttons; both get a tinted fill when you're inside the group.
+   This is the one place the sidebar uses a fill, so it reads as "you are here". */
+[data-md-color-scheme="default"] { --swg-nav-fill: rgba(36, 86, 184, .10); --swg-nav-hover: rgba(43, 44, 48, .06); }
+[data-md-color-scheme="slate"]   { --swg-nav-fill: rgba(209, 169, 79, .14); --swg-nav-hover: rgba(236, 232, 225, .06); }
+.md-nav__item--nested:not(.md-nav__item--section) > .md-nav__container { display: flex; align-items: stretch; gap: 4px; margin: .15rem 0; }
+.md-nav__item--nested:not(.md-nav__item--section) > .md-nav__container > .md-nav__link { margin: 0; padding: .4rem .6rem; border-radius: 8px; }
+.md-nav__item--nested:not(.md-nav__item--section) > .md-nav__container > a.md-nav__link { flex: 1; min-width: 0; display: flex; align-items: center; gap: .55rem; }
+.md-nav__item--nested:not(.md-nav__item--section) > .md-nav__container > a.md-nav__link svg { width: 1.05rem; height: 1.05rem; flex: none; }
+.md-nav__item--nested:not(.md-nav__item--section) > .md-nav__container > label.md-nav__link { flex: none; width: 2rem; display: flex; align-items: center; justify-content: center; padding: 0; }
+.md-nav__item--nested:not(.md-nav__item--section) > .md-nav__container > .md-nav__link:hover { background: var(--swg-nav-hover) !important; }
+.md-nav__item--nested:not(.md-nav__item--section).md-nav__item--active > .md-nav__container > .md-nav__link { background: var(--swg-nav-fill) !important; color: var(--swg-link); font-weight: 700; }
+.md-nav__item--nested:not(.md-nav__item--section) > .md-nav__container > .md-nav__link:focus-visible { outline: 2px solid var(--swg-link); outline-offset: 1px; }
+
+/* admonitions: a plain ruled note, no coloured bar, tint or icon colour */
+.md-typeset .admonition, .md-typeset details {
+  background: none; border: 1px solid var(--swg-rule); border-radius: var(--swg-r); box-shadow: none;
+}
+.md-typeset .admonition-title, .md-typeset summary { background: none !important; }
+.md-typeset .admonition-title::before, .md-typeset summary::before { background-color: var(--swg-muted) !important; }
 
 /* ---------- home ---------- */
 .md-typeset .swg-hero {
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-  gap: 2.5rem; align-items: center; margin: .5rem 0 2rem;
+  gap: 2.5rem; align-items: center; margin: .5rem 0 2.5rem;
 }
 .md-typeset .swg-hero h1 { font-size: clamp(2.2rem, 4.5vw, 3.4rem); line-height: 1.05; margin: 0 0 .6rem; }
-.swg-hero__lede { font-size: 1.05rem; color: var(--md-default-fg-color--light); max-width: 36ch; }
+.swg-hero__lede { font-size: 1.05rem; color: var(--swg-muted); max-width: 36ch; }
 
 .swg-hero__board {
   display: grid; grid-template: repeat(7, 1fr) / repeat(7, 1fr);
   aspect-ratio: 1; gap: 4px; padding: 10px;
-  background: var(--swg-felt); border: 1px solid var(--swg-seam); border-radius: 12px;
+  background: var(--swg-surface); border: 1px solid var(--swg-rule); border-radius: 12px;
   background-image:
-    linear-gradient(var(--swg-seam) 1px, transparent 1px),
-    linear-gradient(90deg, var(--swg-seam) 1px, transparent 1px);
+    linear-gradient(var(--swg-rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--swg-rule) 1px, transparent 1px);
   background-size: calc((100% - 20px) / 7) calc((100% - 20px) / 7);
   background-position: 10px 10px;
 }
+/* The home board keeps its own look on purpose: raised, rounded game pieces that lift
+   when hovered. It's the one decorative moment on the site; everything else stays flat. */
 .md-typeset a.swg-piece {
   display: flex; align-items: flex-end; padding: .55rem .7rem; border-radius: 6px;
   color: var(--swg-piece-ink); text-decoration: none;
@@ -92,97 +175,130 @@
   transform: translateY(-3px); color: var(--swg-piece-ink);
   box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .22), 0 5px 0 rgba(0, 0, 0, .3);
 }
+.md-typeset a.swg-piece:focus-visible { outline: 2px solid var(--swg-ink); outline-offset: 2px; }
 .swg-piece.gold { background: #d1a94f; }
 .swg-piece.soul { background: #72d1c4; }
 .swg-piece.rose { background: #e48a90; }
-.swg-piece.plain { background: #ece4d6; }
+.swg-piece.plain { background: var(--swg-plain); box-shadow: inset 0 0 0 1px var(--swg-plain-edge), inset 0 -3px 0 rgba(0, 0, 0, .14); }
 .swg-piece.tall { justify-content: center; }
 .swg-piece.tall span { writing-mode: vertical-rl; transform: rotate(180deg); }
 
-/* current season */
+/* current season: ruled section, no box */
 .md-typeset .swg-now {
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 1.5rem 2.5rem;
-  padding: 1.25rem 1.5rem; margin: 0 0 2rem;
-  border: 1px solid var(--swg-seam); border-left: 4px solid var(--swg-soul); border-radius: var(--swg-r);
-  background: var(--swg-felt);
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 1rem 2.5rem;
+  padding: 1rem 0 1.2rem; margin: 0 0 1.5rem;
+  border-top: 1px solid var(--swg-rule-strong); border-bottom: 1px solid var(--swg-rule);
 }
-.md-typeset .swg-now h2 { margin: 0; font-size: 1.6rem; }
-.md-typeset .swg-now p { margin: .2rem 0; }
-.swg-now__label, .swg-now__changes > p { color: var(--md-default-fg-color--light); font-size: .8rem; }
-.swg-now__countdown { color: var(--swg-soul); font-weight: 700; }
-.md-typeset .swg-now ul { margin: .3rem 0 .6rem; }
+.md-typeset .swg-now h2 { margin: 0 0 .3rem; font-size: 1.6rem; }
+.md-typeset .swg-now h3 { margin: 0 0 .2rem; font: 700 .85rem/1.4 var(--md-text-font-family); color: var(--swg-muted); }
+.md-typeset .swg-now p { margin: .15rem 0; }
+.swg-now__countdown { font-weight: 700; }
+.md-typeset .swg-now ul { margin: .2rem 0 .6rem; }
 .md-typeset .swg-now li { margin: .15rem 0; }
 
-/* ---------- unit guide card ---------- */
-.md-typeset .swg-unit-card {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem 2rem;
-  padding: 1.25rem 1.5rem; margin: 0 0 2rem;
-  background: var(--swg-felt); border: 1px solid var(--swg-seam); border-radius: var(--swg-r);
-}
-.md-typeset .swg-unit-card p { margin: 0; }
-.swg-unit-card__char { font-family: var(--swg-display); font-size: 1.7rem; font-weight: 700; line-height: 1.1; color: var(--md-default-fg-color); }
-.swg-unit-card__costume { color: var(--md-default-fg-color--light); font-size: 1.05rem; }
-.md-typeset .swg-unit-card__meta { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .7rem; }
-.md-typeset .swg-unit-card__summary { margin-top: .8rem; max-width: 52ch; }
-.swg-unit-card__stats { display: flex; gap: 1.4rem; margin: 0; align-self: start; }
-.swg-unit-card__stats > div { text-align: center; }
-.md-typeset .swg-unit-card__stats dt { font-size: .72rem; color: var(--md-default-fg-color--light); }
-.md-typeset .swg-unit-card__stats dd { margin: 0; font-size: 1.6rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--swg-brass); }
-.swg-rating dd { font-family: var(--swg-display); }
-.swg-unit-card__pairs { grid-column: 1 / -1; border-top: 1px solid var(--swg-seam); padding-top: .8rem; }
-.swg-unit-card__pairs > p { font-size: .8rem; color: var(--md-default-fg-color--light); }
-.md-typeset .swg-unit-card__pairs ul { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem; margin: .4rem 0 0; padding: 0; }
-.md-typeset .swg-unit-card__pairs li { margin: 0; padding: .2rem .7rem; border: 1px solid var(--swg-seam); border-radius: 999px; font-size: .85rem; }
 
-/* badges */
-.md-typeset .swg-tag, .md-typeset .swg-role, .md-typeset .swg-grade {
-  display: inline-block; padding: .05rem .6rem; border-radius: 999px; font-size: .75rem; line-height: 1.6;
-  background: var(--md-default-fg-color--lightest); white-space: nowrap;
+.md-typeset .swg-roles { font-size: .85rem; }
+
+/* generated sections: example builds and pairings */
+.md-typeset .swg-gear-icon--sm { width: 24px; height: 24px; vertical-align: middle; }
+.md-typeset .swg-cost { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; }
+.md-typeset .swg-cost + * { color: var(--swg-muted); }
+
+/* build status labels on the Builds list */
+.md-typeset .swg-status-label { display: inline-block; font-size: .72rem; font-weight: 700; padding: 0 .4rem; border-radius: var(--swg-r-sm);
+  border: 1px solid var(--swg-rule); color: var(--swg-muted); vertical-align: .1em; }
+.md-typeset .swg-status-label--tested { border-color: transparent; background: #8fd48a; color: var(--swg-piece-ink); }
+
+/* labels */
+.md-typeset .swg-tag, .md-typeset .swg-grade {
+  display: inline-block; padding: 0 .4rem; border-radius: var(--swg-r-sm); font-size: .75rem; line-height: 1.6;
+  border: 1px solid var(--swg-rule); white-space: nowrap;
 }
-.md-typeset .swg-role { background: transparent; border: 1px solid var(--swg-seam); text-transform: capitalize; }
-.md-typeset .swg-grade { font-weight: 700; color: var(--swg-ink); background: #c9c2d3; }
-.md-typeset .swg-grade[data-grade="rare"] { background: #8fb8e8; }
-.md-typeset .swg-grade[data-grade="unique"] { background: #d1a94f; }
+/* grade badges: one fill per Codex grade, the same in both schemes.
+   Dark text on every fill is 6.6:1 or better. */
+.md-typeset .swg-grade { font-weight: 700; color: var(--swg-piece-ink); border: 0; background: #c9c9cd; }
+.md-typeset .swg-grade[data-grade="basic"]     { background: #c9c9cd; }  /* gray */
+.md-typeset .swg-grade[data-grade="rare"]      { background: #8fd48a; }  /* green */
+.md-typeset .swg-grade[data-grade="ancient"]   { background: #86b8f2; }  /* blue */
+.md-typeset .swg-grade[data-grade="heroic"]    { background: #c7a6f2; }  /* purple */
+.md-typeset .swg-grade[data-grade="legendary"] { background: #f2895a; }  /* red-orange */
+.md-typeset .swg-grade[data-grade="mythical"]  { background: #f4d04c; }  /* yellow */
+/* Unique: light blue shimmering into lilac, pink and gold. A deliberate brand choice. unslop-ignore */
+.md-typeset .swg-grade[data-grade="unique"]    { background: linear-gradient(110deg, #a6e6ff 0%, #cdb8ff 38%, #ffc4e4 68%, #fff0a6 100%); }
 
 /* ---------- tables ---------- */
-.md-typeset .swg-table { overflow-x: auto; margin: 1rem 0 2rem; border: 1px solid var(--swg-seam); border-radius: var(--swg-r); }
-.md-typeset .swg-table table { display: table; width: 100%; margin: 0; border: 0; font-size: .82rem; border-collapse: collapse; }
-.md-typeset .swg-table th { position: sticky; top: 0; background: var(--swg-felt); font-weight: 700; color: var(--md-default-fg-color--light); }
-.md-typeset .swg-table td, .md-typeset .swg-table th { padding: .55rem .9rem; border-top: 1px solid var(--swg-seam); vertical-align: top; }
-.md-typeset .swg-table tbody tr:hover { background: var(--md-accent-fg-color--transparent); }
+.md-typeset .swg-table { overflow-x: auto; margin: 1rem 0 2rem; border: 1px solid var(--swg-rule); border-radius: var(--swg-r); }
+.md-typeset .swg-table table { display: table; width: 100%; min-width: 100%; margin: 0; border: 0; font-size: .82rem; border-collapse: collapse; }
+.md-typeset .swg-table th { position: sticky; top: 0; background: var(--swg-surface); font-weight: 700; color: var(--swg-muted); }
+.md-typeset .swg-table td, .md-typeset .swg-table th { padding: .5rem .9rem; border-top: 1px solid var(--swg-rule); vertical-align: top; }
+.md-typeset #swg-units td.swg-unit-char { white-space: nowrap; }
+.md-typeset #swg-units td.swg-unit-costume { min-width: 9rem; }
+.md-typeset #swg-units td.swg-effect { min-width: 15rem; }
+.md-typeset .swg-table td.swg-price, .md-typeset .swg-table th.num { width: 1%; white-space: nowrap; }
+.md-typeset .swg-gear-name { white-space: nowrap; }
+.md-typeset .swg-effect { min-width: 18rem; line-height: 1.5; }
+.md-typeset .swg-rich__lead { font-weight: 700; }
+.md-typeset .swg-table th { text-align: left; }
+/* as specific as the theme's table:not([class]) th:not([align]) rule, and later, so it wins */
+.md-typeset .swg-table table th.num, .md-typeset .swg-table table td.num { text-align: right; }
+.md-typeset .swg-table table.swg-stack td { vertical-align: top; }
+.md-typeset .swg-table tbody tr:hover { background: var(--md-default-fg-color--lightest); }
 .md-typeset .swg-table td .swg-tag { margin: 0 .2rem .2rem 0; }
 
-.md-typeset .swg-filter { display: flex; flex-wrap: wrap; gap: .8rem 1.2rem; align-items: end; margin: 1.2rem 0 .4rem; }
+/* ---------- forms ---------- */
+.md-typeset .swg-filter {
+  display: flex; flex-wrap: wrap; gap: .75rem 1rem; align-items: flex-end;
+  margin: 1.2rem 0 .6rem; padding: .8rem 0 .6rem; border-top: 1px solid var(--swg-rule);
+}
 .md-typeset .swg-filter label, .md-typeset .swg-calc label {
-  display: inline-flex; flex-direction: column; gap: .25rem; font-size: .75rem; color: var(--md-default-fg-color--light);
+  display: inline-flex; flex-direction: column; gap: .3rem; font-size: .72rem; line-height: 1.2; color: var(--swg-muted);
 }
-.md-typeset .swg-check { flex-direction: row !important; align-items: center; gap: .45rem !important; font-size: .85rem !important; }
 .md-typeset .swg-filter input, .md-typeset .swg-filter select, .md-typeset .swg-calc input[type="number"] {
-  font: inherit; font-size: .85rem; color: var(--md-default-fg-color);
-  background: var(--swg-felt); border: 1px solid var(--swg-seam); border-radius: 6px; padding: .4rem .6rem;
+  box-sizing: border-box; height: 2.1rem; margin: 0;
+  font: inherit; font-size: .85rem; font-weight: 400; line-height: 1; color: var(--swg-ink);
+  background-color: var(--swg-field); border: 1px solid var(--swg-field-edge); border-radius: var(--swg-r-sm); padding: 0 .55rem;
 }
-.md-typeset .swg-filter input[type="search"] { width: min(240px, 80vw); }
-.md-typeset .swg-filter input[type="number"] { width: 6rem; }
-.md-typeset .swg-filter output { font-size: .8rem; color: var(--md-default-fg-color--light); padding-bottom: .5rem; }
+.md-typeset .swg-filter select {
+  appearance: none; -webkit-appearance: none; padding-right: 1.8rem; cursor: pointer;
+  width: 10rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23888' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: right .6rem center; background-size: .7rem; background-repeat: no-repeat;
+}
+.md-typeset .swg-filter select option { background: var(--swg-field); color: var(--swg-ink); }
+.md-typeset .swg-filter input:focus-visible, .md-typeset .swg-filter select:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color); outline-offset: 1px;
+}
+.md-typeset .swg-filter input::placeholder, .md-typeset .swg-calc input::placeholder { color: var(--swg-muted); opacity: 1; }
+.md-typeset .swg-filter input[type="search"] { width: min(15rem, 80vw); }
+.md-typeset .swg-filter input[type="number"] { width: 6.5rem; }
+/* second row: checkboxes on the left, result count on the right */
+.md-typeset .swg-filter__opts {
+  flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: .4rem 1.4rem;
+}
+.md-typeset .swg-check { flex-direction: row !important; align-items: center; gap: .45rem !important; font-size: .82rem !important; color: var(--swg-ink) !important; cursor: pointer; }
+.md-typeset .swg-filter .swg-check input {
+  height: .95rem; width: .95rem; padding: 0; accent-color: var(--md-accent-fg-color); cursor: pointer;
+}
+.md-typeset .swg-filter output { margin-left: auto; font-size: .78rem; color: var(--swg-muted); font-variant-numeric: tabular-nums; }
+@media (max-width: 600px) {
+  .md-typeset .swg-filter { display: grid; grid-template-columns: 1fr 1fr; }
+  .md-typeset .swg-filter > label:first-child { grid-column: 1 / -1; }
+  .md-typeset .swg-filter__opts { grid-column: 1 / -1; }
+  .md-typeset .swg-filter > label > input[type], .md-typeset .swg-filter > label > select { width: 100%; }
+}
 
 /* ---------- board diagrams (```board fences) ---------- */
-.md-typeset .swg-build {
-  display: grid; grid-template-columns: minmax(180px, 260px) minmax(0, 1fr); gap: 1.5rem;
-  margin: 1.5rem 0; padding: 1.25rem; text-align: left;
-  border: 1px solid var(--swg-seam); border-radius: var(--swg-r); background: var(--swg-felt);
-}
-.md-typeset .swg-build--list { grid-template-columns: 1fr; }
 .swg-build__board {
   display: grid; grid-template: repeat(7, 1fr) / repeat(7, 1fr); aspect-ratio: 1; align-self: start;
-  background: var(--md-default-bg-color); border-radius: 6px; padding: 3px;
+  background: var(--swg-field); border: 1px solid var(--swg-rule); border-radius: var(--swg-r); padding: 3px;
 }
-.swg-cell { position: relative; border: 1px dashed var(--swg-seam); margin: 1px; border-radius: 2px; }
-.swg-cell--unit, .swg-cell--tile { margin: 0; border: 0 solid var(--md-default-bg-color); border-radius: 0; }
+.swg-cell { position: relative; border: 1px dashed var(--swg-rule); margin: 1px; }
+.swg-cell--unit, .swg-cell--tile { margin: 0; border: 0 solid var(--swg-field); }
 .swg-cell--tile { background: var(--md-default-fg-color--lighter); }
 .swg-cell.e-t { border-top-width: 2px; } .swg-cell.e-b { border-bottom-width: 2px; }
 .swg-cell.e-l { border-left-width: 2px; } .swg-cell.e-r { border-right-width: 2px; }
 .swg-cell b { position: absolute; top: 2px; left: 4px; font-size: .7rem; color: var(--swg-piece-ink); }
-.swg-cell--tile b { color: var(--md-default-fg-color); }
+.swg-cell--tile b { color: var(--swg-ink); }
 .swg-cell--unit.swg-hue-0, .swg-key.swg-cell--unit.swg-hue-0 { background: var(--swg-h0); }
 .swg-cell--unit.swg-hue-1, .swg-key.swg-cell--unit.swg-hue-1 { background: var(--swg-h1); }
 .swg-cell--unit.swg-hue-2, .swg-key.swg-cell--unit.swg-hue-2 { background: var(--swg-h2); }
@@ -190,51 +306,103 @@
 .swg-cell--unit.swg-hue-4, .swg-key.swg-cell--unit.swg-hue-4 { background: var(--swg-h4); }
 .swg-cell--unit.swg-hue-5, .swg-key.swg-cell--unit.swg-hue-5 { background: var(--swg-h5); }
 
-.md-typeset .swg-build figcaption { max-width: none; margin: 0; text-align: left; font-style: normal; }
-.md-typeset .swg-build figcaption p { margin: .2rem 0 .6rem; }
-.md-typeset .swg-build__title { font-family: var(--swg-display); font-size: 1.3rem; font-weight: 700; margin: 0 !important; color: var(--md-default-fg-color); }
-.md-typeset .swg-build__sub { font-size: .8rem; color: var(--md-default-fg-color--light); }
-.md-typeset .swg-build__notes { border-left: 3px solid var(--swg-brass); padding-left: .8rem; }
-.md-typeset .swg-legend { list-style: none; margin: .4rem 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .35rem; }
-.md-typeset .swg-legend li { display: flex; align-items: center; gap: .6rem; margin: 0; padding: .35rem .6rem; background: var(--md-default-bg-color); border-radius: 6px; }
-.swg-key { flex: none; width: 1.5rem; height: 1.5rem; border-radius: 4px; display: grid; place-items: center; font-size: .72rem; font-weight: 700; color: var(--swg-piece-ink); }
-.swg-legend--tile .swg-key { color: var(--md-default-fg-color); }
-.swg-legend__name { flex: 1; min-width: 0; }
-.swg-legend__price { color: var(--swg-soul); font-variant-numeric: tabular-nums; font-weight: 700; }
-.swg-gear { display: block; font-size: .75rem; color: var(--md-default-fg-color--light); }
-.swg-gear i { font-style: normal; color: var(--swg-soul); }
+.swg-key { flex: none; width: 1.4rem; height: 1.4rem; border-radius: var(--swg-r-sm); display: grid; place-items: center; font-size: .7rem; font-weight: 700; color: var(--swg-piece-ink); }
 
-/* ---------- statuses ---------- */
-.md-typeset .swg-statuses { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .6rem; margin: 1rem 0 2rem; }
-.md-typeset .swg-status { padding: .8rem 1rem; background: var(--swg-felt); border-radius: var(--swg-r); border-top: 3px solid var(--swg-soul); }
-.md-typeset .swg-status--debuff { border-top-color: var(--swg-rose); }
-.md-typeset .swg-status dt { font-weight: 700; font-family: var(--swg-display); font-size: 1.05rem; }
-.md-typeset .swg-status dd { margin: .2rem 0 0; font-size: .85rem; color: var(--md-default-fg-color--light); }
+/* ---------- tile shapes and gear icons ---------- */
+.md-typeset .swg-fit { width: 1%; white-space: nowrap; }
+.md-typeset .swg-tile-name { font-weight: 700; white-space: nowrap; }
+.md-typeset .swg-tile-img { display: block; height: 56px; width: auto; max-width: 140px; object-fit: contain; }
+/* footprint grid, modelled on the in-game Codex: black frame, light filled squares, dark gaps */
+.md-typeset .swg-shape { display: block; max-width: none; height: auto; }
+.swg-shape .frame { fill: #0b0b0d; }
+.swg-shape .on { fill: #ffffff; }
+.swg-shape .off { fill: #26272c; }
+.md-typeset .swg-missing { font-size: .75rem; color: var(--swg-muted); }
+.md-typeset .swg-named { display: inline-flex; align-items: center; gap: .6rem; }
+.md-typeset .swg-gear-icon { flex: none; width: 32px; height: 32px; object-fit: contain; }
+.swg-gear-icon--empty { display: inline-block; border: 1px dashed var(--swg-rule); border-radius: var(--swg-r-sm); }
+.md-typeset .swg-table table:not([class]) td { vertical-align: middle; }
+
+/* ---------- [[Name]] status icons inside text ---------- */
+.md-typeset abbr.swg-sym { text-decoration: none; border: 0; cursor: help; white-space: nowrap; }
+.md-typeset .swg-sym__img { display: inline-block; width: 1.25em; height: 1.25em; vertical-align: -.25em; object-fit: contain; }
+.md-typeset abbr.swg-sym--text { text-decoration: underline dotted; text-underline-offset: 2px; }
+.md-typeset .swg-sym--named { display: inline-flex; align-items: center; gap: .35em; white-space: nowrap; }
+.md-typeset .swg-tag .swg-sym--text { text-decoration: none; cursor: inherit; }
+.md-typeset .swg-tags { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+/* tag labels: icon only, name in the hover tooltip */
+.md-typeset .swg-tag-icon { display: inline-flex; align-items: center; margin-right: .3rem; }
+.md-typeset .swg-tag-icon .swg-sym__img { width: 1.5rem; height: 1.5rem; vertical-align: middle; }
+.md-typeset .swg-tag-icon abbr.swg-sym--text { font-size: .8rem; }
+
+/* upgrade costs: one compact column on the Units table, a small table on unit guides */
+.md-typeset .swg-up__key { display: block; font-weight: 400; font-size: .7rem; color: var(--swg-muted); white-space: nowrap; }
+.md-typeset td.swg-up { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.md-typeset .swg-up__steps { display: inline-flex; gap: .15rem; }
+.md-typeset .swg-up__steps span { display: inline-block; min-width: 1.35em; text-align: center; padding: .05rem 0; border-radius: var(--swg-r-sm); background: var(--md-default-fg-color--lightest); }
+.md-typeset .swg-up__total { display: inline-block; margin-left: .5rem; font-weight: 700; }
+.md-typeset td.swg-up--none { color: var(--swg-muted); }
+.md-typeset td.swg-unit-price { white-space: nowrap; }
+.md-typeset td.swg-unit-price b { display: block; font-variant-numeric: tabular-nums; }
+.md-typeset .swg-price__sub { display: block; font-size: .72rem; color: var(--swg-muted); font-variant-numeric: tabular-nums; }
+
+/* tags without an icon yet: small text, one per line, so the column stays narrow */
+.md-typeset #swg-units .swg-tag-icon { display: flex; margin: 0; }
+.md-typeset #swg-units .swg-tag-icon abbr.swg-sym--text { font-size: .72rem; line-height: 1.35; white-space: nowrap; }
+.md-typeset #swg-units .swg-tag-icon .swg-sym__img { width: 1.4rem; height: 1.4rem; }
+.md-typeset #swg-units td:has(> .swg-tag-icon .swg-sym__img) { white-space: nowrap; }
+.md-typeset #swg-units td:has(> .swg-tag-icon .swg-sym__img) .swg-tag-icon { display: inline-flex; margin-right: .25rem; }
+
+
+/* Units table on desktop: upgrade columns stay hidden until "Show upgrade costs" is ticked,
+   and rows get more room than the other tables. Phones use the card rules further down. */
+@media (min-width: 961px) {
+  .md-typeset #swg-units .swg-up { display: none; }
+  .md-typeset #swg-units.swg-show-up .swg-up { display: table-cell; }
+  /* roomier rows than the other tables */
+  .md-typeset .swg-table #swg-units td, .md-typeset .swg-table #swg-units th { padding: .7rem .85rem; }
+  .md-typeset .swg-table #swg-units.swg-show-up td, .md-typeset .swg-table #swg-units.swg-show-up th { padding-left: .55rem; padding-right: .55rem; }
+  .md-typeset #swg-units.swg-show-up td.swg-unit-costume { min-width: 7.5rem; }
+  .md-typeset .swg-table table#swg-units td { vertical-align: middle; }
+  .md-typeset #swg-units td.swg-unit-shape .swg-shape { margin: 0; }
+}
+
+/* unit guide header: footprint beside the upgrade table */
+
+/* multi-line descriptions inside tables and lists */
+.md-typeset .swg-rich { margin: 0 0 .4rem; }
+.md-typeset .swg-rich:last-child { margin-bottom: 0; }
+.md-typeset ul.swg-rich { margin-left: 1.1rem; padding: 0; }
+.md-typeset ul.swg-rich li { margin: .1rem 0; }
+
+/* ---------- statuses: a ruled definition list ---------- */
+.md-typeset .swg-statuses { margin: .5rem 0 2rem; }
+.md-typeset .swg-status { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 1rem; padding: .5rem 0; border-top: 1px solid var(--swg-rule); }
+.md-typeset .swg-status:last-child { border-bottom: 1px solid var(--swg-rule); }
+.md-typeset .swg-status dt { font-weight: 700; display: flex; align-items: center; gap: .5rem; }
+.md-typeset .swg-status__icon { flex: none; width: 24px; height: 24px; object-fit: contain; }
+.swg-status__icon--empty { display: inline-block; border: 1px dashed var(--swg-rule); border-radius: var(--swg-r-sm); }
+.md-typeset .swg-status dd { margin: 0; }
 
 /* ---------- seasons ---------- */
-.md-typeset .swg-season { border-top: 1px solid var(--swg-seam); padding: .6rem 0 1.2rem; }
+.md-typeset .swg-season { border-top: 1px solid var(--swg-rule); padding: .6rem 0 1.2rem; }
 .md-typeset .swg-season header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .3rem 1rem; }
 .md-typeset .swg-season h2 { margin: .6rem 0 0; }
-.md-typeset .swg-season header p { margin: 0; color: var(--md-default-fg-color--light); font-variant-numeric: tabular-nums; }
-.md-typeset .swg-season--current h2::after {
-  content: "Current"; margin-left: .7rem; vertical-align: middle;
-  font: 700 .7rem/1.6 var(--md-text-font-family); padding: .1rem .55rem; border-radius: 999px;
-  background: var(--swg-soul); color: var(--swg-ink);
-}
+.md-typeset .swg-season header p { margin: 0; color: var(--swg-muted); font-variant-numeric: tabular-nums; }
 .md-typeset .swg-season__cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 1.5rem; }
-.md-typeset .swg-season h3 { font-size: .9rem; margin: .8rem 0 .2rem; font-family: var(--md-text-font-family); font-weight: 700; color: var(--md-default-fg-color--light); }
+.md-typeset .swg-season h3 { font-size: .85rem; margin: .8rem 0 .2rem; font-family: var(--md-text-font-family); font-weight: 700; color: var(--swg-muted); }
 .md-typeset .swg-sources { font-size: .8rem; }
 
 /* ---------- calculators ---------- */
-.md-typeset .swg-calc { padding: 1rem 1.25rem; background: var(--swg-felt); border-radius: var(--swg-r); border: 1px solid var(--swg-seam); }
+.md-typeset .swg-calc { margin: .5rem 0 1rem; }
 .md-typeset .swg-calc label { margin-right: 1.2rem; }
 .md-typeset .swg-calc input[type="number"] { width: 6rem; }
-.md-typeset .swg-calc input[type="range"] { accent-color: var(--swg-brass); width: min(280px, 70vw); }
-.md-typeset .swg-calc__out { font-size: 1rem; margin: .8rem 0 0; }
-.md-typeset .swg-calc__out strong { color: var(--swg-brass); font-variant-numeric: tabular-nums; }
-.swg-spark { display: flex; align-items: flex-end; gap: 1px; height: 80px; margin-top: .8rem; border-bottom: 1px solid var(--swg-seam); }
-.swg-spark span { flex: 1; min-height: 1px; background: var(--swg-seam); }
-.swg-spark span.on { background: var(--swg-rose); }
+.md-typeset .swg-calc input[type="range"] { accent-color: var(--swg-link); width: min(280px, 70vw); }
+.md-typeset .swg-calc__out { font-size: 1rem; margin: .6rem 0 0; }
+.md-typeset .swg-calc__out strong { font-variant-numeric: tabular-nums; }
+.swg-spark { display: flex; align-items: flex-end; gap: 1px; height: 80px; margin-top: .8rem; border-bottom: 1px solid var(--swg-rule); }
+.swg-spark span { flex: 1; min-height: 1px; background: var(--swg-rule); }
+.swg-spark span.on { background: var(--swg-chart); }
 
 /* ---------- small screens ---------- */
 @media (max-width: 760px) {
@@ -242,8 +410,38 @@
   .md-typeset .swg-hero { gap: 1.2rem; }
   .swg-hero__board { gap: 3px; padding: 6px; background-size: calc((100% - 12px) / 7) calc((100% - 12px) / 7); background-position: 6px 6px; }
   .md-typeset a.swg-piece { padding: .35rem .4rem; }
-  .md-typeset .swg-unit-card { grid-template-columns: 1fr; }
+  .md-typeset .swg-status { grid-template-columns: 1fr; gap: .1rem; }
   .swg-build__board { max-width: 260px; }
+}
+
+/* Phones and tablets: tables marked swg-stack turn each row into a block, so long
+   descriptions wrap to the screen instead of scrolling sideways. */
+@media (max-width: 960px) {
+  .md-typeset table.swg-stack thead { display: none; }
+  .md-typeset table.swg-stack, .md-typeset table.swg-stack tbody,
+  .md-typeset table.swg-stack tr { display: block; width: 100%; }
+  .md-typeset table.swg-stack tr { padding: .7rem .9rem; border-top: 1px solid var(--swg-rule); }
+  .md-typeset table.swg-stack tr:first-child { border-top: 0; }
+  .md-typeset table.swg-stack tr[hidden] { display: none; }  /* keep the search filter working on cards */
+  .md-typeset .swg-table table.swg-stack td.swg-unit-shape:has(.swg-missing) { display: none; }  /* no footprint yet */
+  .md-typeset .swg-table table.swg-stack td { display: block; border: 0; padding: .2rem 0; }
+  .md-typeset table.swg-stack .swg-effect { min-width: 0; }
+  .md-typeset .swg-table table.swg-stack td.swg-price { display: inline-block; width: auto; margin-right: 1.2rem; text-align: left; }
+  .md-typeset .swg-table table.swg-stack td.swg-unit-char, .md-typeset .swg-table table.swg-stack td.swg-unit-costume { display: inline-block; font-weight: 700; padding-right: .4rem; }
+  .md-typeset .swg-table table.swg-stack td.swg-tile-art, .md-typeset .swg-table table.swg-stack td.swg-tile-shape { display: inline-block; width: auto; margin-right: 1rem; vertical-align: middle; }
+  .md-typeset table.swg-stack td.swg-price::before { content: attr(data-label) " "; color: var(--swg-muted); }
+  .md-typeset .swg-table table.swg-stack td.swg-unit-price { text-align: left; }
+  .md-typeset table.swg-stack td.swg-unit-price b, .md-typeset table.swg-stack td.swg-unit-price .swg-price__sub { display: inline; }
+  .md-typeset table.swg-stack td.swg-unit-price::before { content: "Price "; color: var(--swg-muted); }
+  .md-typeset table.swg-stack td.swg-unit-price .swg-price__sub { margin-left: .5rem; font-size: inherit; }
+  .md-typeset .swg-table #swg-units:not(.swg-show-up) td.swg-up { display: none; }
+  .md-typeset .swg-table #swg-units.swg-show-up td.swg-up:not(.swg-up--none) { display: block; padding-top: .3rem; }
+  .md-typeset #swg-units td.swg-up::before { content: "Upgrades "; color: var(--swg-muted); margin-right: .3rem; }
+  .md-typeset .swg-table table.swg-stack.swg-show-up td.swg-up, .md-typeset .swg-table table.swg-stack:not(#swg-units) td.swg-up { display: inline-block; width: auto; margin-right: .9rem; text-align: left; border: 0; padding: .2rem 0; }
+  .md-typeset table.swg-stack td.swg-up::before { content: attr(data-label) " "; color: var(--swg-muted); }
+
+  .md-typeset table.swg-stack td.swg-up[data-label="+1"] { clear: left; }
+  .md-typeset .swg-table table.swg-stack td.swg-up--none, .md-typeset .swg-table table.swg-stack.swg-show-up td.swg-up--none { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -251,17 +449,384 @@
   .md-typeset a.swg-piece:hover { transform: none; }
 }
 
-/* ---------- fixes after review ---------- */
-[data-md-color-scheme="slate"] .md-typeset h1, [data-md-color-scheme="slate"] .swg-hero h1 { color: #f3ecdf; }
-[data-md-color-scheme="default"] .md-typeset h1 { color: var(--swg-ink); }
-.md-content__inner:has(.swg-hero) > .md-content__button { display: none; }
-.md-typeset .swg-unit-card__pairs ul, .md-typeset .swg-legend { margin-left: 0; }
-.md-typeset .swg-unit-card__meta { margin-top: 0; }
-.md-typeset .swg-table td:nth-child(2) { white-space: nowrap; }
-.md-typeset .swg-filter { gap: .6rem 1rem; }
-.md-typeset .swg-filter input, .md-typeset .swg-filter select { padding: .3rem .5rem; }
-.md-typeset .swg-table table { min-width: 100%; }
-.md-typeset .swg-unit-card__pairs li, .md-typeset .swg-legend li { margin-left: 0; }
-.md-typeset h2 abbr, .md-typeset h3 abbr { text-decoration: none; border: 0; cursor: inherit; }
-.md-typeset ul.swg-legend, .md-typeset .swg-unit-card__pairs ul { margin-left: 0 !important; }
-.md-typeset ul.swg-legend > li, .md-typeset .swg-unit-card__pairs li { margin-left: 0 !important; }
+/* ---------- theme wrappers ---------- */
+/* The theme wraps tables in scroll containers with their own padding; our frame already scrolls. */
+.md-typeset .swg-table .md-typeset__scrollwrap { margin: 0; overflow: visible; }
+.md-typeset .swg-table .md-typeset__table { display: block; padding: 0; margin: 0; }
+/* The theme tints each admonition type (warning, success...) with a per-type rule. */
+.md-typeset .admonition[class], .md-typeset details[class] { background-color: transparent; border-color: var(--swg-rule); }
+/* Figures shrink to fit by default; build blocks span the column. */
+
+/* ---------- last updated line (from git history) ---------- */
+.md-typeset .swg-updated { margin-top: 3rem; padding-top: .6rem; border-top: 1px solid var(--swg-rule); font-size: .78rem; color: var(--swg-muted); }
+.md-typeset .swg-updated__old { color: var(--swg-ink); font-weight: 700; }
+.md-typeset .swg-unknown { display: inline-block; min-width: 1.2em; text-align: center; color: var(--swg-muted); font-weight: 700; cursor: help; }
+.md-typeset .swg-table tfoot th { border-top: 1px solid var(--swg-rule-strong); font-weight: 700; }
+.md-typeset .swg-rewards-sum { margin-top: .8rem; }
+.md-typeset .swg-updated__note { font-size: .8rem; color: var(--swg-muted); }
+
+/* two-layer boards (floor: + layout:): tile drawn on ::before, the unit on top covers the full square */
+.swg-cell--tile.swg-cell--floor { border-width: 0 !important; background: none; }
+.swg-cell--tile.swg-cell--floor::before { content: ""; position: absolute; inset: 0; background: var(--md-default-fg-color--lighter); border: 0 solid var(--swg-field); }
+.swg-cell--tile.swg-cell--floor.e-t::before { border-top-width: 2px; } .swg-cell--tile.swg-cell--floor.e-b::before { border-bottom-width: 2px; }
+.swg-cell--tile.swg-cell--floor.e-l::before { border-left-width: 2px; } .swg-cell--tile.swg-cell--floor.e-r::before { border-right-width: 2px; }
+.swg-cell--floor > i { position: absolute; right: 2px; bottom: 0; z-index: 1; font-size: .6rem; font-style: normal; font-weight: 700; color: var(--swg-ink); }
+.swg-cell__unit { position: absolute; inset: 0; border: 0 solid var(--swg-field); z-index: 1; }
+.swg-cell__unit.e-t { border-top-width: 3px; } .swg-cell__unit.e-b { border-bottom-width: 3px; }
+.swg-cell__unit.e-l { border-left-width: 3px; } .swg-cell__unit.e-r { border-right-width: 3px; }
+
+/* ---------- board planner (tools/planner.md, javascripts/planner.js) ---------- */
+.md-typeset .swg-planner { margin: 1.2rem 0; }
+.md-typeset .swg-planner button {
+  font: inherit; font-size: .8rem; color: var(--swg-ink); background: var(--swg-field);
+  border: 1px solid var(--swg-field-edge); border-radius: var(--swg-r-sm); padding: .3rem .6rem; cursor: pointer;
+}
+.md-typeset .swg-planner button:hover { border-color: var(--swg-ink); }
+.md-typeset .swg-planner button:focus-visible, .md-typeset .swg-planner input:focus-visible, .md-typeset .swg-planner select:focus-visible,
+.md-typeset .swg-planner textarea:focus-visible { outline: 2px solid var(--md-accent-fg-color); outline-offset: 1px; }
+.md-typeset .swg-planner input, .md-typeset .swg-planner select, .md-typeset .swg-planner textarea {
+  box-sizing: border-box; font: inherit; font-size: .85rem; color: var(--swg-ink); background: var(--swg-field);
+  border: 1px solid var(--swg-field-edge); border-radius: var(--swg-r-sm); padding: 0 .5rem; height: 2.1rem;
+}
+.md-typeset .swg-planner .swg-pl-danger { color: var(--swg-chart); }
+.md-typeset .swg-planner .swg-pl-link { border: 0; background: none; padding: 0; color: var(--swg-link); text-decoration: underline; text-align: left; }
+
+.md-typeset .swg-pl-bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: .75rem 1rem; padding: .8rem 0; border-top: 1px solid var(--swg-rule); border-bottom: 1px solid var(--swg-rule); }
+.md-typeset .swg-pl-bar label { display: inline-flex; flex-direction: column; gap: .3rem; font-size: .72rem; color: var(--swg-muted); }
+.md-typeset .swg-pl-bar #swg-pl-budget { width: 7.5rem; }
+.md-typeset .swg-pl-bar #swg-pl-name { width: min(14rem, 60vw); }
+.md-typeset .swg-pl-summary { margin-left: auto; display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem 1rem; font-variant-numeric: tabular-nums; }
+.md-typeset .swg-pl-total { font-size: .9rem; }
+.md-typeset .swg-pl-total b { font-family: var(--swg-display); font-size: 1.6rem; }
+.md-typeset .swg-pl-split { font-size: .78rem; color: var(--swg-muted); }
+.md-typeset .swg-pl-summary .swg-pl-remain { font-size: .85rem; font-weight: 700; }
+.md-typeset .swg-pl-summary .is-over { color: var(--swg-chart); }
+
+.md-typeset .swg-pl-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(16rem, 20rem); gap: 1.5rem; margin-top: 1rem; align-items: start; }
+.md-typeset .swg-pl-status { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .7rem; min-height: 2.1rem; margin-top: .6rem; font-size: .85rem; }
+.md-typeset .swg-pl-hint { color: var(--swg-muted); }
+
+.swg-pl-board {
+  display: grid; grid-template-rows: repeat(7, 1fr); aspect-ratio: 1; max-width: 30rem;
+  background: var(--swg-field); border: 1px solid var(--swg-rule); border-radius: var(--swg-r); padding: 4px;
+}
+.swg-pl-row { display: grid; grid-template-columns: repeat(7, 1fr); }
+.md-typeset .swg-planner .swg-pl-cell {
+  position: relative; padding: 0; height: auto; margin: 1px; border: 1px dashed var(--swg-rule); border-radius: 0;
+  background: transparent; min-width: 0; min-height: 0;
+}
+.md-typeset .swg-planner .swg-pl-cell:hover { border-color: var(--swg-field-edge); }
+/* the tile is drawn on ::before so a unit on top can cover the whole square, edges included */
+.md-typeset .swg-planner .swg-pl-cell.has-tile { margin: 0; border: 0; }
+.swg-pl-cell.has-tile::before { content: ""; position: absolute; inset: 0; background: var(--md-default-fg-color--lighter); border: 0 solid var(--swg-field); }
+.swg-pl-cell.has-tile.e-t::before { border-top-width: 3px; } .swg-pl-cell.has-tile.e-b::before { border-bottom-width: 3px; }
+.swg-pl-cell.has-tile.e-l::before { border-left-width: 3px; } .swg-pl-cell.has-tile.e-r::before { border-right-width: 3px; }
+.swg-pl-cell.has-tile.is-selected::before { background: var(--swg-field-edge); }
+.swg-pl-cell > i { z-index: 1; position: absolute; right: 3px; bottom: 1px; font-size: .65rem; font-style: normal; font-weight: 700; color: var(--swg-ink); }
+.swg-pl-unit { position: absolute; inset: 0; z-index: 1; border: 0 solid var(--swg-field); }
+.swg-pl-unit.e-t { border-top-width: 4px; } .swg-pl-unit.e-b { border-bottom-width: 4px; }
+.swg-pl-unit.e-l { border-left-width: 4px; } .swg-pl-unit.e-r { border-right-width: 4px; }
+.swg-pl-unit.swg-hue-0 { background: var(--swg-h0); } .swg-pl-unit.swg-hue-1 { background: var(--swg-h1); }
+.swg-pl-unit.swg-hue-2 { background: var(--swg-h2); } .swg-pl-unit.swg-hue-3 { background: var(--swg-h3); }
+.swg-pl-unit.swg-hue-4 { background: var(--swg-h4); } .swg-pl-unit.swg-hue-5 { background: var(--swg-h5); }
+.swg-pl-unit.is-selected { border-color: var(--swg-piece-ink); }
+.swg-pl-unit b { position: absolute; top: 2px; left: 4px; font-size: .75rem; color: var(--swg-piece-ink); }
+/* placement preview */
+.md-typeset .swg-planner .swg-pl-cell.is-ok::after, .md-typeset .swg-planner .swg-pl-cell.is-bad::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+}
+.md-typeset .swg-planner .swg-pl-cell.is-ok::after { background: color-mix(in srgb, var(--swg-link) 35%, transparent); outline: 2px solid var(--swg-link); outline-offset: -2px; }
+.md-typeset .swg-planner .swg-pl-cell.is-bad::after { background: color-mix(in srgb, var(--swg-chart) 35%, transparent); outline: 2px solid var(--swg-chart); outline-offset: -2px; }
+.swg-planner.is-placing .swg-pl-cell { cursor: crosshair; }
+
+.md-typeset .swg-pl-msg { min-height: 1.4em; margin: .5rem 0; font-size: .85rem; }
+.md-typeset .swg-pl-detail { border-top: 1px solid var(--swg-rule-strong); padding-top: .6rem; max-width: 30rem; }
+.md-typeset .swg-pl-detail__head { display: flex; justify-content: space-between; gap: 1rem; font-size: 1rem; }
+.md-typeset .swg-pl-detail p { margin: .3rem 0; }
+.md-typeset .swg-pl-sub { font-size: .8rem; color: var(--swg-muted); }
+.md-typeset .swg-pl-effect { font-size: .85rem; }
+.md-typeset ul.swg-pl-effects { margin: .2rem 0 .4rem !important; padding-left: 1rem; font-size: .8rem; }
+.md-typeset ul.swg-pl-effects li { margin: .1rem 0; }
+.md-typeset .swg-pl-gearbox { margin: .5rem 0; }
+.md-typeset ul.swg-pl-gear { list-style: none; margin: .3rem 0 !important; padding: 0; }
+.md-typeset ul.swg-pl-gear li { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .6rem; margin: 0 !important; padding: .3rem 0; border-top: 1px solid var(--swg-rule); font-size: .85rem; }
+.md-typeset .swg-pl-fit { font-size: .72rem; color: var(--swg-muted); }
+.md-typeset .swg-pl-fit.is-weak { color: var(--swg-chart); font-weight: 700; }
+.md-typeset .swg-planner .swg-pl-x { margin-left: auto; border: 0; background: none; padding: 0 .3rem; font-size: 1rem; line-height: 1; color: var(--swg-muted); }
+.md-typeset .swg-pl-gearbox select { width: 100%; max-width: 20rem; }
+.md-typeset .swg-pl-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: .6rem 0; }
+.md-typeset .swg-pl-actions a { font-size: .85rem; margin-left: .3rem; }
+.md-typeset .swg-pl-price { font-variant-numeric: tabular-nums; font-weight: 700; }
+
+.md-typeset .swg-pl-palette { display: flex; flex-direction: column; gap: .5rem; position: sticky; top: 4rem; }
+.md-typeset .swg-pl-tabs { display: flex; border-bottom: 1px solid var(--swg-rule); }
+.md-typeset .swg-planner .swg-pl-tabs button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: none; padding: .4rem .8rem; color: var(--swg-muted); font-size: .85rem; }
+.md-typeset .swg-planner .swg-pl-tabs button.is-on { color: var(--swg-ink); border-bottom-color: var(--swg-ink); font-weight: 700; }
+.md-typeset .swg-pl-palette input[type="search"] { width: 100%; }
+.md-typeset ul.swg-pl-list { list-style: none; margin: 0 !important; padding: 0; max-height: 26rem; overflow-y: auto; border-top: 1px solid var(--swg-rule); border-bottom: 1px solid var(--swg-rule); }
+.md-typeset ul.swg-pl-list li { margin: 0 !important; }
+.md-typeset .swg-planner .swg-pl-item {
+  display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) auto; align-items: center; gap: .6rem; width: 100%;
+  text-align: left; border: 0; border-bottom: 1px solid var(--swg-rule); border-radius: 0; background: none; padding: .45rem .3rem;
+}
+.md-typeset .swg-planner .swg-pl-item:hover { background: var(--md-default-fg-color--lightest); }
+.md-typeset .swg-planner .swg-pl-item.is-on { background: var(--md-default-fg-color--lightest); box-shadow: inset 2px 0 0 var(--swg-ink); }
+.md-typeset .swg-pl-name { display: flex; flex-direction: column; gap: .15rem; min-width: 0; font-size: .82rem; }
+.md-typeset .swg-pl-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem; }
+.md-typeset .swg-pl-tags { font-size: .7rem; color: var(--swg-muted); overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.md-typeset .swg-pl-meta .swg-grade { font-size: .62rem; padding: 0 .3rem; }
+.md-typeset .swg-pl-empty { padding: .6rem .3rem; font-size: .82rem; color: var(--swg-muted); list-style: none; }
+.swg-pl-mini { display: inline-grid; gap: 1px; justify-self: center; }
+.swg-pl-mini > span { width: 6px; height: 6px; }
+.swg-pl-mini > span.on { background: var(--swg-ink); }
+
+.md-typeset ol.swg-pl-legend { list-style: none; margin: .4rem 0 !important; padding: 0; }
+.md-typeset ol.swg-pl-legend > li { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .7rem; margin: 0 !important; padding: .4rem 0; border-top: 1px solid var(--swg-rule); }
+.md-typeset ol.swg-pl-legend > li:last-child { border-bottom: 1px solid var(--swg-rule); }
+.md-typeset ol.swg-pl-legend > li.is-selected .swg-pl-link { font-weight: 700; }
+.md-typeset .swg-pl-gearlist { flex: 1; font-size: .78rem; color: var(--swg-muted); }
+.md-typeset .swg-pl-out { display: block; width: 100%; height: auto; padding: .5rem; font-family: var(--md-code-font-family, monospace); font-size: .78rem; line-height: 1.4; }
+
+@media (max-width: 960px) {
+  .md-typeset .swg-pl-main { grid-template-columns: 1fr; }
+  .md-typeset .swg-pl-palette { position: static; }
+  .md-typeset ul.swg-pl-list { max-height: 20rem; }
+  .md-typeset .swg-pl-summary { margin-left: 0; width: 100%; }
+}
+
+/* planner dragging */
+.md-typeset .swg-planner .swg-pl-cell, .md-typeset .swg-planner .swg-pl-item { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.md-typeset .swg-planner .swg-pl-cell.has-tile { cursor: grab; touch-action: none; }
+.md-typeset .swg-pl-handle { align-self: stretch; display: grid; place-items: center; cursor: grab; touch-action: none; }
+.swg-planner.is-dragging, .swg-planner.is-dragging * { cursor: grabbing !important; -webkit-user-select: none; user-select: none; }
+.swg-pl-ghost { position: fixed; top: 0; left: 0; z-index: 1000; display: grid; pointer-events: none; opacity: .7; will-change: transform; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .3)); }
+.swg-pl-ghost > span.on { background: var(--md-default-fg-color--light); outline: 1px solid var(--swg-field); outline-offset: -1px; }
+.swg-pl-ghost > span.on.swg-hue-0 { background: var(--swg-h0); } .swg-pl-ghost > span.on.swg-hue-1 { background: var(--swg-h1); }
+.swg-pl-ghost > span.on.swg-hue-2 { background: var(--swg-h2); } .swg-pl-ghost > span.on.swg-hue-3 { background: var(--swg-h3); }
+.swg-pl-ghost > span.on.swg-hue-4 { background: var(--swg-h4); } .swg-pl-ghost > span.on.swg-hue-5 { background: var(--swg-h5); }
+
+/* =====================================================================
+   Unit guides and team cards.
+   ===================================================================== */
+[data-md-color-scheme="default"] {
+  --swg-tier-s: #49699d; --swg-tier-a: #48643e; --swg-tier-b: #7e661a;
+  --swg-tier-c: #a84c4c; --swg-tier-d: #745454; --swg-tier-f: var(--swg-ink);
+  --swg-arch-dps: #f4cccc; --swg-arch-support: #d9ead3; --swg-arch-tank: #c9daf8;
+  --swg-frame: #494949;
+}
+[data-md-color-scheme="slate"] {
+  --swg-tier-s: #94bdff; --swg-tier-a: #a1da8c; --swg-tier-b: #ebcb69;
+  --swg-tier-c: #e68a8a; --swg-tier-d: #ac8b8b; --swg-tier-f: var(--swg-ink);
+  --swg-arch-dps: #3a2626; --swg-arch-support: #2f3a2d; --swg-arch-tank: #24364f;
+  --swg-frame: #5a5b61;
+}
+
+/* ---------- unit guide: header ---------- */
+.md-typeset .swg-guide__header { margin: 0 0 2rem; padding-bottom: 1.1rem; border-bottom: 1px solid var(--swg-rule); }
+.md-typeset .swg-guide__header h1 { max-width: 16ch; margin: 0; font-size: 2.6rem; line-height: .96; text-wrap: balance; }
+.md-typeset .swg-guide__tagline { max-width: 38ch; margin: .65rem 0 0; font-size: 1.15rem; font-style: italic; line-height: 1.3; text-wrap: balance; }
+.md-typeset ul.swg-guide__roles { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .75rem; max-width: 70ch;
+  margin: .75rem 0 0 !important; padding: 0; color: var(--swg-muted); font-size: .78rem; line-height: 1.4; list-style: none; }
+.md-typeset ul.swg-guide__roles li { margin: 0 !important; display: inline-flex; align-items: center; }
+.md-typeset ul.swg-guide__roles li:not(:last-child)::after { margin-left: .75rem; content: "·"; color: var(--swg-rule); }
+.md-typeset .swg-guide__price { margin: .6rem 0 0; font-size: .75rem; color: var(--swg-muted); }
+.md-typeset .swg-guide__price b { color: var(--swg-ink); font-variant-numeric: tabular-nums; }
+
+/* ---------- unit guide: summary (footprint | ranks, stops, overview) ---------- */
+.md-typeset .swg-guide__summary { display: grid; grid-template-columns: 168px minmax(0, 1fr); gap: clamp(1.4rem, 4vw, 2.4rem); align-items: start; }
+.md-typeset .swg-guide__portrait { position: sticky; top: 5rem; }
+.md-typeset figure.swg-guide__footprint { display: block; width: 100%; margin: 0; text-align: center; }
+.md-typeset .swg-guide__footprint .swg-guide__frame { aspect-ratio: 1; }
+.md-typeset .swg-guide__footprint figcaption { margin: .3rem 0 0; font-size: .7rem; letter-spacing: .05em; text-transform: uppercase; color: var(--swg-muted); font-style: normal; max-width: none; }
+.md-typeset table.swg-guide__upgrades { display: table; width: 100%; margin: 1rem 0 0; border-collapse: collapse; font-size: .8rem; font-variant-numeric: tabular-nums; border: 0; }
+.md-typeset table.swg-guide__upgrades caption { caption-side: top; padding: 0 0 .3rem; text-align: left; font-size: .68rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--swg-muted); }
+.md-typeset table.swg-guide__upgrades th, .md-typeset table.swg-guide__upgrades td { padding: .2rem 0; border: 0; border-top: 1px solid var(--swg-rule); background: none; }
+.md-typeset table.swg-guide__upgrades th { text-align: left; font-weight: 400; color: var(--swg-muted); }
+.md-typeset table.swg-guide__upgrades td { text-align: right; font-weight: 700; }
+.md-typeset table.swg-guide__upgrades .swg-guide__up-total th, .md-typeset table.swg-guide__upgrades .swg-guide__up-total td { border-top: 1px solid var(--swg-rule-strong); color: var(--swg-ink); font-weight: 700; }
+
+/* a dark frame with the piece inside, used where unit or item art would go */
+.md-typeset .swg-guide__frame { display: grid; place-items: center; width: 100%; aspect-ratio: 1; box-sizing: border-box;
+  background: #2b2c30; border-radius: 2px; outline: 1px solid var(--swg-frame); outline-offset: -1px; overflow: hidden; }
+.md-typeset .swg-guide__frame img { width: 100%; height: 100%; object-fit: contain; }
+.md-typeset .swg-guide__frame svg { max-height: 90%; }
+.md-typeset .swg-guide__initials { font-family: var(--swg-display); font-variation-settings: "opsz" 11; font-size: 1.15rem; font-weight: 700; color: #e9e6df; letter-spacing: .02em; }
+
+.md-typeset .swg-guide__ranks { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); border-top: 1px solid var(--swg-rule); border-bottom: 1px solid var(--swg-rule); }
+.md-typeset .swg-guide__rank-card { min-height: 5.2rem; padding: .75rem 1rem; text-align: center; }
+.md-typeset .swg-guide__rank-card + .swg-guide__rank-card { border-left: 1px solid var(--swg-rule); }
+.md-typeset .swg-guide__rank-card h2, .md-typeset .swg-guide__stops h2, .md-typeset .swg-guide__label, .md-typeset .swg-guide__col h3 {
+  margin: 0 !important; font-family: var(--md-text-font-family); font-size: .68rem; font-weight: 600; letter-spacing: .05em; line-height: 1.3; text-transform: uppercase; color: var(--swg-muted); }
+.md-typeset .swg-guide__rank { margin: .45rem 0 0 !important; font-family: var(--swg-display); font-size: 1.6rem; font-weight: 700; line-height: 1.1; color: var(--swg-ink); }
+.md-typeset .swg-guide__rank em { display: block; margin-top: .1rem; font-family: var(--md-text-font-family); font-size: .72rem; line-height: 1.3; font-weight: 700; color: var(--swg-muted); }
+.md-typeset .swg-guide__rank[data-tier="S"] { color: var(--swg-tier-s); }
+.md-typeset .swg-guide__rank[data-tier="A"] { color: var(--swg-tier-a); }
+.md-typeset .swg-guide__rank[data-tier="B"] { color: var(--swg-tier-b); }
+.md-typeset .swg-guide__rank[data-tier="C"] { color: var(--swg-tier-c); }
+.md-typeset .swg-guide__rank[data-tier="D"] { color: var(--swg-tier-d); }
+.md-typeset .swg-guide__rank[data-tier="F"] { color: var(--swg-tier-f); }
+
+.md-typeset .swg-guide__stops { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: .5rem 1.25rem; padding: 1rem 0; border-bottom: 1px solid var(--swg-rule); text-align: center; }
+.md-typeset ul.swg-guide__stop-list { display: flex; flex-wrap: wrap; justify-content: center; margin: 0 !important; padding: 0; list-style: none; font-size: .95rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.md-typeset ul.swg-guide__stop-list li { margin: 0 !important; }
+.md-typeset ul.swg-guide__stop-list li + li::before { margin: 0 .75rem; content: "·"; color: var(--swg-rule); }
+.md-typeset .swg-guide__stop-note { flex-basis: 100%; margin: 0; font-size: .75rem; font-style: italic; color: var(--swg-muted); }
+.md-typeset .swg-guide__prose > :first-child { margin-top: 1.2rem; }
+
+.md-typeset .swg-guide__summary--bare { grid-template-columns: 1fr; }
+.md-typeset .swg-guide__summary--bare .swg-guide__portrait { position: static; display: grid; grid-template-columns: 168px minmax(0, 14rem); gap: 2.4rem; align-items: start; }
+.md-typeset .swg-guide__summary--bare table.swg-guide__upgrades { margin: 0; }
+
+/* ---------- unit guide: full-width sections ---------- */
+.md-typeset .swg-guide [id] { scroll-margin-top: 4rem; }
+.md-typeset .swg-guide__section { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--swg-rule); }
+.md-typeset .swg-guide__section > h2:first-child { margin-top: 0; }
+.md-typeset .swg-guide__label { margin-bottom: 1rem !important; }
+.md-typeset .swg-guide__label--strong { color: var(--swg-ink); font-size: .74rem; }
+.md-typeset .swg-guide__section-note { margin: .35rem 0 0; font-size: .9rem; font-weight: 700; }
+
+.md-typeset .swg-guide__build-grid { display: grid; grid-template-columns: minmax(7.5rem, .7fr) repeat(2, minmax(0, 1fr)); column-gap: clamp(1rem, 3vw, 2rem); }
+.md-typeset .swg-guide__build-grid--1 { grid-template-columns: minmax(0, 20rem); }
+.md-typeset .swg-guide__build-grid--2 { grid-template-columns: minmax(7.5rem, .7fr) minmax(0, 2fr); }
+.md-typeset .swg-guide__col { min-width: 0; }
+.md-typeset .swg-guide__col h3 { margin-bottom: .65rem !important; font-size: .64rem; font-weight: 500; }
+.md-typeset .swg-guide__col--tiles { padding-right: 1rem; border-right: 1px solid var(--swg-rule); }
+.md-typeset .swg-guide__col--tiles .swg-guide__figs { flex-direction: column; align-items: stretch; }
+.md-typeset .swg-guide__figs { display: flex; gap: .55rem; }
+.md-typeset .swg-guide__figs .swg-guide__fig { flex: 1 1 0; max-width: 6.5rem; }
+.md-typeset .swg-guide__col--tiles .swg-guide__fig { max-width: 6.5rem; }
+.md-typeset .swg-guide__col-note { margin: .5rem 0 0; font-size: .68rem; font-style: italic; line-height: 1.4; text-align: center; color: var(--swg-muted); }
+.md-typeset .swg-guide__build-total { margin: 1rem 0 0; font-size: .8rem; color: var(--swg-muted); }
+.md-typeset .swg-guide__build-total b { color: var(--swg-ink); }
+.md-typeset .swg-guide__build-note > :first-child { margin-top: .4rem; }
+
+.md-typeset figure.swg-guide__fig { margin: 0; min-width: 0; width: auto; text-align: center; display: block; }
+.md-typeset .swg-guide__fig a { display: block; color: inherit; text-decoration: none; }
+.md-typeset .swg-guide__fig a:hover figcaption, .md-typeset .swg-guide__fig a:focus-visible figcaption { text-decoration: underline; }
+.md-typeset .swg-guide__fig figcaption { max-width: none; margin: .3rem 0 0; font-size: .75rem; font-style: normal; line-height: 1.35; overflow-wrap: anywhere; color: var(--swg-ink); }
+.md-typeset .swg-guide__fig a figcaption { color: var(--swg-link); }
+.md-typeset .swg-guide__fig .swg-cost { margin-left: .2rem; color: var(--swg-muted); font-weight: 700; }
+.md-typeset .swg-guide__flex-note { display: block; margin-top: .1rem; font-size: .68rem; font-style: italic; color: var(--swg-muted); }
+/* unit footprints in recommendation lists sit on their grade colour */
+.md-typeset .swg-guide__fig--unit .swg-guide__frame { box-shadow: inset 0 -3px 0 #c9c9cd; }
+.md-typeset .swg-guide__fig--rare .swg-guide__frame { box-shadow: inset 0 -3px 0 #8fd48a; }
+.md-typeset .swg-guide__fig--ancient .swg-guide__frame { box-shadow: inset 0 -3px 0 #86b8f2; }
+.md-typeset .swg-guide__fig--heroic .swg-guide__frame { box-shadow: inset 0 -3px 0 #c7a6f2; }
+.md-typeset .swg-guide__fig--legendary .swg-guide__frame { box-shadow: inset 0 -3px 0 #f2895a; }
+.md-typeset .swg-guide__fig--mythical .swg-guide__frame { box-shadow: inset 0 -3px 0 #f4d04c; }
+.md-typeset .swg-guide__fig--unique .swg-guide__frame { box-shadow: inset 0 -3px 0 #cdb8ff; }
+
+.md-typeset .swg-guide__rec { display: grid; grid-template-columns: minmax(8rem, 10rem) minmax(0, 1fr); gap: 1.5rem; align-items: start; padding: .9rem 0; }
+.md-typeset .swg-guide__rec + .swg-guide__rec { border-top: 1px solid var(--swg-rule); }
+.md-typeset .swg-guide__rec-label .swg-guide__label { margin: 0 !important; }
+.md-typeset .swg-guide__rec-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(0, 5.5rem)); gap: 1rem; justify-content: start; align-items: start; }
+.md-typeset ul.swg-guide__rec-links { margin: 0 !important; padding: 0; list-style: none; }
+.md-typeset ul.swg-guide__rec-links li { margin: 0 0 .5rem !important; font-weight: 700; }
+.md-typeset .swg-guide__boards .swg-team { margin-top: 1rem; }
+
+/* ---------- team cards (```board blocks) ---------- */
+.md-typeset .swg-team { --swg-team-inset: clamp(.4rem, .9vw, .7rem); margin: 2rem 0; }
+.md-typeset .swg-team :is(figure, p, ol, ul) { margin: 0; }
+.md-typeset .swg-team :is(ol, ul) { padding: 0; list-style: none; }
+.md-typeset .swg-team li { margin: 0; }
+.md-typeset .swg-team__header { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 1rem; padding-bottom: .75rem; border-bottom: 1px solid var(--swg-rule); }
+.md-typeset .swg-team__eyebrow { font-size: .7rem; font-weight: 650; letter-spacing: .045em; line-height: 1.25; color: var(--swg-muted); }
+.md-typeset .swg-team__title { margin-top: .15rem !important; font-family: var(--swg-display); font-size: 1.35rem; font-weight: 700; line-height: 1.2; color: var(--swg-ink); }
+.md-typeset .swg-team__summary { max-width: 52ch; margin-top: .35rem !important; font-size: .8rem; line-height: 1.45; color: var(--swg-muted); }
+.md-typeset .swg-team__board { grid-column: 2; width: 10.5rem; }
+.md-typeset .swg-team__board .swg-build__board { padding: 2px; }
+.md-typeset .swg-team__board .swg-cell b { font-size: .55rem; top: 0; left: 2px; }
+
+.md-typeset ol.swg-team__members { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 1.2rem; padding-top: 1rem; }
+.md-typeset ol.swg-team__members--1 { grid-template-columns: minmax(0, 14rem); }
+.md-typeset ol.swg-team__members--2 { grid-template-columns: repeat(2, minmax(0, 14rem)); }
+.md-typeset ol.swg-team__members--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.md-typeset .swg-team__member { --swg-arch: transparent; display: grid; grid-template-rows: auto; align-content: start; row-gap: .7rem; min-width: 0;
+  padding-inline: var(--swg-team-inset); border-left: 1px solid var(--swg-rule); }
+.md-typeset .swg-team__member:nth-child(4n + 1) { border-left: 0; padding-left: 0; }
+.md-typeset .swg-team__member--dps { --swg-arch: var(--swg-arch-dps); }
+.md-typeset .swg-team__member--support { --swg-arch: var(--swg-arch-support); }
+.md-typeset .swg-team__member--tank { --swg-arch: var(--swg-arch-tank); }
+.md-typeset .swg-team__role { justify-self: center; padding: .16rem .45rem; background: var(--swg-arch); color: var(--swg-ink); font-size: .72rem; font-weight: 650; line-height: 1.2; text-align: center; }
+.md-typeset .swg-team__unit { display: grid; row-gap: .35rem; justify-items: center; }
+.md-typeset .swg-team__name { display: flex; align-items: flex-start; justify-content: center; gap: .35rem; line-height: 1.2; text-align: center; color: var(--swg-ink); }
+.md-typeset .swg-team__name > span:last-child, .md-typeset .swg-team__name a { display: grid; justify-items: center; }
+.md-typeset .swg-team__char { font-family: var(--swg-display); font-variation-settings: "opsz" 11; font-size: 1rem; font-weight: 700; }
+.md-typeset .swg-team__costume { font-size: .68rem; font-weight: 400; color: var(--swg-muted); }
+.md-typeset .swg-team__name a { color: inherit; text-decoration: none; }
+.md-typeset .swg-team__name a:hover .swg-team__char { text-decoration: underline; color: var(--swg-link); }
+.md-typeset .swg-team__name .swg-key { width: 1.15rem; height: 1.15rem; font-family: var(--md-text-font-family); font-size: .62rem; }
+.md-typeset .swg-team__frame { display: grid; place-items: center; width: 100%; max-width: 6rem; aspect-ratio: 1; background: #2b2c30; border-radius: 2px; outline: 1px solid var(--swg-frame); outline-offset: -1px; }
+.md-typeset .swg-team__frame svg { max-height: 90%; }
+.md-typeset .swg-team__meta { display: flex; align-items: center; gap: .4rem; font-size: .75rem; }
+.md-typeset .swg-team__meta .swg-cost { margin: 0; }
+.md-typeset .swg-team__context { padding-top: .55rem; border-top: 1px solid var(--swg-rule); }
+.md-typeset .swg-team__note { font-size: .68rem; line-height: 1.4; color: var(--swg-ink); }
+.md-typeset ul.swg-team__gears { display: grid; grid-template-columns: 1fr; gap: .4rem; align-content: start; padding-top: .55rem; border-top: 1px solid var(--swg-rule); }
+.md-typeset .swg-team__context + ul.swg-team__gears { border-top: 0; padding-top: 0; }
+/* gear sits under the unit; names wrap between words only */
+.md-typeset .swg-team__gear a { display: grid; grid-template-columns: 2rem minmax(0, 1fr); align-items: center; gap: .45rem; font-size: .7rem; line-height: 1.25; color: var(--swg-ink); text-decoration: none; overflow-wrap: normal; word-break: normal; hyphens: manual; }
+.md-typeset .swg-team__gear a:hover span:last-child { text-decoration: underline; color: var(--swg-link); }
+.md-typeset .swg-team__gear .swg-guide__initials { display: grid; place-items: center; width: 2rem; aspect-ratio: 1; font-size: .7rem; background: #2b2c30; border-radius: 2px; outline: 1px solid var(--swg-frame); outline-offset: -1px; }
+.md-typeset .swg-team__gear .swg-cost { margin-left: .15rem; }
+
+.md-typeset .swg-team__floor { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .3rem 1rem; align-items: start; margin-top: 1.1rem; padding-top: .7rem; border-top: 1px solid var(--swg-rule); }
+.md-typeset .swg-team__floor-label { font-size: .68rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--swg-muted); padding-top: .1rem; }
+.md-typeset .swg-team__floor ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: .5rem 1.2rem; }
+.md-typeset .swg-team__floor li { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .5rem; align-items: start; font-size: .78rem; }
+.md-typeset .swg-team__tile-shape { display: grid; place-items: center; width: 2rem; aspect-ratio: 1; background: #2b2c30; border-radius: 2px; }
+.md-typeset .swg-team__tile-shape svg { max-width: 80%; max-height: 80%; width: auto; height: auto; }
+.md-typeset .swg-team__tile-name em { display: block; font-size: .68rem; line-height: 1.35; color: var(--swg-muted); }
+.md-typeset .swg-team__tile-name .swg-cost { margin-left: .2rem; }
+.md-typeset .swg-team__notes { margin-top: .9rem !important; padding-top: .6rem; border-top: 1px solid var(--swg-rule); font-size: .78rem; color: var(--swg-muted); }
+.md-typeset .swg-team__notes strong { color: var(--swg-ink); }
+
+@media screen and (max-width: 44.984375em) {
+  .md-typeset .swg-guide__header h1 { font-size: 2.1rem; }
+  .md-typeset .swg-guide__summary { grid-template-columns: 1fr; }
+  .md-typeset .swg-guide__portrait { position: static; display: grid; grid-template-columns: min(9rem, 40vw) minmax(0, 1fr); gap: 1rem; align-items: start; }
+  .md-typeset table.swg-guide__upgrades { margin: 0; }
+  .md-typeset .swg-guide__rank-card { min-height: 0; padding-inline: .55rem; }
+  .md-typeset .swg-guide__stops { flex-direction: column; align-items: center; gap: .45rem; }
+  .md-typeset .swg-guide__build-grid, .md-typeset .swg-guide__build-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: .55rem; }
+  .md-typeset .swg-guide__col--tiles { grid-column: 1 / -1; padding: 0 0 1rem; margin-bottom: 1rem; border-right: 0; border-bottom: 1px solid var(--swg-rule); }
+  .md-typeset .swg-guide__col--tiles .swg-guide__figs { flex-flow: row wrap; }
+  .md-typeset .swg-guide__col--tiles .swg-guide__fig { flex: 0 1 calc(50% - .3rem); max-width: min(calc(50% - .3rem), 7rem); }
+  .md-typeset .swg-guide__figs .swg-guide__fig { max-width: 7rem; }
+  .md-typeset .swg-guide__ranks { grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); }
+  .md-typeset .swg-guide__rec { grid-template-columns: 1fr; gap: .7rem; padding: 1rem 0; }
+
+  .md-typeset .swg-team__header { grid-template-columns: minmax(0, 1fr) 6.5rem; }
+  .md-typeset .swg-team__board { width: 6.5rem; }
+  .md-typeset .swg-team__board .swg-cell b { display: none; }
+  .md-typeset ol.swg-team__members, .md-typeset ol.swg-team__members--1, .md-typeset ol.swg-team__members--2, .md-typeset ol.swg-team__members--3 { display: block; padding-top: .35rem; }
+  /* phones: each member is one row, footprint on the left, details beside it */
+  .md-typeset .swg-team__member { grid-template-columns: 3.4rem minmax(0, 1fr); grid-template-rows: auto auto auto; column-gap: .7rem; row-gap: .3rem;
+    padding: .6rem 0 !important; border-left: 0; border-top: 1px solid var(--swg-rule); }
+  .md-typeset .swg-team__member:first-child { border-top: 0; }
+  .md-typeset .swg-team__unit { display: contents; }
+  .md-typeset .swg-team__frame { grid-column: 1; grid-row: 1 / span 3; align-self: start; }
+  .md-typeset .swg-team__name { grid-column: 2; grid-row: 1; justify-content: flex-start; text-align: left; font-size: .85rem; }
+  .md-typeset .swg-team__role { grid-column: 2; grid-row: 2; justify-self: start; font-size: .64rem; }
+  .md-typeset .swg-team__meta { display: none; }
+  .md-typeset .swg-team__context { grid-column: 2; grid-row: 3; min-height: 0; padding: 0; border: 0; }
+  .md-typeset ul.swg-team__gears { border-top: 0; padding-top: 0; grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)); }
+  .md-typeset .swg-team__name > span:last-child, .md-typeset .swg-team__name a { justify-items: start; }
+  .md-typeset ul.swg-team__gears { grid-column: 2; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); }
+  .md-typeset .swg-team__floor { grid-template-columns: 1fr; }
+}
+
+/* unit guide portrait: lib/images/portraits/<unit-id>.avif, 168×200 (any size with that shape works) */
+.md-typeset figure.swg-guide__art { display: block; width: 100%; margin: 0; }
+.md-typeset .swg-guide__art img { display: block; width: 100%; height: auto; aspect-ratio: 168 / 200; object-fit: cover; object-position: top; border-radius: 2px; outline: 1px solid var(--swg-frame); outline-offset: -1px; background: #2b2c30; }
+.md-typeset figure.swg-guide__footprint--small { display: grid; grid-template-columns: 3rem minmax(0, 1fr); align-items: center; gap: .6rem; margin-top: .8rem; text-align: left; }
+.md-typeset .swg-guide__footprint--small figcaption { margin: 0; }
+/* portraits in Partner units / Works well with: square crop from the top, like an avatar */
+.md-typeset .swg-guide__fig--portrait .swg-guide__frame img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+/* Units table thumbnail */
+.md-typeset .swg-thumb { display: inline-block; width: 1.9rem; height: 1.9rem; margin: -.3rem .55rem -.3rem 0; vertical-align: middle; overflow: hidden; border-radius: 2px; background: #2b2c30; outline: 1px solid var(--swg-frame); outline-offset: -1px; }
+.md-typeset .swg-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.md-typeset .swg-thumb--empty { background: none; outline: 1px dashed var(--swg-rule); }
+/* team card portrait: same square frame as the footprint, cropped from the top */
+.md-typeset .swg-team__frame--portrait { overflow: hidden; }
+.md-typeset .swg-team__frame--portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 2px; }

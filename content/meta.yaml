@@ -1,14 +1,20 @@
 # Fixed vocabularies. swg-check rejects anything not listed here,
 # so a typo like "Curese" fails the build instead of showing up on the site.
 
-# Six grades exist in the Battle Shop. Only the ones confirmed so far are listed;
-# add the rest in shop order (lowest first) once you've checked them in game.
+# The seven grades from the in-game Codex filter, lowest first. Their badge colours are set
+# in lib/styles/extra.css (search for "grade badges").
 grades:
-  - Normal
+  - Basic
   - Rare
+  - Ancient
+  - Heroic
+  - Legendary
+  - Mythical
   - Unique
 
 # The eight unit tags from the in-game Codex.
+# Icon: lib/images/tags/<tag in lower case, dashes for spaces>.png, e.g. close-range-attack.png
+# In units.yaml a tag can be written as its name or its id: "Close-Range Attack" or close-range-attack.
 tags:
   - Close-Range Attack
   - Long-Range Attack
@@ -19,6 +25,11 @@ tags:
   - Cleanse
   - Remove
 
+# Other names accepted in units.yaml, mapped to the tag the site shows.
+# The Codex filter calls it Support; gear text calls the same characters "Utility".
+tag_aliases:
+  utility: Support
+
 # Roles used on unit guide pages (front matter `role:`).
 roles:
   - attacker
@@ -28,5 +39,5 @@ roles:
   - defender
   - utility
 
-# Ratings used on unit guide pages (front matter `rating:`). Best first.
-ratings: [S, A, B, C]
+# Tiers for a unit guide's damage and support ranks (front matter `ranks:`). Best first.
+ratings: [S, A, B, C, D, F]

@@ -42,10 +42,21 @@ def _line_of(path: Path, needle: str) -> int | None:
     return None
 
 
+class CatalogSyntaxError(Exception):
+    """A YAML file in content/ can't be read. str() is a one-line, human-readable report."""
+
+
 def _load(name: str) -> tuple[Path, dict]:
     path = CONTENT / name
-    with path.open(encoding="utf-8") as fh:
-        return path, (yaml.safe_load(fh) or {})
+    try:
+        with path.open(encoding="utf-8") as fh:
+            return path, (yaml.safe_load(fh) or {})
+    except yaml.YAMLError as ex:
+        mark = getattr(ex, "problem_mark", None)
+        line = f":{mark.line + 1}" if mark else ""
+        hint = ("Check the indentation around that line: every line of a multi-line effect must be "
+                "indented the same amount, deeper than 'effect: |', using spaces not tabs.")
+        raise CatalogSyntaxError(f"ERROR   content/{name}{line}  can't be read ({getattr(ex, 'problem', ex)}). {hint}") from None
 
 
 @dataclass
@@ -106,14 +117,42 @@ def load() -> Catalog:
     # vocabularies
     upath = CONTENT / "units.yaml"
     grades, tags = set(meta.get("grades", [])), set(meta.get("tags", []))
+
+    def key(text) -> str:  # "Close-Range Attack", "close-range-attack" and "close range attack" all match
+        return re.sub(r"[^a-z0-9]+", "-", str(text).lower()).strip("-")
+
+    grade_by_key = {key(g): g for g in grades}
+    tag_by_key = {key(t): t for t in tags}
+    for alias, target in (meta.get("tag_aliases") or {}).items():
+        if target in tags:
+            tag_by_key[key(alias)] = target
+        else:
+            problems.append(Problem(CONTENT / "meta.yaml", None, f"tag_aliases: '{alias}' points to '{target}', which isn't in tags."))
     for uid, u in units.items():
         line = _line_of(upath, f"id: {uid}")
         g = u.get("grade") or ""
-        if g and g not in grades:
-            problems.append(Problem(upath, line, f"'{uid}': unknown grade '{g}'.{suggest(g, grades)} Add it to meta.yaml if it's new."))
+        if g:
+            if key(g) in grade_by_key:
+                u["grade"] = grade_by_key[key(g)]          # store the display name
+            else:
+                problems.append(Problem(upath, line, f"'{uid}': unknown grade '{g}'.{suggest(g, grades)} Add it to meta.yaml if it's new."))
+        normalised = []
         for t in u.get("tags") or []:
-            if t not in tags:
-                problems.append(Problem(upath, line, f"'{uid}': unknown tag '{t}'.{suggest(t, tags)}"))
+            if key(t) in tag_by_key:
+                normalised.append(tag_by_key[key(t)])
+            else:
+                problems.append(Problem(upath, line, f"'{uid}': unknown tag '{t}'.{suggest(key(t), tag_by_key)}"))
+        u["tags"] = list(dict.fromkeys(normalised))       # display names, duplicates removed
+    for uid, u in units.items():
+        up = u.get("upgrades")
+        if up in (None, []):
+            continue
+        if not (isinstance(up, list) and len(up) == 5 and all(isinstance(x, int) and not isinstance(x, bool) and x >= 0 for x in up)):
+            problems.append(Problem(upath, _line_of(upath, f"id: {uid}"),
+                f"'{uid}': upgrades should be five whole numbers for +1 to +5, like [2, 3, 4, 5, 6], or []. Got {up!r}."))
+        if "effect" in u:
+            problems.append(Problem(upath, _line_of(upath, f"id: {uid}"),
+                f"'{uid}': effects now go on the unit's page, lib/units/{uid}.md, under '## Effect'.", level="warning"))
     spath = CONTENT / "statuses.yaml"
     for sid, s in statuses.items():
         if s.get("kind") not in ("buff", "debuff"):

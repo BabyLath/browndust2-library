@@ -1,6 +1,13 @@
 {% extends "base.html" %}
-{#- Page titles read "Page | Soul Wager Guide"; the home page shows just the site name. -#}
+{#- Page titles read "Page | BrownDust II Library"; the home page shows just the site name. -#}
 {% block htmltitle %}
   {% if page.is_homepage %}<title>{{ config.site_name }}</title>
   {% else %}<title>{{ page.title | striptags }} | {{ config.site_name }}</title>{% endif %}
+{% endblock %}
+
+{#- The theme adds the PNG favicon from zensical.toml. These add the SVG for browsers
+    that prefer it and the icon iOS uses for home-screen bookmarks. -#}
+{% block extrahead %}
+  <link rel="icon" type="image/svg+xml" href="{{ 'images/logo.svg' | url }}">
+  <link rel="apple-touch-icon" href="{{ 'images/apple-touch-icon.png' | url }}">
 {% endblock %}

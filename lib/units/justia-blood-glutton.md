@@ -1,7 +1,8 @@
 ---
 unit: justia-blood-glutton
-summary: Her ★ bonus depends on which allies are on the board.
+tagline: Her ★ bonus depends on which allies are on the board.
 ---
+
 
 ## Season notes
 

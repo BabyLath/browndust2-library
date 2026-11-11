@@ -1,4 +1,7 @@
 # Buffs and debuffs. kind is buff or debuff.
+#
+# Icon: put a picture at lib/images/statuses/<id>.png (or .webp, .svg) and it shows on the
+#   Buffs and debuffs page and wherever the status is written as [[Name]] or [[id]].
 
 statuses:
   - { id: regeneration, name: Regeneration, kind: buff, effect: "Each stack heals 1 HP every 2 seconds." }
@@ -12,3 +15,4 @@ statuses:
   - { id: frost, name: Frost, kind: debuff, effect: "Each stack removes 2% Action Speed from every character." }
   - { id: darkness, name: Darkness, kind: debuff, effect: "Each stack removes 5% Accuracy from every character." }
   - { id: laceration, name: Laceration, kind: debuff, effect: "Each stack raises attackers' Stamina cost by 2%." }
+  - { id: energy-guard, name: Energy Guard, kind: buff, effect: "A shield that absorbs incoming damage before HP." }

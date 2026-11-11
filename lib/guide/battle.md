@@ -2,6 +2,7 @@
 title: Battle and End Game
 description: Targeting, cooldowns, shared Stamina, unit tags and End Game damage.
 order: 2
+icon: lucide/swords
 ---
 
 # Battle and End Game
@@ -41,14 +42,14 @@ The formation screen shows an estimate of average Stamina use. It ignores Stamin
 
 | Tag | What it does |
 |---|---|
-| Close-Range Attack | Melee hit every cooldown |
-| Long-Range Attack | Ranged hit every cooldown |
-| Defending | Reacts when the enemy attacks |
-| Support | Buffs allies |
-| Heal | Restores HP |
-| Curse | Debuffs the enemy |
-| Cleanse | Removes your debuffs |
-| Remove | Strips enemy buffs |
+| [[Close-Range Attack+]] | Melee hit every cooldown |
+| [[Long-Range Attack+]] | Ranged hit every cooldown |
+| [[Defending+]] | Reacts when the enemy attacks |
+| [[Support+]] | Buffs allies |
+| [[Heal+]] | Restores HP |
+| [[Curse+]] | Debuffs the enemy |
+| [[Cleanse+]] | Removes your debuffs |
+| [[Remove+]] | Strips enemy buffs |
 
 Attackers have four stats worth reading: damage range (rolled per action), Stamina cost, Accuracy and cooldown.
 

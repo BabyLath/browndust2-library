@@ -1,14 +1,15 @@
 ---
-title: Soul Wager Guide
-description: Board, shop and battle guide for The Soul Wager in Brown Dust 2.
+title: BrownDust II Library
+description: Guides and data for Brown Dust 2, starting with The Soul Wager.
 hide:
   - toc
+icon: lucide/house
 ---
 
 <div class="swg-hero" markdown="0">
   <div class="swg-hero__text">
-    <h1>Soul Wager Guide</h1>
-    <p class="swg-hero__lede">Prices, builds and season notes for the Brown Dust 2 auto-battler. Every square on the board is a section.</p>
+    <h1>BrownDust II Library</h1>
+    <p class="swg-hero__lede">Guides and data for Brown Dust 2. Right now that means The Soul Wager: prices, builds, season notes and calculators. Every square on the board is a section.</p>
   </div>
   <nav class="swg-hero__board" aria-label="Guide sections">
     <a class="swg-piece gold" style="grid-area:1/1/span 2/span 2" href="guide/"><span>Start here</span></a>
@@ -35,4 +36,4 @@ The Soul Wager unlocks after you clear every Edge of Dimension main quest. Read 
 - [Gear](reference/gear.md), [tiles](reference/tiles.md) and [buffs and debuffs](reference/statuses.md).
 - [Calculators](tools/calculators.md): reroll cost, sell value and End Game damage at any second.
 
-Spotted something wrong? Use the edit button on any page, or [open an issue](https://github.com/babylath/soul-wager-guide/issues).
+Spotted something wrong? [Open an issue](https://github.com/babylath/browndust2-library/issues).

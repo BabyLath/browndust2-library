@@ -1,15 +1,20 @@
-# Tiles sold in the Battle Shop. Fill in effect (and shape for tiles) as you confirm them.
+# Tiles sold in the Battle Shop. Fill in effect and shape as you confirm them.
+#
+# Tile picture: put a picture at lib/images/tiles/<id>.png (or .webp, .svg, .jpg)
+#   and it appears in the Tile column. Add image: other-name.png to use a different file name.
+# shape: the footprint grid shown beside the picture. Rows split by "/",
+#   # is a filled square, . is an empty one. Copy it from the in-game Codex:
+#   "#" is 1x1, "##/##" is 2x2, "####" is 1x4, "##/#." is an L, "##./.##" is a Z.
 
-verified_for: s2
-source: BD2 Tactical Compendium price table (page dated 2026-10-22)
+verified_for: s3
 
 tiles:
-  - { id: acceleration-tile, name: Acceleration Tile, price: 3, shape: "", effect: "" }
-  - { id: attack-tile, name: Attack Tile, price: 4, shape: "", effect: "" }
-  - { id: basic-tile, name: Basic Tile, price: 4, shape: "", effect: "" }
-  - { id: buff-tile, name: Buff Tile, price: 6, shape: "", effect: "" }
-  - { id: curse-tile, name: Curse Tile, price: 6, shape: "", effect: "" }
-  - { id: efficiency-tile, name: Efficiency Tile, price: 5, shape: "", effect: "" }
-  - { id: protection-tile, name: Protection Tile, price: 2, shape: "", effect: "" }
-  - { id: support-tile, name: Support Tile, price: 5, shape: "", effect: "" }
-  - { id: vitality-tile, name: Vitality Tile, price: 4, shape: "", effect: "" }
+  - { id: acceleration-tile, name: Acceleration Tile, price: 3, shape: "##", effect: "Upon Battle Start: Increase Action Speed of Characters located inside by 10%." }
+  - { id: attack-tile, name: Attack Tile, price: 4, shape: "#/##/#", effect: "Increase DMG dealt by Attacking Characters located inside by 2." }
+  - { id: basic-tile, name: Basic Tile, price: 4, shape: "##/##", effect: "N/A" }
+  - { id: buff-tile, name: Buff Tile, price: 6, shape: "##/.##", effect: "For every Cooldown of Characters located inside, there is a 25% chance to gain 1 random Buff(s)." }
+  - { id: curse-tile, name: Curse Tile, price: 6, shape: ".##/##", effect: "For every Cooldown of Characters located inside, there is a 25% chance to apply 1 random Debuff(s) to the opponent." }
+  - { id: efficiency-tile, name: Efficiency Tile, price: 5, shape: "###", effect: "Reduce the Stamina Cost of Characters inside by 2." }
+  - { id: protection-tile, name: Protection Tile, price: 2, shape: "#", effect: "Upon Battle Start: Gain 15 [[Energy Guard]]." }
+  - { id: support-tile, name: Support Tile, price: 5, shape: "####", effect: "Upon Battle Start: For every Character located inside. gain 1 random Buff(s)." }
+  - { id: vitality-tile, name: Vitality Tile, price: 4, shape: "##/#", effect: "Upon Battle Start: For every Character located inside. gain 5 Max HP." }

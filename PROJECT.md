@@ -1,4 +1,4 @@
-# How the site is put together
+# How BrownDust II Library is put together
 
 Read this before changing anything in `swg_site/` or `overrides/`. For day-to-day editing, the README is enough.
 
