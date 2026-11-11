@@ -1,0 +1,79 @@
+# Site configuration. swg-build copies this into .zensical.generated.toml
+# and adds docs_dir, site_dir and the nav (built from lib/ and content/).
+# Edit this file; never edit the generated one.
+
+[project]
+site_name = "Soul Wager Guide"
+site_url = "https://babylath.github.io/soul-wager-guide/"
+site_description = "Board, shop and battle guide for The Soul Wager in Brown Dust 2: unit prices, builds, seasons and calculators."
+site_author = "babylath"
+repo_url = "https://github.com/babylath/soul-wager-guide"
+repo_name = "babylath/soul-wager-guide"
+edit_uri = "edit/main/lib/"
+copyright = "Fan site. Brown Dust 2 is a trademark of NEOWIZ and GAMFS N; not affiliated with or endorsed by them. Mechanics adapted from BD2 Tactical Compendium (CC BY 4.0)."
+
+extra_css = ["styles/extra.css"]
+extra_javascript = ["javascripts/site.js"]
+
+[project.theme]
+language = "en"
+custom_dir = "overrides"
+logo = "images/logo.svg"
+favicon = "images/logo.svg"
+font.text = "Atkinson Hyperlegible"
+font.code = "JetBrains Mono"
+features = [
+  "content.action.edit",
+  "content.tooltips",
+  "navigation.footer",
+  "navigation.indexes",
+  "navigation.path",
+  "navigation.sections",
+  "navigation.top",
+  "navigation.tracking",
+  "search.highlight",
+  "toc.follow",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[project.extra]
+generator = false
+
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/babylath/soul-wager-guide"
+
+[project.markdown_extensions]
+abbr = {}
+admonition = {}
+attr_list = {}
+def_list = {}
+footnotes = {}
+md_in_html = {}
+tables = {}
+toc.permalink = true
+pymdownx.details = {}
+pymdownx.keys = {}
+pymdownx.mark = {}
+pymdownx.smartsymbols = {}
+pymdownx.superfences = {}
+pymdownx.tabbed.alternate_style = true
+pymdownx.snippets.auto_append = ["includes/abbreviations.md"]
+pymdownx.snippets.base_path = ["."]
+pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
+pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"

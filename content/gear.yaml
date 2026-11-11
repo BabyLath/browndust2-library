@@ -1,0 +1,19 @@
+# Gear sold in the Battle Shop. Fill in effect (and shape for tiles) as you confirm them.
+
+verified_for: s2
+source: BD2 Tactical Compendium price table (page dated 2026-10-22)
+
+gear:
+  - { id: demons-forbidden-book, name: "Demon's Forbidden Book", price: 15, effect: "" }
+  - { id: evil-dragons-blade, name: "Evil Dragon's Blade", price: 15, effect: "" }
+  - { id: god-kings-silver-arm, name: "God-King's Silver Arm", price: 12, effect: "" }
+  - { id: heros-staff, name: "Hero's Staff", price: 9, effect: "" }
+  - { id: heros-sword, name: "Hero's Sword", price: 9, effect: "" }
+  - { id: invulnerable-armor, name: Invulnerable Armor, price: 15, effect: "" }
+  - { id: knights-necklace, name: "Knight's Necklace", price: 5, effect: "" }
+  - { id: knights-staff, name: "Knight's Staff", price: 6, effect: "" }
+  - { id: knights-sword, name: "Knight's Sword", price: 6, effect: "" }
+  - { id: mercenary-armor, name: Mercenary Armor, price: 4, effect: "" }
+  - { id: mercenary-staff, name: Mercenary Staff, price: 4, effect: "" }
+  - { id: mercenary-sword, name: Mercenary Sword, price: 4, effect: "" }
+  - { id: peerless-javelin, name: Peerless Javelin, price: 15, effect: "" }

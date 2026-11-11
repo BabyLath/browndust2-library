@@ -1,0 +1,10 @@
+# build output
+site/
+generated-docs/
+.zensical.generated.toml
+.cache/
+
+# python
+.venv/
+__pycache__/
+*.egg-info/

@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "soul-wager-guide"
+version = "0.2.0"
+description = "Fan guide for The Soul Wager in Brown Dust 2."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "pyyaml>=6.0.2",
+  "tomli-w>=1.2.0",
+  "zensical==0.0.74",
+]
+
+[project.scripts]
+swg-check = "swg_site.cli:check_main"
+swg-serve = "swg_site.cli:serve_main"
+swg-build = "swg_site.cli:build_main"
+
+[tool.setuptools]
+packages = ["swg_site"]

@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{#- Page titles read "Page | Soul Wager Guide"; the home page shows just the site name. -#}
+{% block htmltitle %}
+  {% if page.is_homepage %}<title>{{ config.site_name }}</title>
+  {% else %}<title>{{ page.title | striptags }} | {{ config.site_name }}</title>{% endif %}
+{% endblock %}

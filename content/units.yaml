@@ -1,0 +1,144 @@
+# Unit pieces sold in the Battle Shop.
+# One unit per line. Keep the id lowercase-with-dashes; builds and guides refer to it.
+#   grade: one of the grades in content/meta.yaml, or "" if unknown
+#   tags:  any of the tags in content/meta.yaml
+#   price: shop cost in Soul Tokens
+
+# Bump verified_for when you've checked every price against the current season.
+# swg-check warns when this is behind the current season in seasons.yaml.
+verified_for: s2
+source: BD2 Tactical Compendium price table (page dated 2026-10-22)
+
+units:
+  - { id: alec-the-destruction, character: Alec, costume: The Destruction, price: 12, grade: "", tags: [] }
+  - { id: anastasia-fire-graffiti, character: Anastasia, costume: Fire Graffiti, price: 9, grade: "", tags: [] }
+  - { id: anastasia-gentle-maid, character: Anastasia, costume: Gentle Maid, price: 16, grade: "", tags: [] }
+  - { id: andrew-loyal-butler, character: Andrew, costume: Loyal Butler, price: 5, grade: "", tags: [] }
+  - { id: andrew-specialist, character: Andrew, costume: Specialist, price: 5, grade: "", tags: [] }
+  - { id: angelica-neon-savior, character: Angelica, costume: Neon Savior, price: 10, grade: "", tags: [] }
+  - { id: angelica-the-fallen, character: Angelica, costume: The Fallen, price: 12, grade: "", tags: [] }
+  - { id: arines-priest-of-vitality, character: Arines, costume: Priest of Vitality, price: 3, grade: "", tags: [] }
+  - { id: beatrice-the-mighty-warrior-of-the-tribe, character: Beatrice, costume: The Mighty Warrior of the Tribe, price: 5, grade: "", tags: [] }
+  - { id: bernie-righteous-raider-girl, character: Bernie, costume: Righteous Raider Girl, price: 4, grade: "", tags: [] }
+  - { id: blade-apostle, character: Blade, costume: Apostle, price: 12, grade: "", tags: [] }
+  - { id: blade-onsen-swordfighter, character: Blade, costume: Onsen Swordfighter, price: 8, grade: "", tags: [] }
+  - { id: carlson-the-mercenary-knight, character: Carlson, costume: The Mercenary Knight, price: 4, grade: "", tags: [] }
+  - { id: celia-masquerade-bunny, character: Celia, costume: Masquerade Bunny, price: 7, grade: "", tags: [] }
+  - { id: celia-the-curse, character: Celia, costume: The Curse, price: 4, grade: "", tags: [] }
+  - { id: celia-the-descendant-of-the-great-witch, character: Celia, costume: The Descendant of the Great Witch, price: 16, grade: "", tags: [] }
+  - { id: cynthia-warmth-within-the-severe-cold, character: Cynthia, costume: Warmth within the Severe Cold, price: 4, grade: "", tags: [] }
+  - { id: dalvi-bright-moon, character: Dalvi, costume: Bright Moon, price: 6, grade: "", tags: [] }
+  - { id: dalvi-tricky-lover, character: Dalvi, costume: Tricky Lover, price: 10, grade: "", tags: [] }
+  - { id: dalvi-summer-vacation, character: Dalvi, costume: Summer Vacation, price: 7, grade: "", tags: [] }
+  - { id: darian-bittersweet-bunny, character: Darian, costume: Bittersweet Bunny, price: 9, grade: "", tags: [] }
+  - { id: darian-prophetic-dream, character: Darian, costume: Prophetic Dream, price: 9, grade: "", tags: [] }
+  - { id: diana-adventurer-of-the-unknown, character: Diana, costume: Adventurer of the Unknown, price: 7, grade: "", tags: [] }
+  - { id: diana-anti-dystopia, character: Diana, costume: Anti-Dystopia, price: 12, grade: "", tags: [] }
+  - { id: eclipse-dimension-witch, character: Eclipse, costume: Dimension Witch, price: 5, grade: "", tags: [] }
+  - { id: eclipse-dream-bride, character: Eclipse, costume: Dream Bride, price: 8, grade: "", tags: [] }
+  - { id: eclipse-nightmare-bunny, character: Eclipse, costume: Nightmare Bunny, price: 12, grade: "", tags: [] }
+  - { id: eleaneer-b-rank-idol, character: Eleaneer, costume: B-Rank Idol, price: 9, grade: "", tags: [] }
+  - { id: eleaneer-shadow-bunny, character: Eleaneer, costume: Shadow Bunny, price: 16, grade: "", tags: [] }
+  - { id: elise-code-name-o, character: Elise, costume: Code Name O, price: 4, grade: "", tags: [] }
+  - { id: elise-lovely-lady, character: Elise, costume: Lovely Lady, price: 8, grade: "", tags: [] }
+  - { id: elise-naive-lady, character: Elise, costume: Naive Lady, price: 16, grade: "", tags: [] }
+  - { id: elpis-hand-of-salvation, character: Elpis, costume: Hand of Salvation, price: 8, grade: "", tags: [] }
+  - { id: emma-haggard-delinquent, character: Emma, costume: Haggard Delinquent, price: 4, grade: "", tags: [] }
+  - { id: emma-school-queen, character: Emma, costume: School Queen, price: 3, grade: "", tags: [] }
+  - { id: fred-lugo-defense-force, character: Fred, costume: Lugo Defense Force, price: 3, grade: "", tags: [] }
+  - { id: glacia-alice, character: Glacia, costume: Alice, price: 7, grade: "", tags: [] }
+  - { id: glacia-heavenly-guardian-successor, character: Glacia, costume: Heavenly Guardian Successor, price: 16, grade: "", tags: [] }
+  - { id: granadair-shrine-maiden-of-purification, character: Granadair, costume: Shrine Maiden of Purification, price: 9, grade: "", tags: [] }
+  - { id: granhildr-boo-ghost, character: Granhildr, costume: Boo Ghost, price: 16, grade: "", tags: [] }
+  - { id: granhildr-comeback-idol, character: Granhildr, costume: Comeback Idol, price: 13, grade: "", tags: [] }
+  - { id: granhildr-the-void, character: Granhildr, costume: The Void, price: 8, grade: "", tags: [] }
+  - { id: gray-mist-man, character: Gray, costume: Mist Man, price: 7, grade: "", tags: [] }
+  - { id: gray-vanguard, character: Gray, costume: Vanguard, price: 5, grade: "", tags: [] }
+  - { id: gynt-lugo-hunter, character: Gynt, costume: Lugo Hunter, price: 3, grade: "", tags: [] }
+  - { id: helena-top-idol, character: Helena, costume: Top Idol, price: 5, grade: "", tags: [] }
+  - { id: ingrid-kardis-bullet, character: Ingrid, costume: "Kardis' Bullet", price: 5, grade: "", tags: [] }
+  - { id: jayden-beautiful-girl-devotee, character: Jayden, costume: Beautiful Girl Devotee, price: 7, grade: "", tags: [] }
+  - { id: julie-healer, character: Julie, costume: Healer, price: 4, grade: "", tags: [] }
+  - { id: justia-blood-glutton, character: Justia, costume: Blood Glutton, price: 8, grade: "", tags: [] }
+  - { id: justia-knight-of-blood, character: Justia, costume: Knight of Blood, price: 9, grade: "", tags: [] }
+  - { id: justia-pool-party, character: Justia, costume: Pool Party, price: 7, grade: "", tags: [] }
+  - { id: justia-white-reaper, character: Justia, costume: White Reaper, price: 3, grade: "", tags: [] }
+  - { id: lathel-dark-knight, character: Lathel, costume: Dark Knight, price: 11, grade: "", tags: [] }
+  - { id: lathel-herb-tracker, character: Lathel, costume: Herb Tracker, price: 2, grade: "", tags: [] }
+  - { id: lathel-homunculus, character: Lathel, costume: Homunculus, price: 4, grade: "", tags: [] }
+  - { id: lathel-lone-survivor, character: Lathel, costume: Lone Survivor, price: 3, grade: "", tags: [] }
+  - { id: lathel-promise-of-vengeance, character: Lathel, costume: Promise of Vengeance, price: 5, grade: "", tags: [] }
+  - { id: layla-anvil-of-creation, character: Layla, costume: Anvil of Creation, price: 7, grade: "", tags: [] }
+  - { id: lecliss-android-queen, character: Lecliss, costume: Android Queen, price: 7, grade: "", tags: [] }
+  - { id: lecliss-killer-doll, character: Lecliss, costume: Killer Doll, price: 7, grade: "", tags: [] }
+  - { id: levia-overheat, character: Levia, costume: Overheat, price: 6, grade: "", tags: [] }
+  - { id: levia-track-and-field-captain, character: Levia, costume: Track and Field Captain, price: 16, grade: "", tags: [] }
+  - { id: liatris-neon-stalker, character: Liatris, costume: Neon Stalker, price: 8, grade: "", tags: [] }
+  - { id: liatris-rodevs-star, character: Liatris, costume: "Rodev's Star", price: 6, grade: "", tags: [] }
+  - { id: liberta-dark-saintess, character: Liberta, costume: Dark Saintess, price: 16, grade: "", tags: [] }
+  - { id: liberta-onsen-manager, character: Liberta, costume: Onsen Manager, price: 6, grade: "", tags: [] }
+  - { id: lisianne-wandering-priest, character: Lisianne, costume: Wandering Priest, price: 5, grade: "", tags: [] }
+  - { id: loen-last-hope, character: Loen, costume: Last Hope, price: 8, grade: "", tags: [] }
+  - { id: loen-track-and-field-team, character: Loen, costume: Track and Field Team, price: 8, grade: "", tags: [] }
+  - { id: lucrezia-seductive-wings, character: Lucrezia, costume: Seductive Wings, price: 5, grade: "", tags: [] }
+  - { id: luvencia-ocean-vanguard, character: Luvencia, costume: Ocean Vanguard, price: 16, grade: "", tags: [] }
+  - { id: luvencia-wild-dog, character: Luvencia, costume: Wild Dog, price: 11, grade: "", tags: [] }
+  - { id: lydia-apprentice-spearman, character: Lydia, costume: Apprentice Spearman, price: 5, grade: "", tags: [] }
+  - { id: mamonir-miracle-marine, character: Mamonir, costume: Miracle Marine, price: 11, grade: "", tags: [] }
+  - { id: mamonir-night-of-death, character: Mamonir, costume: Night of Death, price: 16, grade: "", tags: [] }
+  - { id: maria-archmage, character: Maria, costume: Archmage, price: 6, grade: "", tags: [] }
+  - { id: michaela-beachside-justice, character: Michaela, costume: Beachside Justice, price: 9, grade: "", tags: [] }
+  - { id: michaela-queen-of-signatures, character: Michaela, costume: Queen of Signatures, price: 7, grade: "", tags: [] }
+  - { id: morpeah-beach-vacation, character: Morpeah, costume: Beach Vacation, price: 10, grade: "", tags: [] }
+  - { id: morpeah-daydream-bunny, character: Morpeah, costume: Daydream Bunny, price: 3, grade: "", tags: [] }
+  - { id: nebris-labyrinth-gatekeeper, character: Nebris, costume: Labyrinth Gatekeeper, price: 8, grade: "", tags: [] }
+  - { id: nebris-laid-back-lifeguard, character: Nebris, costume: Laid-back Lifeguard, price: 9, grade: "", tags: [] }
+  - { id: nebris-new-hire, character: Nebris, costume: New Hire, price: 16, grade: "", tags: [] }
+  - { id: nekyndalia-deadeye, character: Nekyndalia, costume: Deadeye, price: 16, grade: "", tags: [] }
+  - { id: olivier-apostle, character: Olivier, costume: Apostle, price: 10, grade: "", tags: [] }
+  - { id: olivier-faithful-wings, character: Olivier, costume: Faithful Wings, price: 12, grade: "", tags: [] }
+  - { id: olivier-fallen-wings, character: Olivier, costume: Fallen Wings, price: 5, grade: "", tags: [] }
+  - { id: olstein-fiend-scholar, character: Olstein, costume: Fiend Scholar, price: 4, grade: "", tags: [] }
+  - { id: palette-shattered-dream, character: Palette, costume: Shattered Dream, price: 7, grade: "", tags: [] }
+  - { id: rafina-code-name-a, character: Rafina, costume: Code Name A, price: 8, grade: "", tags: [] }
+  - { id: rafina-game-club, character: Rafina, costume: Game Club, price: 16, grade: "", tags: [] }
+  - { id: rafina-steel-engine, character: Rafina, costume: Steel Engine, price: 5, grade: "", tags: [] }
+  - { id: refithea-poolside-fairy, character: Refithea, costume: Poolside Fairy, price: 4, grade: "", tags: [] }
+  - { id: refithea-pure-white-blessing, character: Refithea, costume: Pure White Blessing, price: 4, grade: "", tags: [] }
+  - { id: refithea-the-gluttonous, character: Refithea, costume: The Gluttonous, price: 16, grade: "", tags: [] }
+  - { id: rigenette-little-hunter, character: Rigenette, costume: Little Hunter, price: 3, grade: "", tags: [] }
+  - { id: rou-red-riding-hood, character: Rou, costume: Red Riding Hood, price: 9, grade: "", tags: [] }
+  - { id: rou-stray-cat, character: Rou, costume: Stray Cat, price: 8, grade: "", tags: [] }
+  - { id: rou-white-cat, character: Rou, costume: White Cat, price: 7, grade: "", tags: [] }
+  - { id: rubia-maid-name-c, character: Rubia, costume: Maid Name C, price: 6, grade: "", tags: [] }
+  - { id: rubia-the-empress-of-the-ocean, character: Rubia, costume: The Empress of the Ocean, price: 9, grade: "", tags: [] }
+  - { id: rubia-thorn-of-the-desert, character: Rubia, costume: Thorn of the Desert, price: 6, grade: "", tags: [] }
+  - { id: sacred-justia-reclaimed-destiny, character: Sacred Justia, costume: Reclaimed Destiny, price: 14, grade: "", tags: [] }
+  - { id: samay-kind-liberator, character: Samay, costume: Kind Liberator, price: 7, grade: "", tags: [] }
+  - { id: samay-kind-student, character: Samay, costume: Kind Student, price: 6, grade: "", tags: [] }
+  - { id: scheherazade-code-name-s, character: Scheherazade, costume: Code Name S, price: 7, grade: "", tags: [] }
+  - { id: scheherazade-lapis-witch, character: Scheherazade, costume: Lapis Witch, price: 6, grade: "", tags: [] }
+  - { id: scheherazade-magic-school-professor, character: Scheherazade, costume: Magic School Professor, price: 9, grade: "", tags: [] }
+  - { id: scheherazade-pool-party, character: Scheherazade, costume: Pool Party, price: 6, grade: "", tags: [] }
+  - { id: seir-b-rank-idol, character: Seir, costume: B-Rank Idol, price: 5, grade: "", tags: [] }
+  - { id: seir-demons-daughter, character: Seir, costume: "Demon's Daughter", price: 7, grade: "", tags: [] }
+  - { id: seir-new-hire, character: Seir, costume: New Hire, price: 9, grade: "", tags: [] }
+  - { id: sonya-little-pumpkin-girl, character: Sonya, costume: Little Pumpkin Girl, price: 11, grade: "", tags: [] }
+  - { id: sonya-shadowed-dream, character: Sonya, costume: Shadowed Dream, price: 16, grade: "", tags: [] }
+  - { id: sylvia-admiral, character: Sylvia, costume: Admiral, price: 12, grade: "", tags: [] }
+  - { id: sylvia-desert-flower, character: Sylvia, costume: Desert Flower, price: 6, grade: "", tags: [] }
+  - { id: sylvia-sword-queen, character: Sylvia, costume: Sword Queen, price: 7, grade: "", tags: [] }
+  - { id: teresse-angel-of-destruction, character: Teresse, costume: Angel of Destruction, price: 10, grade: "", tags: [] }
+  - { id: teresse-beachside-angel, character: Teresse, costume: Beachside Angel, price: 8, grade: "", tags: [] }
+  - { id: teresse-medical-club, character: Teresse, costume: Medical Club, price: 7, grade: "", tags: [] }
+  - { id: tyr-innocent-bunny, character: Tyr, costume: Innocent Bunny, price: 16, grade: "", tags: [] }
+  - { id: tyr-starlight-guardian, character: Tyr, costume: Starlight Guardian, price: 7, grade: "", tags: [] }
+  - { id: venaka-dj, character: Venaka, costume: DJ, price: 7, grade: "", tags: [] }
+  - { id: ventana-snow-white, character: Ventana, costume: Snow White, price: 10, grade: "", tags: [] }
+  - { id: wiggle-bomb-in-the-hoodie, character: Wiggle, costume: Bomb in the Hoodie, price: 4, grade: "", tags: [] }
+  - { id: wilhelmina-frozen-queen, character: Wilhelmina, costume: Frozen Queen, price: 7, grade: "", tags: [] }
+  - { id: wilhelmina-iron-monarch, character: Wilhelmina, costume: Iron Monarch, price: 6, grade: "", tags: [] }
+  - { id: wilhelmina-water-park-queen, character: Wilhelmina, costume: Water Park Queen, price: 10, grade: "", tags: [] }
+  - { id: yuri-comeback-idol, character: Yuri, costume: Comeback Idol, price: 5, grade: "", tags: [] }
+  - { id: yuri-whitebolt, character: Yuri, costume: Whitebolt, price: 9, grade: "", tags: [] }
+  - { id: zenith-robin-hood, character: Zenith, costume: Robin Hood, price: 5, grade: "", tags: [] }

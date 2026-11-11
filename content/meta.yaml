@@ -1,0 +1,32 @@
+# Fixed vocabularies. swg-check rejects anything not listed here,
+# so a typo like "Curese" fails the build instead of showing up on the site.
+
+# Six grades exist in the Battle Shop. Only the ones confirmed so far are listed;
+# add the rest in shop order (lowest first) once you've checked them in game.
+grades:
+  - Normal
+  - Rare
+  - Unique
+
+# The eight unit tags from the in-game Codex.
+tags:
+  - Close-Range Attack
+  - Long-Range Attack
+  - Defending
+  - Support
+  - Heal
+  - Curse
+  - Cleanse
+  - Remove
+
+# Roles used on unit guide pages (front matter `role:`).
+roles:
+  - attacker
+  - support
+  - debuffer
+  - healer
+  - defender
+  - utility
+
+# Ratings used on unit guide pages (front matter `rating:`). Best first.
+ratings: [S, A, B, C]

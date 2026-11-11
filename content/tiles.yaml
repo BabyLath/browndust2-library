@@ -1,0 +1,15 @@
+# Tiles sold in the Battle Shop. Fill in effect (and shape for tiles) as you confirm them.
+
+verified_for: s2
+source: BD2 Tactical Compendium price table (page dated 2026-10-22)
+
+tiles:
+  - { id: acceleration-tile, name: Acceleration Tile, price: 3, shape: "", effect: "" }
+  - { id: attack-tile, name: Attack Tile, price: 4, shape: "", effect: "" }
+  - { id: basic-tile, name: Basic Tile, price: 4, shape: "", effect: "" }
+  - { id: buff-tile, name: Buff Tile, price: 6, shape: "", effect: "" }
+  - { id: curse-tile, name: Curse Tile, price: 6, shape: "", effect: "" }
+  - { id: efficiency-tile, name: Efficiency Tile, price: 5, shape: "", effect: "" }
+  - { id: protection-tile, name: Protection Tile, price: 2, shape: "", effect: "" }
+  - { id: support-tile, name: Support Tile, price: 5, shape: "", effect: "" }
+  - { id: vitality-tile, name: Vitality Tile, price: 4, shape: "", effect: "" }

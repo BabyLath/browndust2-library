@@ -1,0 +1,14 @@
+# Buffs and debuffs. kind is buff or debuff.
+
+statuses:
+  - { id: regeneration, name: Regeneration, kind: buff, effect: "Each stack heals 1 HP every 2 seconds." }
+  - { id: overheat, name: Overheat, kind: buff, effect: "Each stack adds 2% Action Speed." }
+  - { id: lifesteal, name: Lifesteal, kind: buff, effect: "Heals for close-range damage dealt, capped by stack count." }
+  - { id: focus, name: Focus, kind: buff, effect: "Each stack adds 5% Accuracy to every character." }
+  - { id: sp, name: SP, kind: buff, effect: "No effect alone. Some units spend it to trigger skills." }
+  - { id: strength, name: Strength, kind: buff, effect: "Each stack adds 1 damage to attacking characters." }
+  - { id: counter, name: Counter, kind: buff, effect: "Reflects close-range damage taken, up to the stack count." }
+  - { id: poison, name: Poison, kind: debuff, effect: "Each stack deals 1 damage every 2 seconds." }
+  - { id: frost, name: Frost, kind: debuff, effect: "Each stack removes 2% Action Speed from every character." }
+  - { id: darkness, name: Darkness, kind: debuff, effect: "Each stack removes 5% Accuracy from every character." }
+  - { id: laceration, name: Laceration, kind: debuff, effect: "Each stack raises attackers' Stamina cost by 2%." }
