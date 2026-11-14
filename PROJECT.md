@@ -11,10 +11,10 @@ lib/**         ─┘          │
                            └─► .zensical.generated.toml (zensical.toml + nav + paths)
 ```
 
-1. `catalog.load()` reads every YAML file, checks ids, types and vocabularies, and flags catalogs whose `verified_for` is behind the current season.
+1. `catalog.load()` reads every YAML file and checks ids, types and vocabularies.
 2. `Generator.run()` copies `lib/` into `generated-docs/` and, on the way:
    - expands ` ```board ` fences into HTML diagrams (`render.board`);
-   - gives each `lib/units/<id>.md` its title and header card from the catalog (`render.unit_card`);
+   - lays out each `lib/units/<id>.md` guide with its header, summary and generated sections (`render.unit_guide`);
    - replaces `<!-- swg:season -->` on any page with the current-season block;
    - writes the catalog pages: `units/index.md`, `reference/*.md`, `seasons.md`, `builds/index.md`.
 3. The nav is generated from folders and front matter, merged into a copy of `zensical.toml`, and handed to `zensical build`.
@@ -24,8 +24,6 @@ lib/**         ─┘          │
 ## Design decisions
 
 **One source of truth.** A unit's name and price live only in `content/units.yaml`. Guides, builds and tables look them up, so a price change is one edit.
-
-**Stale data is visible.** Each price catalog records the season it was last verified for. When a new season is added, the build warns and the Units, Gear and Tiles pages show a notice until someone rechecks and bumps `verified_for`.
 
 **Content files stay free of markup.** Shared HTML lives in `swg_site/render.py` and styles in `lib/styles/extra.css`. Guide authors write Markdown and YAML only.
 

@@ -17,58 +17,58 @@ What the build is trying to do, and why it works.
 
 ## Core
 
-<!-- The pieces that make the build, drawn as a team card:
-one column per unit (role chip, name, footprint, grade, price, note, gear), the tiles in a
-row underneath, and the total in the header.
+<!-- The team that makes the build, drawn as a team card: one column per member (role chip,
+name, portrait or footprint, grade, price, note, gear), the tiles in a row underneath, and the
+total in the header. Delete any line you don't need; only unit and tile are required.
 
-  context   optional, small text above the name (a mode or progression stage)
-  floor     optional, 7 rows of 7: where the tiles go. "." is empty, a letter per piece.
-  layout    optional, 7 rows of 7: where the units stand. With floor, units stand on tiles.
-            Either one draws the 7x7 board in the card's header. The Board planner
-            (Tools) writes both for you: lay out the board and press "Copy board block".
-  pieces    each letter's unit or tile id
-  gear      a unit's letter -> gear ids
-  roles     a unit's letter -> the short chip above it (default: Attacker, Support or
-            Defender, from its tags). Chip colour follows the tags too.
-  details   any letter -> one short note under that unit or tile
-  notes     a tip at the bottom of the card
-  total     false hides the token total, for "pick one of these" lists -->
+  name, summary   title and one line under it
+  context         optional, small text above the name
+  season          the season it's written for
+  members         the units, in the order they show on the card
+    unit          unit id from content/units.yaml
+    role          the chip above the unit, like "Poison / Attacker". Default: Attacker,
+                  Support or Defender from the unit's tags
+    archetype     chip colour: dps (red), support (green) or tank (blue). Default: from tags
+    note          one short line under the unit
+    gear          gear ids from content/gear.yaml
+    at, turn      optional: where it stands on the 7x7 board, [row, column] counted from 1
+                  at the top left (the top-left corner of the rectangle around the
+                  footprint), and how many quarter turns clockwise it's rotated
+  tiles           the tiles
+    tile          tile id from content/tiles.yaml
+    count         how many, if more than one
+    note          one short line
+    at, turn      optional, as above; for several copies, a list: at: [[1, 1], [5, 5]]
+  notes           a tip at the bottom of the card
+  total: false    hides the token total, for "pick one of these" lists
+
+Give pieces an "at" and the card draws the board; units must stand on tiles. The easiest
+way to get positions is the Board planner (Tools): lay out the board, press "Copy board
+block" and paste it here. -->
 
 ```board
 name: Build name
 context: Optional context
 season: s3
 summary: One line under the name.
-floor: |
-  AA.....
-  AA.....
-  P......
-  .CC....
-  CC.....
-  .......
-  .......
-layout: |
-  D......
-  DD.....
-  D......
-  .EE....
-  .......
-  .......
-  .......
-pieces:
-  A: basic-tile
-  P: protection-tile
-  C: curse-tile
-  D: liatris-rodevs-star
-  E: celia-the-curse
-gear:
-  D: [knights-sword]
-roles:
-  D: Main attacker
-  E: Poison / Debuffer
-details:
-  D: Only attacker. Every token in gear goes here.
-  E: On the Curse Tile, for extra debuffs.
+members:
+  - unit: liatris-rodevs-star
+    role: Main attacker
+    note: Only attacker. Every token in gear goes here.
+    gear: [knights-sword]
+    at: [1, 1]
+  - unit: celia-the-curse
+    role: Poison / Debuffer
+    note: On the Curse Tile, for extra debuffs.
+    at: [4, 3]
+tiles:
+  - tile: basic-tile
+    at: [1, 1]
+  - tile: protection-tile
+    note: 15 Energy Guard at battle start.
+    at: [3, 1]
+  - tile: curse-tile
+    at: [4, 2]
 notes: Optional tip shown at the bottom of the card.
 ```
 

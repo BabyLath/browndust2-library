@@ -44,24 +44,22 @@ Everything goes into one attacker. Most damage bonuses in the shop are flat (+2 
 name: Hypercarry
 season: s3
 summary: One attacker standing on three tiles, with a cheap support on armor.
-pieces:
-  A: rubia-thorn-of-the-desert
-  B: refithea-pure-white-blessing
-  C: attack-tile
-  D: efficiency-tile
-  E: acceleration-tile
-gear:
-  A: [knights-sword]
-  B: [mercenary-armor]
-roles:
-  A: Main attacker
-  B: Support
-details:
-  A: The cheapest of this season's strong damage dealers, leaving tokens for tiles.
-  B: 20 Energy Guard from armor, since she's a Utility character.
-  C: +2 DMG for the attacker standing inside.
-  D: Stamina cost −2, so fewer of the attacker's actions get skipped.
-  E: +10% Action Speed.
+members:
+  - unit: rubia-thorn-of-the-desert
+    role: Main attacker
+    note: The cheapest of this season's strong damage dealers, leaving tokens for tiles.
+    gear: [knights-sword]
+  - unit: refithea-pure-white-blessing
+    role: Support
+    note: 20 Energy Guard from armor, since she's a Utility character.
+    gear: [mercenary-armor]
+tiles:
+  - tile: attack-tile
+    note: +2 DMG for the attacker standing inside.
+  - tile: efficiency-tile
+    note: Stamina cost −2, so fewer of the attacker's actions get skipped.
+  - tile: acceleration-tile
+    note: +10% Action Speed.
 notes: A tile only affects characters inside it, so the attacker has to overlap all three. Check its footprint against the tile shapes before buying.
 ```
 
@@ -75,26 +73,23 @@ Win by being the last one standing. End Game hits both sides equally, so every p
 name: Stall
 season: s3
 summary: Armor on Utility characters, Protection Tiles under everything, and a Poison source to finish.
-pieces:
-  A: refithea-pure-white-blessing
-  B: liberta-onsen-manager
-  C: celia-the-curse
-  D: protection-tile
-  E: protection-tile
-  F: protection-tile
-gear:
-  A: [invulnerable-armor]
-  B: [mercenary-armor]
-  C: [knights-necklace]
-roles:
-  A: Wall
-  B: Healer / Wall
-  C: Poison
-details:
-  A: 80 Energy Guard from Invulnerable Armor, ten times what anyone else gets from it.
-  B: Heal tag, plus 20 Energy Guard from Mercenary Armor.
-  C: Damage that doesn't need Stamina. Knight's Necklace adds Poison on a Curse character.
-  D: 15 Energy Guard for 2 tokens, the best value in the shop.
+members:
+  - unit: refithea-pure-white-blessing
+    role: Wall
+    note: 80 Energy Guard from Invulnerable Armor, ten times what anyone else gets from it.
+    gear: [invulnerable-armor]
+  - unit: liberta-onsen-manager
+    role: Healer / Wall
+    note: Heal tag, plus 20 Energy Guard from Mercenary Armor.
+    gear: [mercenary-armor]
+  - unit: celia-the-curse
+    role: Poison
+    note: Damage that doesn't need Stamina. Knight's Necklace adds Poison on a Curse character.
+    gear: [knights-necklace]
+tiles:
+  - tile: protection-tile
+    count: 3
+    note: 15 Energy Guard for 2 tokens, the best value in the shop.
 notes: Check in game whether End Game damage hits Energy Guard first. If it goes straight to HP, this wall only protects against enemy attacks.
 ```
 
@@ -108,24 +103,22 @@ The current favourite. Stack Poison from several sources, bring one attacker for
 name: Poison
 season: s3
 summary: Three Poison sources plus a Curse Tile, around one attacker.
-pieces:
-  A: liatris-rodevs-star
-  B: celia-the-curse
-  C: refithea-pure-white-blessing
-  D: curse-tile
-gear:
-  A: [mercenary-staff]
-  B: [knights-necklace]
-  C: [mercenary-sword]
-roles:
-  A: Poison / Attacker
-  B: Poison / Debuffer
-  C: Poison / Opener
-details:
-  A: Mercenary Staff gives each hit a 50% chance to add 1 Poison.
-  B: 50% chance per cooldown to add Poison with Knight's Necklace.
-  C: Mercenary Sword on a non-attacker applies 3 Poison at battle start.
-  D: Put it under a unit with a short cooldown. 25% chance per cooldown to apply a random debuff.
+members:
+  - unit: liatris-rodevs-star
+    role: Poison / Attacker
+    note: Mercenary Staff gives each hit a 50% chance to add 1 Poison.
+    gear: [mercenary-staff]
+  - unit: celia-the-curse
+    role: Poison / Debuffer
+    note: 50% chance per cooldown to add Poison with Knight's Necklace.
+    gear: [knights-necklace]
+  - unit: refithea-pure-white-blessing
+    role: Poison / Opener
+    note: Mercenary Sword on a non-attacker applies 3 Poison at battle start.
+    gear: [mercenary-sword]
+tiles:
+  - tile: curse-tile
+    note: Put it under a unit with a short cooldown. 25% chance per cooldown to apply a random debuff.
 notes: Mercenary Sword and Mercenary Staff have identical effects. Buy whichever the shop offers.
 ```
 
@@ -139,18 +132,15 @@ Make the enemy's attackers act less often and miss more, then win with whatever 
 name: Lockdown
 season: s3
 summary: Frost from a support at battle start, Darkness from the attacker's hits.
-pieces:
-  A: liatris-rodevs-star
-  B: liberta-onsen-manager
-gear:
-  A: [heros-staff]
-  B: [knights-staff]
-roles:
-  A: Darkness / Attacker
-  B: Frost / Support
-details:
-  A: Each hit has a 50% chance to apply Darkness. Each stack is −5% enemy Accuracy.
-  B: Knight's Staff on a non-attacker applies 4 Frost at battle start, −8% enemy Action Speed.
+members:
+  - unit: liatris-rodevs-star
+    role: Darkness / Attacker
+    note: Each hit has a 50% chance to apply Darkness. Each stack is −5% enemy Accuracy.
+    gear: [heros-staff]
+  - unit: liberta-onsen-manager
+    role: Frost / Support
+    note: Knight's Staff on a non-attacker applies 4 Frost at battle start, −8% enemy Action Speed.
+    gear: [knights-staff]
 ```
 
 Weak point: it does no damage by itself. Full build: [Frost and Darkness lockdown](../builds/lockdown.md).

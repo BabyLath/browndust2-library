@@ -8,6 +8,19 @@ icon: lucide/history
 
 Newest first. Add a line here whenever you update data or pages.
 
+## November 12, 2026
+
+- Removed the season check notices ("Checked for…", "Not yet checked…", "Out of date") and the season flag on Last updated dates.
+- Removed the "Has a guide" filter from the Units table.
+- Board planner shows unit portraits on the board, in the unit list, in the piece details and in the list of placed pieces.
+- Bigger portraits in the Units table.
+- Board planner pieces look like the home page board: raised, rounded tiles with units standing on them, and selected pieces lift.
+- Board planner: moving a tile with units on it now carries the units along, plus any other tiles those units stand on.
+- Board planner chibis are all one size and stand on a single square of the unit's footprint: the middle one where there is one, otherwise the first.
+- Board planner: drag a piece from the board onto the list to remove it, with Undo. Copy link now always includes the plan, even after scrolling the page.
+- Board planner: no more letters on the pieces. The list of placed pieces shows each unit's colour and each tile's shape instead.
+- Board blocks use a list format: `members` (unit, role, note, gear) and `tiles` (tile, count, note), with optional `at` and `turn` for board positions. No more letter maps. Every board on the site was converted, and the Board planner exports the new format.
+
 ## November 9, 2026
 
 - New unit guide layout: a large header with tagline and roles, footprint and upgrade costs in the left column, tier-coloured rank boxes, stopping points, full-width sections, example builds in Tiles, Gear and Partner units columns, Suggested builds, Works well with, and Example boards.

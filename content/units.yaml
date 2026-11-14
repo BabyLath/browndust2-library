@@ -21,10 +21,6 @@
 # A unit's effect goes on its own page, lib/units/<id>.md, under "## Effect".
 # Run "uv run swg-new-unit <id>" to create that page from the template.
 
-# Bump verified_for when you've checked every price against the current season.
-# swg-check warns when this is behind the current season in seasons.yaml.
-
-verified_for: s3
 source: BD2 Tactical Compendium price table (page dated 2026-10-22)
 
 units:

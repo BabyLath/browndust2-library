@@ -6,7 +6,6 @@
 #   # is a filled square, . is an empty one. Copy it from the in-game Codex:
 #   "#" is 1x1, "##/##" is 2x2, "####" is 1x4, "##/#." is an L, "##./.##" is a Z.
 
-verified_for: s3
 
 tiles:
   - { id: acceleration-tile, name: Acceleration Tile, price: 3, shape: "##", effect: "Upon Battle Start: Increase Action Speed of Characters located inside by 10%." }

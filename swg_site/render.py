@@ -282,6 +282,135 @@ def unit_guide(cat: Catalog, uid: str, fm: dict, intro: str, sections: list[str]
 
 
 # ---------- board fence ----------
+ARCHETYPES = {"dps": "Attacker", "support": "Support", "tank": "Defender"}
+TEAM_KEYS = ["name", "context", "season", "summary", "members", "tiles", "notes", "total"]
+MEMBER_KEYS = ["unit", "role", "archetype", "note", "gear", "at", "turn"]
+TILE_KEYS = ["tile", "note", "count", "at", "turn"]
+
+
+def shape_cells(shape: str, turn: int = 0) -> list[tuple[int, int]]:
+    """Filled squares of a footprint, turned clockwise `turn` quarter turns, top-left at 0,0.
+    Same maths as the Board planner, so its exported positions land in the same place."""
+    rows = parse_shape(shape) or ["#"]
+    cells = [(r, c) for r, row in enumerate(rows) for c, ch in enumerate(row) if ch == "#"]
+    for _ in range(int(turn) % 4):
+        h = max(r for r, _ in cells) + 1
+        cells = [(c, h - 1 - r) for r, c in cells]
+    mr, mc = min(r for r, _ in cells), min(c for _, c in cells)
+    return [(r - mr, c - mc) for r, c in cells]
+
+
+def _suggest(word: str, pool) -> str:
+    import difflib
+    hit = difflib.get_close_matches(word, list(pool), n=1, cutoff=0.6)
+    return f" Did you mean '{hit[0]}'?" if hit else ""
+
+
+def normalize_board(cat: Catalog, spec: dict) -> tuple[dict, list[tuple[str, str]]]:
+    """Team format (members: and tiles: lists) -> the internal letter grid the renderer draws.
+    Returns the converted spec and a list of (message, "error" | "warning")."""
+    if "members" not in spec and "tiles" not in spec:
+        return spec, []
+    problems: list[tuple[str, str]] = []
+    out = {k: spec[k] for k in ("name", "context", "season", "summary", "notes", "total") if k in spec}
+    pieces, gear, roles, details, archetypes = {}, {}, {}, {}, {}
+    letters = iter("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+    placed: list[tuple[str, str, list, int, str]] = []  # (letter, kind, at, turn, label)
+
+    def positions(entry: dict, label: str) -> list:
+        at = entry.get("at")
+        if at is None:
+            return []
+        many = isinstance(at, list) and at and isinstance(at[0], list)
+        spots = at if many else [at]
+        good = []
+        for spot in spots:
+            if (not isinstance(spot, list) or len(spot) != 2 or not all(isinstance(x, int) for x in spot)
+                    or not all(1 <= x <= GRID for x in spot)):
+                problems.append((f"{label}: at should be [row, column], each 1 to {GRID}, not {spot}.", "error"))
+            else:
+                good.append(spot)
+        return good
+
+    for i, m in enumerate(spec.get("members") or [], 1):
+        if not isinstance(m, dict) or not m.get("unit"):
+            problems.append((f"member {i} needs a unit id (unit: …).", "error"))
+            continue
+        uid = str(m["unit"])
+        for k in m:
+            if k not in MEMBER_KEYS:
+                problems.append((f"member {i} ({uid}) has an unknown key '{k}'. Known keys: {', '.join(MEMBER_KEYS)}.", "warning"))
+        if uid not in cat.units:
+            problems.append((f"member {i}: '{uid}' isn't a unit id.{_suggest(uid, cat.units)}", "error"))
+            continue
+        ch = next(letters)
+        pieces[ch] = uid
+        g = m.get("gear") or []
+        gear[ch] = g if isinstance(g, list) else [g]
+        if m.get("role"): roles[ch] = str(m["role"])
+        if m.get("note"): details[ch] = str(m["note"])
+        if m.get("archetype"):
+            a = str(m["archetype"]).lower()
+            if a in ARCHETYPES: archetypes[ch] = a
+            else: problems.append((f"{uid}: archetype should be dps, support or tank, not '{a}'.", "error"))
+        spots = positions(m, uid)
+        if len(spots) > 1:
+            problems.append((f"{uid}: a unit has one position, at: [row, column].", "error"))
+        if spots:
+            placed.append((ch, "unit", spots[0], int(m.get("turn") or 0), uid))
+
+    for i, t in enumerate(spec.get("tiles") or [], 1):
+        if not isinstance(t, dict) or not t.get("tile"):
+            problems.append((f"tile {i} needs a tile id (tile: …).", "error"))
+            continue
+        tid = str(t["tile"])
+        for k in t:
+            if k not in TILE_KEYS:
+                problems.append((f"tile {i} ({tid}) has an unknown key '{k}'. Known keys: {', '.join(TILE_KEYS)}.", "warning"))
+        if tid not in cat.tiles:
+            problems.append((f"tile {i}: '{tid}' isn't a tile id.{_suggest(tid, cat.tiles)}", "error"))
+            continue
+        spots = positions(t, tid)
+        count = t.get("count")
+        if count is not None and (not isinstance(count, int) or count < 1):
+            problems.append((f"{tid}: count should be a whole number.", "error"))
+            count = None
+        if spots and count and count != len(spots):
+            problems.append((f"{tid}: count is {count} but at lists {len(spots)} position(s).", "warning"))
+        for n in range(max(len(spots), count or 1)):
+            ch = next(letters)
+            pieces[ch] = tid
+            if t.get("note"): details[ch] = str(t["note"])
+            if n < len(spots):
+                placed.append((ch, "tile", spots[n], int(t.get("turn") or 0), tid))
+
+    if placed:
+        floor = [["."] * GRID for _ in range(GRID)]
+        layout = [["."] * GRID for _ in range(GRID)]
+        for ch, kind, (r0, c0), turn, label in sorted(placed, key=lambda x: x[1] != "tile"):
+            pid = pieces[ch]
+            shape = (cat.tiles if kind == "tile" else cat.units)[pid].get("shape") or "#"
+            grid = floor if kind == "tile" else layout
+            for r, c in shape_cells(shape, turn):
+                rr, cc = r0 - 1 + r, c0 - 1 + c
+                if not (0 <= rr < GRID and 0 <= cc < GRID):
+                    problems.append((f"{label} at [{r0}, {c0}] runs off the board.", "error"))
+                    break
+                if grid[rr][cc] != ".":
+                    problems.append((f"{label} at [{r0}, {c0}] overlaps {pieces[grid[rr][cc]]} (row {rr + 1}, column {cc + 1}).", "error"))
+                    break
+                grid[rr][cc] = ch
+        unplaced = [label for label in [pieces[c] for c in pieces] if label not in {p[4] for p in placed}]
+        if unplaced:
+            problems.append((f"some pieces have no at: position, so they're listed but not drawn: {', '.join(sorted(set(unplaced)))}.", "warning"))
+        if any(ch != "." for row in floor for ch in row):
+            out["floor"] = "\n".join("".join(r) for r in floor)
+        out["layout"] = "\n".join("".join(r) for r in layout)
+    out.update({"pieces": pieces, "gear": {k: v for k, v in gear.items() if v}, "roles": roles,
+                "details": details, "archetypes": archetypes})
+    return out, problems
+
+
 def board(cat: Catalog, spec: dict, guides: set[str], prefix: str, portraits: dict | None = None) -> str:
     rows = [r.replace(" ", "") for r in str(spec.get("layout") or "").strip("\n").splitlines()]
     pieces: dict[str, str] = {str(k): str(v) for k, v in (spec.get("pieces") or {}).items()}
@@ -371,9 +500,10 @@ def board(cat: Catalog, spec: dict, guides: set[str], prefix: str, portraits: di
         return "support", "Support"
 
     lis = []
+    forced = {str(k): str(v) for k, v in (spec.get("archetypes") or {}).items()}
     for letter, pid, gear_ids, price, role, note in members:
         u = cat.units[pid]
-        arch, arch_label = archetype(u)
+        arch, arch_label = (forced[letter], ARCHETYPES[forced[letter]]) if letter in forced else archetype(u)
         hue = unit_letters.index(letter) % 6
         who = (f'<span class="swg-team__char">{e(u.get("character") or cat.unit_label(pid))}</span>'
                + (f'<span class="swg-team__costume">{e(u["costume"])}</span>' if u.get("costume") else ""))
@@ -386,8 +516,9 @@ def board(cat: Catalog, spec: dict, guides: set[str], prefix: str, portraits: di
             f'<li class="swg-team__member swg-team__member--{arch}">'
             f'<p class="swg-team__role">{e(role) if role else arch_label}</p>'
             f'<div class="swg-team__unit">'
-            f'<p class="swg-team__name"><span class="swg-key swg-cell--unit swg-hue-{hue}">{e(letter)}</span>'
-            f'<span>{name}</span></p>'
+            f'<p class="swg-team__name">'
+            + (f'<span class="swg-key swg-cell--unit swg-hue-{hue}">{e(letter)}</span>' if rows else "")
+            + f'<span>{name}</span></p>'
             + (f'<span class="swg-team__frame swg-team__frame--portrait"><img src="{prefix}{portraits[pid]}" alt="" loading="lazy" decoding="async"></span>'
                if portraits and pid in portraits else
                f'<span class="swg-team__frame">{framed_shape(u.get("shape") or "", cat.unit_label(pid))}</span>')
@@ -434,17 +565,6 @@ def board(cat: Catalog, spec: dict, guides: set[str], prefix: str, portraits: di
 
 
 # ---------- generated reference pages ----------
-def _staleness(cat: Catalog, fname: str) -> str:
-    ver = cat.verified.get(fname)
-    cur = cat.current_season
-    if ver == cur["id"]:
-        return f'!!! success "Checked for {e(cur["name"])}"\n'
-    vs = cat.season(ver or "")
-    return (f'!!! warning "Not yet checked for {e(cur["name"])}"\n'
-            f'    These values were last confirmed for {e(vs["name"]) if vs else "an earlier season"}. '
-            f'{e(cur["name"])} changed costs on some pieces, so some prices below may be off.\n')
-
-
 def _thumb(uid: str, portraits: dict) -> str:
     """Small portrait at the start of a Units table row. Rows without one keep an empty frame,
     so names still line up."""
@@ -467,7 +587,7 @@ def units_page(cat: Catalog, guides: set[str], portraits: dict | None = None) ->
         name = f'<a href="{uid}/">{e(u["costume"])}</a>' if has else e(u["costume"])
         rows.append(
             f'<tr data-search="{e(search_text(u["character"], u["costume"]))}" data-price="{p}" '
-            f'data-grade="{e(u.get("grade") or "")}" data-tags="{e("|".join(u.get("tags") or []))}" data-guide="{int(has)}">'
+            f'data-grade="{e(u.get("grade") or "")}" data-tags="{e("|".join(u.get("tags") or []))}">'
             f'<td class="swg-unit-char">{_thumb(uid, portraits) if portraits else ""}{e(u["character"])}</td><td class="swg-unit-costume">{name}</td>'
             + (f'<td class="swg-fit swg-unit-shape">{shape_svg(u.get("shape") or "", unit_name, 10, 2) or "<span class=swg-missing>–</span>"}</td>' if has_shape else "")
             + (f'<td>{grade_badge(u.get("grade") or "")}</td>' if has_grade else "")
@@ -486,7 +606,6 @@ hide:
 
 # Units
 
-{_staleness(cat, "units.yaml")}
 Prices are in Soul Tokens. **On sale** is the 10%-chance half-price offer. **Sells for** is what you get back. **Upgrades** (switch it on above the table) lists the cost of each upgrade from +1 to +5, then their total; you can't upgrade past the level the unit has on your main roster. Names with a link have a full guide, including the unit's effect.
 
 <div class="swg-filter" data-target="swg-units" markdown="0">
@@ -495,7 +614,6 @@ Prices are in Soul Tokens. **On sale** is the 10%-chance half-price offer. **Sel
   {f'<label>Tag<select data-f="tag"><option value="">Any</option>{tags}</select></label>' if has_tags else ''}
   <label>Max price<input type="number" data-f="max" min="1" max="30" placeholder="Any"></label>
   <div class="swg-filter__opts">
-    <label class="swg-check"><input type="checkbox" data-f="guide"> Has a guide</label>
     {'<label class="swg-check"><input type="checkbox" data-toggle="swg-show-up"> Show upgrade costs</label>' if has_up else ''}
     <output data-count aria-live="polite"></output>
   </div>
@@ -578,7 +696,6 @@ description: {desc}
 
 # {title}
 
-{_staleness(cat, fname)}
 {note}
 <div class="swg-table" markdown="0">
 <table{f' class="{table_class}"' if table_class else ''}>
@@ -708,7 +825,7 @@ def season_card(cat: Catalog, prefix: str = "", strategy_link: bool = True) -> s
 
 
 # ---------- board planner ----------
-def planner(cat: Catalog, guides: set[str], plain) -> str:
+def planner(cat: Catalog, guides: set[str], plain, portraits: dict | None = None) -> str:
     """Mount point and data for the board planner (lib/javascripts/planner.js)."""
     import json
     data = {
@@ -716,7 +833,9 @@ def planner(cat: Catalog, guides: set[str], plain) -> str:
         "season": cat.current_season["name"],
         "seasonId": cat.current_season["id"],
         "units": [{"id": uid, "name": cat.unit_label(uid), "price": u["price"], "grade": u.get("grade") or "",
-                   "tags": u.get("tags") or [], "shape": u.get("shape") or "#", "guide": uid in guides}
+                   "tags": u.get("tags") or [], "shape": u.get("shape") or "#", "guide": uid in guides,
+                   # the planner lives at tools/planner/, two folders below the site root
+                   **({"img": "../../" + portraits[uid]} if portraits and uid in portraits else {})}
                   for uid, u in cat.units.items() if u.get("shape") and parse_shape(u["shape"])],
         "tiles": [{"id": tid, "name": t["name"], "price": t["price"], "shape": t.get("shape") or "#",
                    "effect": plain(str(t.get("effect") or "")).strip()}

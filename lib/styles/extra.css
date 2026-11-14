@@ -459,7 +459,6 @@
 
 /* ---------- last updated line (from git history) ---------- */
 .md-typeset .swg-updated { margin-top: 3rem; padding-top: .6rem; border-top: 1px solid var(--swg-rule); font-size: .78rem; color: var(--swg-muted); }
-.md-typeset .swg-updated__old { color: var(--swg-ink); font-weight: 700; }
 .md-typeset .swg-unknown { display: inline-block; min-width: 1.2em; text-align: center; color: var(--swg-muted); font-weight: 700; cursor: help; }
 .md-typeset .swg-table tfoot th { border-top: 1px solid var(--swg-rule-strong); font-weight: 700; }
 .md-typeset .swg-rewards-sum { margin-top: .8rem; }
@@ -506,34 +505,57 @@
 .md-typeset .swg-pl-status { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .7rem; min-height: 2.1rem; margin-top: .6rem; font-size: .85rem; }
 .md-typeset .swg-pl-hint { color: var(--swg-muted); }
 
+/* The planner board looks like the home page board: a gridded tray with raised, rounded
+   pieces. Tiles are the paper-coloured pieces; units are coloured pieces standing on them,
+   a little smaller and lifted, so the tile shows as a rim around each unit.
+   Each square draws its part of a piece; e-t/e-b/e-l/e-r mark the piece's outer edges,
+   which get a gap, rounded corners and (at the bottom) the darker lip that sells the 3D. */
 .swg-pl-board {
-  display: grid; grid-template-rows: repeat(7, 1fr); aspect-ratio: 1; max-width: 30rem;
-  background: var(--swg-field); border: 1px solid var(--swg-rule); border-radius: var(--swg-r); padding: 4px;
+  --pl-gap: 2px; --pl-rim: 5px; --pl-r: 6px;
+  display: grid; grid-template-rows: repeat(7, 1fr); aspect-ratio: 1; max-width: 30rem; padding: 6px;
+  background: var(--swg-surface); border: 1px solid var(--swg-rule); border-radius: 12px;
+  background-image: linear-gradient(var(--swg-rule) 1px, transparent 1px), linear-gradient(90deg, var(--swg-rule) 1px, transparent 1px);
+  background-size: calc((100% - 12px) / 7) calc((100% - 12px) / 7); background-position: 6px 6px;
 }
 .swg-pl-row { display: grid; grid-template-columns: repeat(7, 1fr); }
 .md-typeset .swg-planner .swg-pl-cell {
-  position: relative; padding: 0; height: auto; margin: 1px; border: 1px dashed var(--swg-rule); border-radius: 0;
+  position: relative; padding: 0; height: auto; margin: 0; border: 0; border-radius: 0;
   background: transparent; min-width: 0; min-height: 0;
 }
-.md-typeset .swg-planner .swg-pl-cell:hover { border-color: var(--swg-field-edge); }
-/* the tile is drawn on ::before so a unit on top can cover the whole square, edges included */
-.md-typeset .swg-planner .swg-pl-cell.has-tile { margin: 0; border: 0; }
-.swg-pl-cell.has-tile::before { content: ""; position: absolute; inset: 0; background: var(--md-default-fg-color--lighter); border: 0 solid var(--swg-field); }
-.swg-pl-cell.has-tile.e-t::before { border-top-width: 3px; } .swg-pl-cell.has-tile.e-b::before { border-bottom-width: 3px; }
-.swg-pl-cell.has-tile.e-l::before { border-left-width: 3px; } .swg-pl-cell.has-tile.e-r::before { border-right-width: 3px; }
-.swg-pl-cell.has-tile.is-selected::before { background: var(--swg-field-edge); }
-.swg-pl-cell > i { z-index: 1; position: absolute; right: 3px; bottom: 1px; font-size: .65rem; font-style: normal; font-weight: 700; color: var(--swg-ink); }
-.swg-pl-unit { position: absolute; inset: 0; z-index: 1; border: 0 solid var(--swg-field); }
-.swg-pl-unit.e-t { border-top-width: 4px; } .swg-pl-unit.e-b { border-bottom-width: 4px; }
-.swg-pl-unit.e-l { border-left-width: 4px; } .swg-pl-unit.e-r { border-right-width: 4px; }
+.md-typeset .swg-planner .swg-pl-cell:not(.has-tile):hover { background: color-mix(in srgb, var(--swg-ink) 6%, transparent); border-radius: 4px; }
+
+/* tile: a paper piece */
+.swg-pl-cell.has-tile::before {
+  content: ""; position: absolute; inset: 0; background: var(--swg-plain);
+  border: 0 solid var(--swg-plain-edge); transition: transform .12s ease;
+}
+.swg-pl-cell.has-tile.e-t::before { top: var(--pl-gap); border-top-width: 1px; }
+.swg-pl-cell.has-tile.e-l::before { left: var(--pl-gap); border-left-width: 1px; }
+.swg-pl-cell.has-tile.e-r::before { right: var(--pl-gap); border-right-width: 1px; }
+.swg-pl-cell.has-tile.e-b::before { bottom: var(--pl-gap); border-bottom: 3px solid rgba(0, 0, 0, .2); }
+.swg-pl-cell.has-tile.e-t.e-l::before { border-top-left-radius: var(--pl-r); }
+.swg-pl-cell.has-tile.e-t.e-r::before { border-top-right-radius: var(--pl-r); }
+.swg-pl-cell.has-tile.e-b.e-l::before { border-bottom-left-radius: var(--pl-r); }
+.swg-pl-cell.has-tile.e-b.e-r::before { border-bottom-right-radius: var(--pl-r); }
+.swg-pl-cell.has-tile.is-selected::before { transform: translateY(-3px); box-shadow: 0 3px 0 rgba(0, 0, 0, .25); }
+.swg-pl-cell.has-tile.is-selected:not(.e-b)::before { box-shadow: none; }
+
+/* unit: a coloured piece on top, inset by the rim and lifted with a drop shadow */
+.swg-pl-unit { position: absolute; inset: 0; border: 0 solid transparent; transition: transform .12s ease; }
+.swg-pl-unit.e-t { top: var(--pl-rim); } .swg-pl-unit.e-l { left: var(--pl-rim); }
+.swg-pl-unit.e-r { right: var(--pl-rim); }
+.swg-pl-unit.e-b { bottom: var(--pl-rim); border-bottom: 3px solid rgba(0, 0, 0, .22); box-shadow: 0 3px 0 rgba(0, 0, 0, .28); }
+.swg-pl-unit.e-t.e-l { border-top-left-radius: var(--pl-r); } .swg-pl-unit.e-t.e-r { border-top-right-radius: var(--pl-r); }
+.swg-pl-unit.e-b.e-l { border-bottom-left-radius: var(--pl-r); } .swg-pl-unit.e-b.e-r { border-bottom-right-radius: var(--pl-r); }
 .swg-pl-unit.swg-hue-0 { background: var(--swg-h0); } .swg-pl-unit.swg-hue-1 { background: var(--swg-h1); }
 .swg-pl-unit.swg-hue-2 { background: var(--swg-h2); } .swg-pl-unit.swg-hue-3 { background: var(--swg-h3); }
 .swg-pl-unit.swg-hue-4 { background: var(--swg-h4); } .swg-pl-unit.swg-hue-5 { background: var(--swg-h5); }
-.swg-pl-unit.is-selected { border-color: var(--swg-piece-ink); }
-.swg-pl-unit b { position: absolute; top: 2px; left: 4px; font-size: .75rem; color: var(--swg-piece-ink); }
+.swg-pl-unit.is-selected { transform: translateY(-3px); }
+.swg-pl-unit.is-selected.e-b { box-shadow: 0 6px 0 rgba(0, 0, 0, .3); }
+@media (prefers-reduced-motion: reduce) { .swg-pl-unit, .swg-pl-cell.has-tile::before { transition: none; } }
 /* placement preview */
 .md-typeset .swg-planner .swg-pl-cell.is-ok::after, .md-typeset .swg-planner .swg-pl-cell.is-bad::after {
-  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  content: ""; position: absolute; inset: 1px; z-index: 2; pointer-events: none; border-radius: 4px;
 }
 .md-typeset .swg-planner .swg-pl-cell.is-ok::after { background: color-mix(in srgb, var(--swg-link) 35%, transparent); outline: 2px solid var(--swg-link); outline-offset: -2px; }
 .md-typeset .swg-planner .swg-pl-cell.is-bad::after { background: color-mix(in srgb, var(--swg-chart) 35%, transparent); outline: 2px solid var(--swg-chart); outline-offset: -2px; }
@@ -600,7 +622,7 @@
 .md-typeset .swg-pl-handle { align-self: stretch; display: grid; place-items: center; cursor: grab; touch-action: none; }
 .swg-planner.is-dragging, .swg-planner.is-dragging * { cursor: grabbing !important; -webkit-user-select: none; user-select: none; }
 .swg-pl-ghost { position: fixed; top: 0; left: 0; z-index: 1000; display: grid; pointer-events: none; opacity: .7; will-change: transform; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .3)); }
-.swg-pl-ghost > span.on { background: var(--md-default-fg-color--light); outline: 1px solid var(--swg-field); outline-offset: -1px; }
+.swg-pl-ghost > span.on { background: var(--swg-plain); border-radius: 4px; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .22); }
 .swg-pl-ghost > span.on.swg-hue-0 { background: var(--swg-h0); } .swg-pl-ghost > span.on.swg-hue-1 { background: var(--swg-h1); }
 .swg-pl-ghost > span.on.swg-hue-2 { background: var(--swg-h2); } .swg-pl-ghost > span.on.swg-hue-3 { background: var(--swg-h3); }
 .swg-pl-ghost > span.on.swg-hue-4 { background: var(--swg-h4); } .swg-pl-ghost > span.on.swg-hue-5 { background: var(--swg-h5); }
@@ -824,9 +846,36 @@
 /* portraits in Partner units / Works well with: square crop from the top, like an avatar */
 .md-typeset .swg-guide__fig--portrait .swg-guide__frame img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 /* Units table thumbnail */
-.md-typeset .swg-thumb { display: inline-block; width: 1.9rem; height: 1.9rem; margin: -.3rem .55rem -.3rem 0; vertical-align: middle; overflow: hidden; border-radius: 2px; background: #2b2c30; outline: 1px solid var(--swg-frame); outline-offset: -1px; }
+.md-typeset .swg-thumb { display: inline-block; width: 3.2rem; height: 3.8rem; margin: -.4rem .75rem -.4rem 0; vertical-align: middle; overflow: hidden; border-radius: 2px; background: #2b2c30; outline: 1px solid var(--swg-frame); outline-offset: -1px; }
 .md-typeset .swg-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
 .md-typeset .swg-thumb--empty { background: none; outline: 1px dashed var(--swg-rule); }
+@media (max-width: 960px) {
+  /* phone cards: thumbnail on the left, character and costume stacked beside it */
+  .md-typeset .swg-thumb { width: 2.8rem; height: 3.3rem; margin: 0 .7rem 0 0; flex: none; }
+  .md-typeset .swg-table table.swg-stack tr:has(.swg-thumb) td.swg-unit-char { display: flex; align-items: flex-start; padding-right: 0; }
+  .md-typeset .swg-table table.swg-stack tr:has(.swg-thumb) td.swg-unit-costume { display: block; margin: -2.1rem 0 .5rem 3.5rem; min-height: 1.6rem; }
+}
 /* team card portrait: same square frame as the footprint, cropped from the top */
 .md-typeset .swg-team__frame--portrait { overflow: hidden; }
 .md-typeset .swg-team__frame--portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 2px; }
+
+/* planner portraits */
+.swg-pl-board { position: relative; }
+.swg-pl-chibis { position: absolute; inset: 6px; pointer-events: none; z-index: 1; }
+.swg-pl-chibis img { position: absolute; object-fit: contain; object-position: center bottom; padding: 5px; box-sizing: border-box; }
+.swg-pl-ghost__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; }
+.md-typeset .swg-pl-chibi { display: inline-grid; place-items: center; width: 2.4rem; height: 2.8rem; overflow: hidden; border-radius: 2px; background: #2b2c30; flex: none; }
+.md-typeset .swg-pl-chibi img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.md-typeset .swg-pl-chibi.is-empty { background: none; outline: 1px dashed var(--swg-rule); outline-offset: -1px; }
+.md-typeset .swg-pl-chibi.is-large { width: 3.6rem; height: 4.3rem; }
+.md-typeset .swg-pl-chibi.is-small { width: 1.6rem; height: 1.9rem; }
+.md-typeset .swg-planner .swg-pl-item:has(.swg-pl-chibi) { grid-template-columns: 2.4rem 2.4rem minmax(0, 1fr) auto; }
+.md-typeset .swg-pl-detail__head { align-items: center; justify-content: flex-start; }
+.md-typeset .swg-pl-detail__head .swg-pl-price { margin-left: auto; }
+/* planner: drop a board piece on the list to remove it */
+.md-typeset .swg-pl-palette { border-radius: 8px; transition: background-color .12s ease, box-shadow .12s ease; }
+.md-typeset .swg-pl-drop-hint { display: none; margin: 0; padding: .5rem; text-align: center; font-size: .8rem; font-weight: 700; color: var(--swg-chart); }
+.swg-planner.is-dragging-board .swg-pl-palette .swg-pl-drop-hint { display: block; }
+.md-typeset .swg-pl-palette.is-drop-remove { background: color-mix(in srgb, var(--swg-chart) 12%, transparent); box-shadow: 0 0 0 2px var(--swg-chart); }
+.swg-pl-ghost.is-removing { opacity: .4; filter: grayscale(1); }
+.md-typeset .swg-pl-legend-shape { display: grid; place-items: center; width: 1.4rem; height: 1.4rem; flex: none; }

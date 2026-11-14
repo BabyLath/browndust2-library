@@ -15,24 +15,19 @@ Stack [[Energy Guard]] so your side outlasts End Game, then win on damage that k
 name: Energy Guard core
 season: s3
 summary: Armor on Utility characters, plus Protection Tiles wherever a unit needs floor.
-pieces:
-  A: refithea-pure-white-blessing
-  B: liberta-onsen-manager
-  C: protection-tile
-  D: protection-tile
-  E: protection-tile
-gear:
-  A: [invulnerable-armor]
-  B: [mercenary-armor]
-roles:
-  A: Wall
-  B: Healer / Wall
-details:
-  A: 80 Energy Guard from Invulnerable Armor at battle start.
-  B: Heals, plus 20 Energy Guard from Mercenary Armor.
-  C: 15 Energy Guard each, the best value in the shop.
-  D: 15 Energy Guard each, the best value in the shop.
-  E: 15 Energy Guard each, the best value in the shop.
+members:
+  - unit: refithea-pure-white-blessing
+    role: Wall
+    note: 80 Energy Guard from Invulnerable Armor at battle start.
+    gear: [invulnerable-armor]
+  - unit: liberta-onsen-manager
+    role: Healer / Wall
+    note: Heals, plus 20 Energy Guard from Mercenary Armor.
+    gear: [mercenary-armor]
+tiles:
+  - tile: protection-tile
+    count: 3
+    note: 15 Energy Guard each, the best value in the shop.
 notes: Armor is roughly ten times better on a Utility character. Invulnerable Armor gives 80 Energy Guard there and 8 on anyone else.
 ```
 

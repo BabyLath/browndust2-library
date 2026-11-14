@@ -15,18 +15,15 @@ Instead of out-damaging the enemy, make them hit less often and miss more. [[Fro
 name: Lockdown gear
 season: s3
 summary: Frost from a support at battle start, Darkness and more Frost from the attacker's hits.
-pieces:
-  A: liatris-rodevs-star
-  B: liberta-onsen-manager
-gear:
-  A: [heros-staff]
-  B: [knights-staff]
-roles:
-  A: Darkness / Attacker
-  B: Frost / Support
-details:
-  A: 50% chance per hit to apply 1 Darkness (−5% enemy Accuracy each).
-  B: 4 Frost at battle start (−8% enemy Action Speed).
+members:
+  - unit: liatris-rodevs-star
+    role: Darkness / Attacker
+    note: 50% chance per hit to apply 1 Darkness (−5% enemy Accuracy each).
+    gear: [heros-staff]
+  - unit: liberta-onsen-manager
+    role: Frost / Support
+    note: 4 Frost at battle start (−8% enemy Action Speed).
+    gear: [knights-staff]
 notes: Knight's Staff does different things depending on who holds it. On a support it applies 4 Frost at battle start; on an attacker it applies 1 Frost on half its hits.
 ```
 

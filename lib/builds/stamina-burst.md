@@ -15,20 +15,18 @@ Put everything into a single attacker and end the fight before End Game gets exp
 name: Burst core
 season: s3
 summary: One attacker standing on Attack, Efficiency and Acceleration Tiles, with damage gear.
-pieces:
-  A: rubia-thorn-of-the-desert
-  B: attack-tile
-  C: efficiency-tile
-  D: acceleration-tile
-gear:
-  A: [knights-sword]
-roles:
-  A: Main attacker
-details:
-  A: Stands on all three tiles. Knight's Sword adds +3 DMG from battle start.
-  B: +2 DMG to Attacking characters inside.
-  C: Stamina cost −2 per action.
-  D: +10% Action Speed at battle start.
+members:
+  - unit: rubia-thorn-of-the-desert
+    role: Main attacker
+    note: Stands on all three tiles. Knight's Sword adds +3 DMG from battle start.
+    gear: [knights-sword]
+tiles:
+  - tile: attack-tile
+    note: +2 DMG to Attacking characters inside.
+  - tile: efficiency-tile
+    note: Stamina cost −2 per action.
+  - tile: acceleration-tile
+    note: +10% Action Speed at battle start.
 notes: A tile only affects characters located inside it, so the attacker has to stand on all three. Check its footprint against the tile shapes before buying.
 ```
 

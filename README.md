@@ -25,10 +25,10 @@ uv sync --locked
 
 ```
 ERROR   lib/builds/poison-stack.md:10  piece A: 'celia-the-cures' isn't a unit or tile. Did you mean 'celia-the-curse'?
-WARNING content/units.yaml:9  verified_for is 's2' but the current season is 's3'. Recheck prices, then set verified_for: s3.
+WARNING lib/images/portraits  2 unit guide(s) have no portrait yet: dalvi-summer-vacation, justia-blood-glutton.
 ```
 
-Errors stop the build. Warnings don't, but they show up on the site too (the Units page shows a "not yet checked" notice until `verified_for` matches the current season).
+Errors stop the build. Warnings don't; they point out things worth filling in.
 
 Never edit `generated-docs/`, `site/` or `.zensical.generated.toml`. They're rebuilt every time.
 
@@ -55,7 +55,7 @@ Never edit `generated-docs/`, `site/` or `.zensical.generated.toml`. They're reb
 | Colours and fonts | top of `lib/styles/extra.css`. Font files live in `lib/fonts/` (self-hosted, so previews and the live site always match) |
 | Site name, links, footer | `zensical.toml` |
 | A page's sidebar icon | `icon: lucide/<name>` in its front matter; names from [lucide.dev](https://lucide.dev/icons) |
-| Current season strategy | `lib/guide/current-season.md`. Update it each season and change `season:` at the top; until you do, the check warns and the page says it's out of date |
+| Current season strategy | `lib/guide/current-season.md`. Rewrite it each season |
 | Alea Chip rewards and shop prices | `content/rewards.yaml`. Blank values show as ? on the page and the check lists them |
 | Board planner | Nothing to edit. It reads units, tiles and gear from `content/` on every build |
 | Hover definitions for terms | `includes/abbreviations.md` |
@@ -63,7 +63,7 @@ Never edit `generated-docs/`, `site/` or `.zensical.generated.toml`. They're reb
 | Unit tag icons | `lib/images/tags/<tag>.png`, e.g. `close-range-attack.png` |
 | Tile pictures | `lib/images/tiles/<tile-id>.png` (footprints come from `shape` in `content/tiles.yaml`) |
 | Gear icons | `lib/images/gear/<gear-id>.png` |
-| Unit portraits | `lib/images/portraits/<unit-id>.avif`, 168×200 or any image with that shape. Used on the unit's guide, as a thumbnail in the Units table, in Partner units and Works well with on other guides, and on board cards |
+| Unit portraits | `lib/images/portraits/<unit-id>.avif`, 168×200 or any image with that shape. Used on the unit's guide, as a thumbnail in the Units table, in Partner units and Works well with on other guides, on board cards, and in the Board planner. PNG or AVIF with a transparent background looks best on the planner board |
 | Site changelog | `lib/changelog.md` |
 
 The sidebar builds itself from these folders. Guide pages sort by `order:` in their front matter.
@@ -77,7 +77,7 @@ This is the routine that keeps the data current.
 1. Add the season to the end of `content/seasons.yaml` with its `start`, an `expected_end`, and a `changes` line per balance note. Link the official notice under `sources`.
 2. Set the previous season's `end`.
 3. Update changed prices, add new units to `content/units.yaml`, and add any new grade to `content/meta.yaml`.
-4. Once every price is checked, set `verified_for:` to the new season id in `units.yaml`, `gear.yaml` and `tiles.yaml`. The warnings and the site notice go away.
+4. Rewrite `lib/guide/current-season.md` for the new season.
 5. Add a line to `lib/changelog.md`.
 6. `uv run swg-check`, then commit.
 
@@ -198,46 +198,40 @@ name: Poison stack
 context: Optional, small text above the name
 season: s3
 summary: One line under the name.
-floor: |
-  AA.....
-  AA.....
-  P......
-  .CC....
-  CC.....
-  .......
-  .......
-layout: |
-  D......
-  DD.....
-  D......
-  .EE....
-  .......
-  .......
-  .......
-pieces:
-  A: basic-tile
-  P: protection-tile
-  C: curse-tile
-  D: liatris-rodevs-star
-  E: celia-the-curse
-gear:
-  D: [knights-sword]
-roles:
-  D: Main attacker
-details:
-  D: Only attacker. Every token in gear goes here.
-  C: Put it under Celia.
+members:
+  - unit: liatris-rodevs-star
+    role: Main attacker
+    note: Only attacker. Every token in gear goes here.
+    gear: [knights-sword]
+    at: [1, 1]
+  - unit: celia-the-curse
+    role: Poison / Debuffer
+    note: On the Curse Tile, for extra debuffs.
+    at: [4, 3]
+tiles:
+  - tile: basic-tile
+    at: [1, 1]
+  - tile: protection-tile
+    note: 15 Energy Guard at battle start.
+    at: [3, 1]
+  - tile: curse-tile
+    at: [4, 2]
 notes: Optional tip at the bottom of the card.
 ```
 ````
 
-- **`pieces`** maps each letter to a unit or tile id.
-- **`floor` and `layout`** are optional 7×7 grids, 7 rows of 7 characters with `.` for an empty square. `floor` holds the tiles and `layout` the units standing on them. Either one draws the board in the card's header. The easiest way to write them is the [Board planner](https://babylath.github.io/browndust2-library/tools/planner/): lay out the board, press **Copy board block** and paste it in. Leave both out to show just the pieces.
-- **`gear`** maps a unit's letter to a list of gear ids.
-- **`roles`** sets the chip above a unit, like `Poison / Attacker`. Without it the chip says Attacker, Support or Defender, based on the unit's tags. The chip's colour always follows the tags: red for attackers, green for supports, blue for defenders.
-- **`details`** is a short note under a unit or a tile.
+- **`members`** lists the units in the order they appear on the card. Only `unit` is required:
+  - `role`: the chip above the unit, like `Poison / Attacker`. Without it the chip says Attacker, Support or Defender, based on the unit's tags.
+  - `archetype`: the chip's colour, `dps` (red), `support` (green) or `tank` (blue). Without it the colour also follows the tags.
+  - `note`: a short line under the unit.
+  - `gear`: a list of gear ids.
+- **`tiles`** lists the tiles. Only `tile` is required. Add `count` for several copies and `note` for a short line.
+- **`at` and `turn`** are optional on any member or tile. `at` is the position on the 7×7 board as `[row, column]`, counted from 1 at the top left; it's the top-left corner of the rectangle around the piece's footprint after turning, which can be an empty corner for shapes like the Curse Tile. `turn` is how many quarter turns clockwise the piece is rotated. Several copies of a tile take a list: `at: [[1, 5], [7, 7]]`. If pieces have positions, the card draws the board in its header, and every unit needs tiles under it. Pieces without `at` are still listed, just not drawn.
+- **Getting positions:** the easiest way is the [Board planner](https://babylath.github.io/browndust2-library/tools/planner/). Lay out the board, press **Copy board block** and paste it in; it writes `at` and `turn` for you.
 - **`total: false`** hides the token total, for "pick one of these" lists.
-- Put the block at the start of a line, not inside a list or quote. `swg-check` flags misspelled keys and letters that aren't in `pieces`.
+- Put the block at the start of a line, not inside a list or quote.
+
+`swg-check` reports mistakes with the piece's name: unknown ids (with a suggestion), misspelled keys, pieces that overlap or run off the board, and units standing on empty squares. The card shows a small letter next to each unit's name to match it to the board drawing. Those letters are assigned automatically; you never write them.
 
 ## Contributing
 
@@ -253,5 +247,5 @@ notes: Optional tip at the bottom of the card.
 
 ## Last updated dates
 
-Every page except Home and the Changelog ends with "Last updated", taken from the last commit that changed its source file (for the Units, Gear, Tiles and Seasons pages, the YAML file). A date before the current season started is flagged. Files you've changed but not committed show today's date in a local preview. Outside a git repository the line is left out.
+Every page except Home and the Changelog ends with "Last updated", taken from the last commit that changed its source file (for the Units, Gear, Tiles and Seasons pages, the YAML file). Files you've changed but not committed show today's date in a local preview. Outside a git repository the line is left out.
 

@@ -18,7 +18,6 @@
 # Icon: put a picture at lib/images/gear/<id>.png (or .webp, .svg, .jpg) and it appears
 #   beside the name. Add "image: other-name.png" under a piece to use a different file name.
 
-verified_for: s2
 source: BD2 Tactical Compendium price table (page dated 2026-10-22)
 
 gear:

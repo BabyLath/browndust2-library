@@ -11,25 +11,25 @@ Pile debuffs, Poison above all, onto the enemy while enough sustain keeps you al
 ```board
 name: Damage dealers (pick one)
 season: s3
-total: false
 summary: All three have performed well. Running two at once usually drains the shared Stamina pool.
-pieces:
-  A: liatris-rodevs-star
-  B: rubia-thorn-of-the-desert
-  C: blade-apostle
+total: false
+members:
+  - unit: liatris-rodevs-star
+  - unit: rubia-thorn-of-the-desert
+  - unit: blade-apostle
 ```
 
 ```board
 name: Supports and debuffers
 season: s3
-total: false
 summary: Fill the rest of the board from these as the shop offers them.
-pieces:
-  A: celia-the-curse
-  B: refithea-pure-white-blessing
-  C: levia-overheat
-  D: liberta-onsen-manager
-  E: palette-shattered-dream
+total: false
+members:
+  - unit: celia-the-curse
+  - unit: refithea-pure-white-blessing
+  - unit: levia-overheat
+  - unit: liberta-onsen-manager
+  - unit: palette-shattered-dream
 notes: Watch the Stamina meter at the top of the formation screen. Every attacker draws from one pool.
 ```
 
@@ -48,24 +48,22 @@ Each [[Poison]] stack deals 1 damage every 2 seconds, so 10 stacks is 5 damage a
 name: Poison gear
 season: s3
 summary: Cheap gear that adds Poison on its own, on top of what the units apply.
-pieces:
-  A: celia-the-curse
-  B: liatris-rodevs-star
-  C: refithea-pure-white-blessing
-  D: curse-tile
-gear:
-  A: [knights-necklace]
-  B: [mercenary-staff]
-  C: [mercenary-sword]
-roles:
-  A: Poison / Debuffer
-  B: Poison / Attacker
-  C: Poison / Opener
-details:
-  A: Knight's Necklace on a Curse character, 50% chance per cooldown to add Poison.
-  B: Mercenary Staff, 50% chance per hit to add Poison.
-  C: Mercenary Sword on a non-attacker, 3 Poison at battle start.
-  D: 25% chance per cooldown to apply a random debuff to the unit standing on it.
+members:
+  - unit: celia-the-curse
+    role: Poison / Debuffer
+    note: Knight's Necklace on a Curse character, 50% chance per cooldown to add Poison.
+    gear: [knights-necklace]
+  - unit: liatris-rodevs-star
+    role: Poison / Attacker
+    note: Mercenary Staff, 50% chance per hit to add Poison.
+    gear: [mercenary-staff]
+  - unit: refithea-pure-white-blessing
+    role: Poison / Opener
+    note: Mercenary Sword on a non-attacker, 3 Poison at battle start.
+    gear: [mercenary-sword]
+tiles:
+  - tile: curse-tile
+    note: 25% chance per cooldown to apply a random debuff to the unit standing on it.
 notes: Mercenary Staff and Mercenary Sword have identical effects, so buy whichever the shop offers. Knight's Necklace only adds Poison on a Curse character; on anyone else it gives SP instead.
 ```
 

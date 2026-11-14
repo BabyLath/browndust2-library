@@ -232,11 +232,19 @@ class Generator:
             except yaml.YAMLError as ex:
                 self.err(path, line, f"board fence isn't valid YAML: {ex}")
                 return m.group(0)
-            self.validate_board(path, line, spec)
+            team = "members" in spec or "tiles" in spec
+            if team:
+                for k in spec:
+                    if k not in render.TEAM_KEYS:
+                        self.err(path, line, f"board block has an unknown key '{k}'.{suggest(str(k), render.TEAM_KEYS)}", "warning")
+                spec, problems = render.normalize_board(self.cat, spec)
+                for msg, level in problems:
+                    self.err(path, line, msg, level)
+            self.validate_board(path, line, spec, team)
             return render.board(self.cat, spec, self.guides, prefix, self.portraits)
         return FENCE_RE.sub(repl, body)
 
-    def validate_board(self, path: Path, line: int, spec: dict):
+    def validate_board(self, path: Path, line: int, spec: dict, team: bool = False):
         cat = self.cat
         rows = [r.replace(" ", "") for r in str(spec.get("layout") or "").strip("\n").splitlines()]
         if rows and len(rows) != render.GRID or any(len(r) != render.GRID for r in rows):
@@ -258,11 +266,12 @@ class Generator:
                         self.err(path, line, f"'{f}' is a unit; with a floor, units go in layout, not floor.")
                         return
                     if u != "." and f == ".":
-                        self.err(path, line, f"unit '{u}' stands on an empty square (row {r + 1}, column {c + 1}); every unit square needs a tile under it.", "warning")
+                        who = pieces.get(u, u) if team else f"unit '{u}'"
+                        self.err(path, line, f"{who} stands on an empty square (row {r + 1}, column {c + 1}); every unit square needs a tile under it.", "warning")
                         break
         for ch in sorted(used - pieces.keys()):
             self.err(path, line, f"layout uses '{ch}' but pieces doesn't say what it is.")
-        for ch in sorted(pieces.keys() - used if rows else []):
+        for ch in sorted(pieces.keys() - used if rows and not team else []):
             self.err(path, line, f"piece '{ch}' isn't placed in the layout or floor.", "warning")
         for ch, pid in pieces.items():
             if pid in cat.units and pid in cat.tiles:
@@ -277,7 +286,7 @@ class Generator:
         if spec.get("season") and not cat.season(str(spec["season"])):
             self.err(path, line, f"unknown season '{spec['season']}'.{suggest(str(spec['season']), [s['id'] for s in cat.seasons])}")
         known = ["name", "context", "season", "summary", "floor", "layout", "pieces", "gear", "roles", "details", "notes", "total"]
-        for k in spec:
+        for k in ([] if team else spec):
             if k not in known:
                 self.err(path, line, f"board block has an unknown key '{k}'.{suggest(str(k), known)}", "warning")
         for key in ("roles", "details"):
@@ -302,10 +311,9 @@ class Generator:
 
         body = self.expand_boards(src, body, fm_lines, prefix)
         body = body.replace("<!-- swg:season -->", render.season_card(self.cat, prefix, rel.as_posix() != "guide/current-season.md"))
-        body = self.season_notice(src, fm, body)
         extra_sources = []
         if "<!-- swg:planner -->" in body:
-            body = body.replace("<!-- swg:planner -->", render.planner(self.cat, self.guides, self.plain))
+            body = body.replace("<!-- swg:planner -->", render.planner(self.cat, self.guides, self.plain, self.portraits))
             extra_sources += [LIB.parent / "content" / n for n in ("units.yaml", "tiles.yaml", "gear.yaml")]
         if "<!-- swg:rewards -->" in body:
             body = body.replace("<!-- swg:rewards -->", self.rewards_block())
@@ -397,37 +405,13 @@ class Generator:
         return "\n\n".join(out)
 
     def updated_line(self, *sources: Path) -> str:
-        """'Last updated' line from the newest of the given source files, flagged if it predates the current season."""
+        """'Last updated' line from the newest commit that touched any of the given source files."""
         dates = [self.edited.get(p.resolve().relative_to(LIB.parent.resolve()).as_posix()) for p in sources]
         dates = [d for d in dates if d]
         if not dates:
             return ""
         d = max(dates)
-        season = next((x for x in reversed(self.cat.seasons) if x["start"] <= d), None)
-        now = self.cat.current_season
-        old = f' <span class="swg-updated__old">Before {e(now["name"])} started.</span>' if d < now["start"] else ""
-        when = f' <span class="swg-updated__season">({e(season["name"])})</span>' if season and not old else ""
-        return f'\n\n<p class="swg-updated" markdown="0">Last updated <time datetime="{d.isoformat()}">{render.fmt_date(d)}</time>{when}.{old}</p>\n'
-
-    def season_notice(self, src: Path, fm: dict, body: str) -> str:
-        """Pages with `season:` in front matter are about one season. Warn (and tell readers) once it's over."""
-        sid = fm.get("season")
-        if not sid:
-            return body
-        written = self.cat.season(str(sid))
-        if not written:
-            self.err(src, 1, f"unknown season '{sid}'.{suggest(str(sid), [x['id'] for x in self.cat.seasons])}")
-            return body
-        now = self.cat.current_season
-        if written["id"] == now["id"]:
-            return body
-        self.err(src, 1, f"written for {written['name']}, but the current season is {now['name']}. "
-                 f"Update the page, then set season: {now['id']}.", "warning")
-        note = (f'!!! warning "Out of date"\n    This page was written for {written["name"]}. '
-                f'{now["name"]} has started, so some of it may no longer apply.\n\n')
-        # put the notice right after the page's # heading
-        m = re.search(r"^# .*\n", body, re.M)
-        return body[:m.end()] + "\n" + note + body[m.end():] if m else note + body
+        return f'\n\n<p class="swg-updated" markdown="0">Last updated <time datetime="{d.isoformat()}">{render.fmt_date(d)}</time>.</p>\n'
 
     def unit_guide(self, src: Path, fm: dict, body: str) -> str:
         cat = self.cat

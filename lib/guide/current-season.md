@@ -3,9 +3,6 @@ title: Current season strategy
 description: Just tell me what to run. The team, what to buy, and what to skip this season.
 order: 0
 icon: lucide/target
-# The season this page is written for. When a new season starts, swg-check warns and the
-# page shows an "Out of date" notice until you update it and change this to the new id.
-season: s3
 ---
 
 # Current season strategy
@@ -28,31 +25,29 @@ This is the finished board you're building toward. You won't have it in Phase 1;
 name: Season 3 Poison
 season: s3
 summary: One attacker, three Poison sources, one healer.
-pieces:
-  A: liatris-rodevs-star
-  B: celia-the-curse
-  C: refithea-pure-white-blessing
-  D: liberta-onsen-manager
-  E: curse-tile
-  F: protection-tile
-  G: protection-tile
-gear:
-  A: [mercenary-staff]
-  B: [knights-necklace]
-  C: [mercenary-sword]
-  D: [mercenary-armor]
-roles:
-  A: Poison / Attacker
-  B: Core / Debuffer
-  C: Poison / Opener
-  D: Healer
-details:
-  A: Your only attacker. Swap in Rubia if she shows up first; same gear.
-  B: Poison on half her cooldowns. Buy her on sight.
-  C: 3 Poison the moment the battle starts.
-  D: Heals, plus 20 Energy Guard from the armor.
-  E: Put it under Celia. Extra random debuffs.
-  F: Cheap floor with 15 Energy Guard. Use them under any 1×1 unit.
+members:
+  - unit: liatris-rodevs-star
+    role: Poison / Attacker
+    note: Your only attacker. Swap in Rubia if she shows up first; same gear.
+    gear: [mercenary-staff]
+  - unit: celia-the-curse
+    role: Core / Debuffer
+    note: Poison on half her cooldowns. Buy her on sight.
+    gear: [knights-necklace]
+  - unit: refithea-pure-white-blessing
+    role: Poison / Opener
+    note: 3 Poison the moment the battle starts.
+    gear: [mercenary-sword]
+  - unit: liberta-onsen-manager
+    role: Healer
+    note: Heals, plus 20 Energy Guard from the armor.
+    gear: [mercenary-armor]
+tiles:
+  - tile: curse-tile
+    note: Put it under Celia. Extra random debuffs.
+  - tile: protection-tile
+    count: 2
+    note: Cheap floor with 15 Energy Guard. Use them under any 1×1 unit.
 notes: Mercenary Sword and Mercenary Staff do the same thing. Buy whichever the shop has and give the first one to your attacker.
 ```
 

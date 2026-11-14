@@ -178,12 +178,4 @@ def load() -> Catalog:
     cat = Catalog(meta, units, gear, tiles, statuses, seasons,
                   verified={"units.yaml": uv, "gear.yaml": gv, "tiles.yaml": tv}, problems=problems)
 
-    # staleness: the reason this check exists
-    if seasons:
-        cur = cat.current_season["id"]
-        for fname, ver in cat.verified.items():
-            if ver != cur:
-                problems.append(Problem(CONTENT / fname, _line_of(CONTENT / fname, "verified_for: "),
-                    f"verified_for is '{ver}' but the current season is '{cur}'. Recheck prices, then set verified_for: {cur}.",
-                    level="warning"))
     return cat
