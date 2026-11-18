@@ -1,13 +1,61 @@
 {% extends "base.html" %}
 {#- Page titles read "Page | BrownDust II Library"; the home page shows just the site name. -#}
+{#- (Zensical doesn't set page.is_homepage, so the home page is the one whose address is the site's.) -#}
 {% block htmltitle %}
-  {% if page.is_homepage %}<title>{{ config.site_name }}</title>
-  {% else %}<title>{{ page.title | striptags }} | {{ config.site_name }}</title>{% endif %}
+  {%- set is_home = page.is_homepage or page.canonical_url == config.site_url %}
+  {%- set name = page.title | striptags if page.title else "" %}
+  {% if is_home or not name %}<title>{{ config.site_name }}</title>
+  {% else %}<title>{{ name }} | {{ config.site_name }}</title>{% endif %}
 {% endblock %}
 
 {#- The theme adds the PNG favicon from zensical.toml. These add the SVG for browsers
-    that prefer it and the icon iOS uses for home-screen bookmarks. -#}
+    that prefer it and the icon iOS uses for home-screen bookmarks.
+    Then the link preview Discord, Reddit and X show when someone pastes a page's address:
+    unit guides use the unit's portrait (front matter `image`, written by swg-build), every
+    other page the site card, lib/images/social-card.png (1200 x 630). -#}
 {% block extrahead %}
   <link rel="icon" type="image/svg+xml" href="{{ 'images/logo.svg' | url }}">
   <link rel="apple-touch-icon" href="{{ 'images/apple-touch-icon.png' | url }}">
+  {%- set is_home = page.is_homepage or page.canonical_url == config.site_url %}
+  {%- set og_title = config.site_name if is_home or not page.title else (page.title | striptags) %}
+  {%- set og_desc = page.meta.description if page.meta and page.meta.description else config.site_description %}
+  {%- set og_own = page.meta and page.meta.image %}
+  {%- set og_image = config.site_url ~ (page.meta.image if og_own else "images/social-card.png") %}
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ config.site_name }}">
+  <meta property="og:title" content="{{ og_title }}">
+  <meta property="og:description" content="{{ og_desc }}">
+  {%- if page.canonical_url %}
+  <meta property="og:url" content="{{ page.canonical_url }}">
+  {%- endif %}
+  <meta property="og:image" content="{{ og_image }}">
+  {%- if og_own %}
+  <meta property="og:image:width" content="300">
+  <meta property="og:image:height" content="300">
+  <meta property="og:image:alt" content="Portrait of {{ og_title }}">
+  <meta name="twitter:card" content="summary">
+  {%- else %}
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="BrownDust II Library: unit prices, builds and a board planner for The Soul Wager">
+  <meta name="twitter:card" content="summary_large_image">
+  {%- endif %}
+  <meta name="twitter:title" content="{{ og_title }}">
+  <meta name="twitter:description" content="{{ og_desc }}">
+  <meta name="twitter:image" content="{{ og_image }}">
+  {%- if config.extra.goatcounter %}
+  {#- Visitor stats (extra.goatcounter in zensical.toml). Loaded only on the live site's own
+      address, so previews on your computer don't count. -#}
+  <script>
+    (function () {
+      if (location.hostname !== new URL({{ config.site_url | tojson }}).hostname) return;
+      var s = document.createElement("script");
+      s.async = true; s.src = "https://gc.zgo.at/count.js";
+      s.setAttribute("data-goatcounter", "https://" + {{ config.extra.goatcounter | tojson }} + ".goatcounter.com/count");
+      document.head.appendChild(s);
+    })();
+  </script>
+  {%- endif %}
+  <meta name="theme-color" content="#f0eee9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2024" media="(prefers-color-scheme: dark)">
 {% endblock %}

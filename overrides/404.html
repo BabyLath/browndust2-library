@@ -1,0 +1,24 @@
+{% extends "main.html" %}
+{#- Shown for any address on the site that doesn't exist (GitHub Pages serves it for every
+    missing page). site.js fills "Maybe you meant" from the search index, matching the
+    address against page names, so an old or mistyped link still finds its page. -#}
+{% block content %}
+<div class="swg-404">
+  <h1>Page not found</h1>
+  <p class="swg-404__lead">There's no page at this address. It may have been renamed, or the link has a typo.</p>
+  <div class="swg-404__guess" data-404-guess hidden>
+    <h2>Maybe you meant</h2>
+    <ul></ul>
+  </div>
+  <h2>Where to go instead</h2>
+  <ul class="swg-404__links">
+    <li><a href="{{ 'guide/current-season/' | url }}">Current season strategy</a><span>What to run this season, in short.</span></li>
+    <li><a href="{{ 'units/' | url }}">Units</a><span>Every unit with its price, grade and footprint.</span></li>
+    <li><a href="{{ 'builds/' | url }}">Builds</a><span>Teams that clear the current season.</span></li>
+    <li><a href="{{ 'tools/planner/' | url }}">Board planner</a><span>Lay out a board and see what it costs.</span></li>
+    <li><a href="{{ 'guide/' | url }}">Guide</a><span>How The Soul Wager works, from the board to the shop.</span></li>
+    <li><a href="{{ '' | url }}">Home</a></li>
+  </ul>
+  <p class="swg-404__search">Or search: press the magnifying glass at the top of the page.</p>
+</div>
+{% endblock %}
