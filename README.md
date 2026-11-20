@@ -36,21 +36,6 @@ Errors stop the build. Warnings don't; they point out things worth filling in.
 
 Never edit `generated-docs/`, `site/` or `.zensical.generated.toml`. They're rebuilt every time.
 
-## Deploying to GitHub Pages
-
-1. Create the repo `github.com/babylath/browndust2-library` and push this folder to it. The site will be at `https://babylath.github.io/browndust2-library/`. If you pick a different repo name, update `site_url` and the social link in `zensical.toml`, and the issue link in `lib/index.md`.
-2. Repo **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. Every push to `main` runs `.github/workflows/deploy.yml`: it builds the site, runs `swg-linkcheck` and the browser tests, and publishes only if all of them pass. If one fails, the live site stays as it was; open the failed run under the repo's **Actions** tab to see which check and why. Pull requests run the same checks in `check.yml`.
-
-### Visitor stats
-
-The site can count visits with [GoatCounter](https://www.goatcounter.com): free for a site this size, no cookies, no consent banner needed. To turn it on:
-
-1. Sign up at goatcounter.com and pick a code, for example `bd2library` (your stats will live at `bd2library.goatcounter.com`).
-2. In `zensical.toml`, set `goatcounter = "bd2library"` under `[project.extra]`, then push.
-
-It only counts visits on the live site, never previews on your computer. Set it back to `""` to turn it off.
-
 ## Where things live
 
 | You want to change | Edit |
