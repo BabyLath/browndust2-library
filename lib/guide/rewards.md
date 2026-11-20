@@ -21,15 +21,6 @@ Soul Tokens are the in-run money the rest of this guide talks about. Alea Chips 
 
 <!-- swg:rewards -->
 
-## What to buy first
-
-If you can't clear every Board this season, the chips won't stretch to everything. Buy in this order:
-
-1. **★5 Recruit Contracts.** The rarest thing in the shop. Even veterans can hold them for a character they don't have yet.
-2. **Light Magic Crystals** and **Tear of Goddess**, whichever you're shorter on.
-3. **Refining Powder.**
-4. **Gold.** You'll get plenty of it elsewhere.
-
 ## Where to find the shop
 
 Open it from the main **Shop** tab, or from the shortcut inside the Soul Wager menu.

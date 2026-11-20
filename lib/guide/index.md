@@ -32,7 +32,7 @@ Seasons run about eight weeks. Each season has several **Boards**, and each Boar
 
 ## Losing
 
-You get **5 lives per Board**. A loss refreshes the shop and resets your reroll cost, so it doubles as a free reroll. Lose all five and the Board starts over from Phase 1.
+You get **5 lives per Board**. A loss refreshes the shop and resets your reroll cost, so it doubles as a free reroll & 10 free soul tokens. Lose all five and the Board starts over from Phase 1.
 
 ## Clearing
 
