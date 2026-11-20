@@ -13,18 +13,24 @@
 #     limit: how many you can buy this season, or unlimited
 #     note:  optional, one short line
 
-season: s3
-
 clears:
-  - { board: "Board 1", chips: }
-  - { board: "Board 2", chips: }
-  - { board: "Board 3", chips: }
-  - { board: "Board 4", chips: }
-  - { board: "Board 5: Tainted Hunting Grounds", chips: }
+  - { board: "Board 1: Traitor's Stronghold", chips: 1000}
+  - { board: "Board 2: Fractured Earth", chips: 1000}
+  - { board: "Board 3: Desolate Ruins", chips: 1000}
+  - { board: "Board 4: Dark Magic Lair", chips: 1000}
+  - { board: "Board 5: Dak Magic Lair 2", chips: 1000}
 
 shop:
-  - { item: "★5 Recruit Contract", price: , limit: , note: "Worth it even for veterans." }
-  - { item: Light Magic Crystal, price: , limit: }
-  - { item: Tear of Goddess, price: , limit: }
-  - { item: Refining Powder, price: , limit: }
-  - { item: Gold, price: , limit: }
+  - { item: Refining Powder, price: 100, limit: 10, note: "Prioitize these." }
+  - { item: Tear of Goddess, price: 1000, limit: 1, note: "Prioitize these." }
+  - { item: Gold, price: 100, limit: 10, note: "Prioitize these." }
+  - { item: "★4 Recruit Contract", price: 500, limit: 2}
+  - { item: "★5 Recruit Contract", price: 1000, limit: 1}
+  - { item: Fire Magic Crystal, price: 100, limit: 10}
+  - { item: Water Magic Crystal, price: 100, limit: 10}
+  - { item: Wind Magic Crystal, price: 100, limit: 10}
+  - { item: Light Magic Crystal, price: 100, limit: 10}
+  - { item: Dark Magic Crystal, price: 100, limit: 10}
+  
+  
+  
