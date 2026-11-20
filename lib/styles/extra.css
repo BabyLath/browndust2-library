@@ -280,11 +280,18 @@
   height: .95rem; width: .95rem; padding: 0; accent-color: var(--md-accent-fg-color); cursor: pointer;
 }
 .md-typeset .swg-filter output { margin-left: auto; font-size: .78rem; color: var(--swg-muted); font-variant-numeric: tabular-nums; }
+.md-typeset .swg-filter .swg-filter__sort { flex-direction: row; align-items: center; gap: .5rem; margin-left: auto; }
+.md-typeset .swg-filter .swg-filter__sort + output { margin-left: 0; min-width: 5.5em; text-align: right; }
 @media (max-width: 600px) {
   .md-typeset .swg-filter { display: grid; grid-template-columns: 1fr 1fr; }
   .md-typeset .swg-filter > label:first-child { grid-column: 1 / -1; }
   .md-typeset .swg-filter__opts { grid-column: 1 / -1; }
   .md-typeset .swg-filter > label > input[type], .md-typeset .swg-filter > label > select { width: 100%; }
+  /* the Sort menu joins the grid next to Max price; the checkbox and count go under them */
+  .md-typeset .swg-filter__opts:has(.swg-filter__sort) { display: contents; }
+  .md-typeset .swg-filter .swg-filter__sort { order: 1; flex-direction: column; align-items: stretch; gap: .3rem; margin-left: 0; }
+  .md-typeset .swg-filter .swg-filter__sort select { width: 100%; }
+  .md-typeset .swg-filter__opts:has(.swg-filter__sort) > :not(.swg-filter__sort) { order: 2; align-self: center; }
 }
 
 /* ---------- board diagrams (```board fences) ---------- */
@@ -420,7 +427,7 @@
   .md-typeset table.swg-stack thead { display: none; }
   .md-typeset table.swg-stack, .md-typeset table.swg-stack tbody,
   .md-typeset table.swg-stack tr { display: block; width: 100%; }
-  .md-typeset table.swg-stack tr { padding: .7rem .9rem; border-top: 1px solid var(--swg-rule); }
+  .md-typeset table.swg-stack tr { box-sizing: border-box; padding: .7rem .9rem; border-top: 1px solid var(--swg-rule); }
   .md-typeset table.swg-stack tr:first-child { border-top: 0; }
   .md-typeset table.swg-stack tr[hidden] { display: none; }  /* keep the search filter working on cards */
   .md-typeset .swg-table table.swg-stack td.swg-unit-shape:has(.swg-missing) { display: none; }  /* no footprint yet */
@@ -578,6 +585,9 @@
 .md-typeset .swg-pl-gearbox select { width: 100%; max-width: 20rem; }
 .md-typeset .swg-pl-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: .6rem 0; }
 .md-typeset .swg-pl-actions a { font-size: .85rem; margin-left: .3rem; }
+.md-typeset .swg-planner .swg-pl-actions button.is-done { background: var(--swg-ink); border-color: var(--swg-ink); color: var(--md-default-bg-color); white-space: nowrap; text-align: center; padding-left: 0; padding-right: 0; }
+.md-typeset .swg-pl-actions__msg { flex-basis: 100%; min-height: 1.2em; font-size: .82rem; color: var(--swg-muted); }
+.md-typeset .swg-pl-actions__msg:empty { min-height: 0; }
 .md-typeset .swg-pl-price { font-variant-numeric: tabular-nums; font-weight: 700; }
 
 .md-typeset .swg-pl-palette { display: flex; flex-direction: column; gap: .5rem; position: sticky; top: 4rem; }
@@ -608,13 +618,41 @@
 .md-typeset ol.swg-pl-legend > li.is-selected .swg-pl-link { font-weight: 700; }
 .md-typeset .swg-pl-gearlist { flex: 1; font-size: .78rem; color: var(--swg-muted); }
 .md-typeset .swg-pl-out { display: block; width: 100%; height: auto; padding: .5rem; font-family: var(--md-code-font-family, monospace); font-size: .78rem; line-height: 1.4; }
+.md-typeset .swg-pl-out[hidden] { display: none; }
 
+/* Phones and tablets: the piece list becomes a drawer along the bottom of the screen, so the
+   board stays in view while you drag pieces up onto it. It shrinks to its bar while you place or
+   drag a piece (the bar is where you drop a piece to remove it), and slides away when the
+   planner is scrolled out of view. */
+.md-typeset .swg-planner .swg-pl-drawer-btn { display: none; }
 @media (max-width: 960px) {
   .md-typeset .swg-pl-main { grid-template-columns: 1fr; }
-  .md-typeset .swg-pl-palette { position: static; }
-  .md-typeset ul.swg-pl-list { max-height: 20rem; }
   .md-typeset .swg-pl-summary { margin-left: 0; width: 100%; }
+  .md-typeset .swg-planner { padding-bottom: 4.5rem; }
+  .md-typeset .swg-pl-palette {
+    position: fixed; top: auto; left: 0; right: 0; bottom: 0; z-index: 4; max-height: 50vh; gap: .4rem;
+    padding: 0 max(.8rem, env(safe-area-inset-left)) calc(.5rem + env(safe-area-inset-bottom));
+    background: var(--md-default-bg-color); border-top: 1px solid var(--swg-rule); border-radius: 14px 14px 0 0;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, .16); transition: transform .2s ease;
+  }
+  .md-typeset .swg-pl-palette ul.swg-pl-list { max-height: none; flex: 1 1 auto; min-height: 0; }
+  .md-typeset .swg-planner .swg-pl-palette .swg-pl-tabs button { padding: .3rem .8rem; }
+  .md-typeset .swg-planner .swg-pl-drawer-btn {
+    display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 2.6rem;
+    padding: .75rem .2rem .25rem; border: 0; border-radius: 0; background: none; font-weight: 700; font-size: .85rem; position: relative;
+  }
+  .md-typeset .swg-planner .swg-pl-drawer-btn::before {  /* grab bar */
+    content: ""; position: absolute; top: .4rem; left: 50%; width: 2.4rem; height: 4px; margin-left: -1.2rem; border-radius: 2px; background: var(--swg-rule);
+  }
+  .swg-pl-drawer-chev { width: .6rem; height: .6rem; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(2px) rotate(45deg); transition: transform .2s ease; }
+  .swg-planner:is(.drawer-closed, .is-placing, .is-dragging) .swg-pl-drawer-chev { transform: translateY(-2px) rotate(-135deg); }
+  .md-typeset .swg-planner:is(.drawer-closed, .is-placing, .is-dragging) .swg-pl-palette > :not(.swg-pl-drawer-btn):not(.swg-pl-drop-hint) { display: none; }
+  .md-typeset .swg-planner.is-dragging-board .swg-pl-palette > .swg-pl-drawer-btn { display: none; }
+  .md-typeset .swg-planner.is-dragging-board .swg-pl-drop-hint { padding: 1rem .5rem; }
+  .md-typeset .swg-planner.drawer-away:not(.is-dragging) .swg-pl-palette { transform: translateY(110%); }
+  body:has(#swg-planner:not(.drawer-away)) .md-top { display: none; }  /* the theme's Back to top would peek out above the drawer */
 }
+@media (max-width: 960px) and (prefers-reduced-motion: reduce) { .md-typeset .swg-pl-palette, .swg-pl-drawer-chev { transition: none; } }
 
 /* planner dragging */
 .md-typeset .swg-planner .swg-pl-cell, .md-typeset .swg-planner .swg-pl-item { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
@@ -743,7 +781,10 @@
 .md-typeset .swg-guide__rec-label .swg-guide__label { margin: 0 !important; }
 .md-typeset .swg-guide__rec-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(0, 5.5rem)); gap: 1rem; justify-content: start; align-items: start; }
 .md-typeset ul.swg-guide__rec-links { margin: 0 !important; padding: 0; list-style: none; }
-.md-typeset ul.swg-guide__rec-links li { margin: 0 0 .5rem !important; font-weight: 700; }
+.md-typeset ul.swg-guide__rec-links li { margin: 0 0 .6rem !important; font-weight: 700; }
+.md-typeset .swg-guide__rec-cards { display: block; margin-top: .1rem; font-size: .78rem; font-weight: 400; color: var(--swg-muted); }
+.md-typeset .swg-guide__rec-cards a { color: inherit; }
+.md-typeset .swg-team { scroll-margin-top: 4.5rem; }
 .md-typeset .swg-guide__boards .swg-team { margin-top: 1rem; }
 
 /* ---------- team cards (```board blocks) ---------- */
@@ -755,6 +796,8 @@
 .md-typeset .swg-team__eyebrow { font-size: .7rem; font-weight: 650; letter-spacing: .045em; line-height: 1.25; color: var(--swg-muted); }
 .md-typeset .swg-team__title { margin-top: .15rem !important; font-family: var(--swg-display); font-size: 1.35rem; font-weight: 700; line-height: 1.2; color: var(--swg-ink); }
 .md-typeset .swg-team__summary { max-width: 52ch; margin-top: .35rem !important; font-size: .8rem; line-height: 1.45; color: var(--swg-muted); }
+.md-typeset .swg-team__open { margin-top: .5rem !important; font-size: .78rem; font-weight: 650; }
+.md-typeset .swg-team__open a::after { content: " →"; }
 .md-typeset .swg-team__board { grid-column: 2; width: 10.5rem; }
 .md-typeset .swg-team__board .swg-build__board { padding: 2px; }
 .md-typeset .swg-team__board .swg-cell b { font-size: .55rem; top: 0; left: 2px; }
@@ -838,16 +881,19 @@
   .md-typeset .swg-team__floor { grid-template-columns: 1fr; }
 }
 
-/* unit guide portrait: lib/images/portraits/<unit-id>.avif, 168×200 (any size with that shape works) */
+/* Portraits: lib/images/portraits/<unit-id>.avif, 128x128 with the figure trimmed and centred
+   (uv run swg-portraits does that). Frames show the whole figure with a little room around it,
+   never cropping it. */
+/* unit guide portrait */
 .md-typeset figure.swg-guide__art { display: block; width: 100%; margin: 0; }
-.md-typeset .swg-guide__art img { display: block; width: 100%; height: auto; aspect-ratio: 168 / 200; object-fit: cover; object-position: top; border-radius: 2px; outline: 1px solid var(--swg-frame); outline-offset: -1px; background: #2b2c30; }
+.md-typeset .swg-guide__art img { display: block; width: 100%; height: auto; aspect-ratio: 168 / 200; object-fit: contain; object-position: center; padding: 10%; box-sizing: border-box; border-radius: 2px; outline: 1px solid var(--swg-frame); outline-offset: -1px; background: #2b2c30; }
 .md-typeset figure.swg-guide__footprint--small { display: grid; grid-template-columns: 3rem minmax(0, 1fr); align-items: center; gap: .6rem; margin-top: .8rem; text-align: left; }
 .md-typeset .swg-guide__footprint--small figcaption { margin: 0; }
-/* portraits in Partner units / Works well with: square crop from the top, like an avatar */
-.md-typeset .swg-guide__fig--portrait .swg-guide__frame img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+/* portraits in Partner units / Works well with */
+.md-typeset .swg-guide__fig--portrait .swg-guide__frame img { width: 100%; height: 100%; object-fit: contain; padding: 8%; box-sizing: border-box; }
 /* Units table thumbnail */
 .md-typeset .swg-thumb { display: inline-block; width: 3.2rem; height: 3.8rem; margin: -.4rem .75rem -.4rem 0; vertical-align: middle; overflow: hidden; border-radius: 2px; background: #2b2c30; outline: 1px solid var(--swg-frame); outline-offset: -1px; }
-.md-typeset .swg-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.md-typeset .swg-thumb img { display: block; width: 100%; height: 100%; object-fit: contain; padding: 6%; box-sizing: border-box; }
 .md-typeset .swg-thumb--empty { background: none; outline: 1px dashed var(--swg-rule); }
 @media (max-width: 960px) {
   /* phone cards: thumbnail on the left, character and costume stacked beside it */
@@ -855,9 +901,9 @@
   .md-typeset .swg-table table.swg-stack tr:has(.swg-thumb) td.swg-unit-char { display: flex; align-items: flex-start; padding-right: 0; }
   .md-typeset .swg-table table.swg-stack tr:has(.swg-thumb) td.swg-unit-costume { display: block; margin: -2.1rem 0 .5rem 3.5rem; min-height: 1.6rem; }
 }
-/* team card portrait: same square frame as the footprint, cropped from the top */
+/* team card portrait: same square frame as the footprint */
 .md-typeset .swg-team__frame--portrait { overflow: hidden; }
-.md-typeset .swg-team__frame--portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 2px; }
+.md-typeset .swg-team__frame--portrait img { width: 100%; height: 100%; object-fit: contain; padding: 8%; box-sizing: border-box; border-radius: 2px; }
 
 /* planner portraits */
 .swg-pl-board { position: relative; }
@@ -876,6 +922,93 @@
 .md-typeset .swg-pl-palette { border-radius: 8px; transition: background-color .12s ease, box-shadow .12s ease; }
 .md-typeset .swg-pl-drop-hint { display: none; margin: 0; padding: .5rem; text-align: center; font-size: .8rem; font-weight: 700; color: var(--swg-chart); }
 .swg-planner.is-dragging-board .swg-pl-palette .swg-pl-drop-hint { display: block; }
-.md-typeset .swg-pl-palette.is-drop-remove { background: color-mix(in srgb, var(--swg-chart) 12%, transparent); box-shadow: 0 0 0 2px var(--swg-chart); }
+.md-typeset .swg-pl-palette.is-drop-remove { background: color-mix(in srgb, var(--swg-chart) 12%, var(--md-default-bg-color)); box-shadow: 0 0 0 2px var(--swg-chart); }
 .swg-pl-ghost.is-removing { opacity: .4; filter: grayscale(1); }
 .md-typeset .swg-pl-legend-shape { display: grid; place-items: center; width: 1.4rem; height: 1.4rem; flex: none; }
+
+/* Planner: undo and redo, and the tray of pieces waiting to be placed (a build opened from a page). */
+.md-typeset .swg-pl-history { display: inline-flex; gap: .3rem; }
+.md-typeset .swg-planner .swg-pl-history button { font-size: .8rem; padding: .3rem .6rem; }
+.md-typeset .swg-planner .swg-pl-history button:disabled { opacity: .4; cursor: default; }
+.md-typeset .swg-pl-tray { max-width: 30rem; margin-bottom: .7rem; padding: .5rem .6rem; border: 1px dashed var(--swg-muted); border-radius: 10px; background: var(--swg-surface); }
+.md-typeset .swg-pl-tray[hidden] { display: none; }
+.md-typeset .swg-pl-tray__label { margin: 0 0 .4rem !important; font-size: .8rem; color: var(--swg-muted); }
+.md-typeset .swg-pl-tray__label b { color: var(--swg-ink); }
+.md-typeset ul.swg-pl-tray__list { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 !important; padding: 0; }
+.md-typeset ul.swg-pl-tray__list li { display: inline-flex; align-items: center; margin: 0 !important; border: 1px solid var(--swg-rule); border-radius: 8px; background: var(--md-default-bg-color); }
+.md-typeset .swg-planner .swg-pl-tray__item { display: inline-flex; align-items: center; gap: .4rem; border: 0; border-radius: 8px 0 0 8px; background: none; padding: .25rem .4rem; font-size: .8rem; text-align: left; }
+.md-typeset .swg-planner .swg-pl-tray__item:hover,
+.md-typeset .swg-planner .swg-pl-tray__item.is-on { background: var(--md-default-fg-color--lightest); }
+.md-typeset .swg-planner .swg-pl-tray__item.is-on { box-shadow: inset 0 -2px 0 var(--swg-ink); }
+.md-typeset .swg-pl-tray .swg-pl-handle { display: inline-grid; place-items: center; min-width: 1.6rem; touch-action: none; }
+.md-typeset .swg-pl-tray .swg-pl-x { margin-left: 0; }
+
+/* Units table: sortable column headers. The arrow shows the current sort; the Sort menu in
+   the filter bar does the same job on phones, where the header row is hidden. */
+.md-typeset .swg-table th .swg-sort {
+  display: inline-flex; align-items: center; gap: .3rem; padding: 0; border: 0; background: none;
+  font: inherit; color: inherit; text-align: inherit; cursor: pointer;
+}
+.md-typeset .swg-table th .swg-sort::after { content: "↕"; font-size: .8em; opacity: .35; }
+.md-typeset .swg-table th[aria-sort="ascending"] .swg-sort::after { content: "↑"; opacity: 1; }
+.md-typeset .swg-table th[aria-sort="descending"] .swg-sort::after { content: "↓"; opacity: 1; }
+.md-typeset .swg-table th[aria-sort] { color: var(--swg-ink); }
+.md-typeset .swg-table th .swg-sort:hover { color: var(--swg-ink); }
+.md-typeset .swg-table th .swg-sort:focus-visible { outline: 2px solid var(--swg-link); outline-offset: 2px; }
+
+/* "Add to planner": a small outlined button on unit guides, a + in each Units table row,
+   and the message that confirms it (site.js). */
+.swg-vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.md-typeset .swg-guide__actions { margin: .7rem 0 0; }
+.md-typeset a.swg-addplan {
+  display: inline-flex; align-items: center; justify-content: center; gap: .3rem;
+  padding: .3rem .7rem; border: 1px solid var(--swg-field-edge); border-radius: var(--swg-r-sm);
+  background: var(--swg-field); color: var(--swg-ink); font-size: .78rem; font-weight: 700; text-decoration: none;
+}
+.md-typeset a.swg-addplan:hover { border-color: var(--swg-ink); }
+.md-typeset a.swg-addplan:focus-visible { outline: 2px solid var(--swg-link); outline-offset: 2px; }
+.md-typeset a.swg-addplan--icon { width: 1.7rem; height: 1.7rem; padding: 0; font-size: 1rem; line-height: 1; }
+.md-typeset .swg-table td.swg-unit-add, .md-typeset .swg-table th.swg-unit-add { width: 1%; padding-left: 0; vertical-align: middle; }
+@media (max-width: 960px) {
+  .md-typeset table#swg-units tr { position: relative; }
+  .md-typeset .swg-table table.swg-stack td.swg-unit-add { position: absolute; top: .7rem; right: .9rem; width: auto; padding: 0; }
+}
+.swg-toast {
+  position: fixed; left: 1rem; right: 1rem; bottom: 1.2rem; z-index: 10; width: fit-content; max-width: 34rem; margin: 0 auto;
+  transform: translateY(1rem); opacity: 0; pointer-events: none;
+  display: flex; align-items: center; gap: .3rem .8rem; flex-wrap: wrap;
+  padding: .7rem .9rem; border-radius: 6px; background: var(--swg-ink); color: var(--md-default-bg-color);
+  font-size: .8rem; line-height: 1.4; box-shadow: 0 6px 20px rgba(0, 0, 0, .25); transition: opacity .15s, transform .15s;
+}
+.swg-toast.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.swg-toast a { color: inherit; font-weight: 700; text-decoration: underline; }
+.swg-toast__x { margin-left: auto; border: 0; background: none; color: inherit; font-size: 1.1rem; line-height: 1; cursor: pointer; padding: 0 .2rem; }
+@media (prefers-reduced-motion: reduce) { .swg-toast { transition: none; } }
+
+/* Planner: saved boards, under the piece list */
+.md-typeset .swg-pl-savebox { margin-top: 2rem; }
+.md-typeset .swg-pl-savebox__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem 1rem; }
+.md-typeset .swg-pl-savebox__head h2 { margin: 0; }
+.md-typeset .swg-pl-savebox .swg-pl-msg:empty { display: none; }
+.md-typeset ul.swg-pl-saves { list-style: none; margin: .5rem 0 0 !important; padding: 0; }
+.md-typeset ul.swg-pl-saves > li { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .8rem; margin: 0 !important; padding: .5rem 0; border-top: 1px solid var(--swg-rule); }
+.md-typeset ul.swg-pl-saves > li:last-child { border-bottom: 1px solid var(--swg-rule); }
+.md-typeset ul.swg-pl-saves > li.is-open { box-shadow: inset 2px 0 0 var(--swg-ink); padding-left: .6rem; }
+.md-typeset .swg-pl-saves__name { font-weight: 700; }
+.md-typeset .swg-pl-saves__meta { font-size: .78rem; color: var(--swg-muted); font-variant-numeric: tabular-nums; }
+.md-typeset ul.swg-pl-saves .swg-pl-x { align-self: center; }
+
+/* Page not found */
+.md-typeset .swg-404__lead { font-size: .95rem; }
+.md-typeset .swg-404 h2 { margin-top: 1.6rem; }
+.md-typeset ul.swg-404__links { list-style: none; padding: 0; margin: .6rem 0 0 !important; display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .2rem 1.5rem; }
+.md-typeset ul.swg-404__links li { margin: 0 !important; padding: .55rem 0; border-top: 1px solid var(--swg-rule); }
+.md-typeset ul.swg-404__links a { font-weight: 700; }
+.md-typeset ul.swg-404__links span { display: block; font-size: .78rem; color: var(--swg-muted); }
+.md-typeset .swg-404__guess ul { margin-top: .4rem; }
+.md-typeset .swg-404__guess a { font-weight: 700; }
+.md-typeset .swg-404__search { margin-top: 1.4rem; color: var(--swg-muted); font-size: .85rem; }
+
+/* <picture> around an animated portrait (still frame for reduced motion) adds no box of its own */
+.md-typeset picture.swg-pic { display: contents; }
+.md-typeset .swg-season header p.swg-season__strategy { flex-basis: 100%; font-size: .85rem; }
