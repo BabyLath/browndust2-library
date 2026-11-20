@@ -1,6 +1,6 @@
 ---
 title: BrownDust II Library
-description: Guides and data for Brown Dust 2, starting with The Soul Wager.
+description: Guides and data for Brown Dust 2 | The Soul Wager.
 hide:
   - toc
 icon: lucide/house
