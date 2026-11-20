@@ -9,7 +9,7 @@ icon: lucide/house
 <div class="swg-hero" markdown="0">
   <div class="swg-hero__text">
     <h1>BrownDust II Library</h1>
-    <p class="swg-hero__lede">Guides and data for Brown Dust 2. Right now that means The Soul Wager: prices, builds, season notes and calculators. Every square on the board is a section.</p>
+    <p class="swg-hero__lede">Guides and data for Brown Dust 2 | The Soul Wager: prices, builds, season notes and calculators.</p>
   </div>
   <nav class="swg-hero__board" aria-label="Guide sections">
     <a class="swg-piece gold" style="grid-area:1/1/span 2/span 2" href="guide/"><span>Start here</span></a>
@@ -28,7 +28,7 @@ icon: lucide/house
 
 ## New here
 
-The Soul Wager unlocks after you clear every Edge of Dimension main quest. Read [how the mode works](guide/index.md) first, then [board and shop](guide/board-shop.md). Those two pages cover most of what decides a run.
+The Soul Wager unlocks after you clear every Edge of Dimension main quest. Read [how the mode works](guide/index.md) & [board and shop](guide/board-shop.md).
 
 ## Looking something up
 
