@@ -96,9 +96,9 @@ Open **View Formation** before every battle. If you see one of these, change one
 
 | Enemy board | Fix |
 |---|---|
-| Lots of debuffs on you | Add a [[Cleanse+]] unit. Refithea (Poolside Fairy) costs 4. |
-| Lots of buffs or Energy Guard | Add a [[Remove+]] unit. Scheherazade (Pool Party) costs 5 and heals. |
-| [[Cleanse+]] units | Your Poison gets wiped. Add the [Lockdown](../builds/lockdown.md) gear so they act less. |
+| Lots of debuffs on you | Add a [[Cleanse]] unit. Refithea (Poolside Fairy) costs 4. |
+| Lots of buffs or Energy Guard | Add a [[Remove]] unit. Scheherazade (Pool Party) costs 5 and heals. |
+| [[Cleanse]] units | Your Poison gets wiped. Add [[Frost]] & [[Laceration]] so they act less. |
 | Fights that drag past a minute | Add more Protection Tiles. End Game is hitting 16 a second by then. |
 
 Keep your counter unit in **Storage** between battles. Storage is free.

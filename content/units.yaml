@@ -200,7 +200,7 @@ units:
     costume: Summer Vacation
     price: 7
     grade: "Mythical"
-    tags: [long-range-attack, remove]
+    tags: [curse]
     shape: "#"
     upgrades: [2, 2, 2, 2, 2]
 

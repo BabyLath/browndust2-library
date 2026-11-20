@@ -56,7 +56,7 @@ members:
 
 ```
 
-Weak point: a slow fight. If the enemy is still standing at 50 seconds, End Game is dealing 10 a second and you have no plan B. Full build: [One-attacker burst](../builds/stamina-burst.md).
+Weak point: a slow fight. If the enemy is still standing at 50 seconds, End Game is dealing 10 a second and you have no plan B. Full build: [One-attacker burst](../builds/ingrid-hypercarry.md).
 
 ### Stun
 
@@ -121,7 +121,7 @@ members:
     gear: [knights-staff]
 ```
 
-Weak point: it does no damage by itself. Full build: [Frost and Darkness lockdown](../builds/lockdown.md).
+Weak point: it does no damage by itself
 
 ### Counter
 

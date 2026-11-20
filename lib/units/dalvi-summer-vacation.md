@@ -1,14 +1,15 @@
 ---
 unit: dalvi-summer-vacation
-tagline: Applies Laceration, which raises the enemy's Stamina costs.
+tagline: Laceration Support Queen
 roles: [debuffer]
+
+works_well_with: [dalvi-bright-moon, levia-track-and-field-captain, anastasia-fire-graffiti, liatris-rodevs-star]
 ---
 
+## Stats & Abilities
+- Every 3.5s: Apply 1 [[Laceration]] to the opponent.
+- When an Attacking Character on a [[Allied-Character]] lands an attack: 25% chance to apply 1 [[Laceration]] to the opponent.
 
-## What she does
+## Why pick her
 
-Dalvi applies **Laceration**. Each stack raises the enemy attackers' Stamina cost by 2%, so a heavy stack can leave their damage dealers stalling with "Out of Stamina".
-
-## Season notes
-
-**Season 3:** Laceration now lands only when her attack hits. Before this, every cooldown action applied it, misses included. Anything that lowers her Accuracy, like enemy Darkness stacks, now also slows her Laceration.
+Dalvi applies **Laceration** and lets other Attacking Characters apply it as well, making her work well with formations with lots of Attacking Characters or Overheat formations.

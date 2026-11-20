@@ -24,6 +24,7 @@ tags:
   - Curse
   - Cleanse
   - Remove
+  - Allied Character
 
 # Other names accepted in units.yaml, mapped to the tag the site shows.
 # The Codex filter calls it Support; gear text calls the same characters "Utility".
