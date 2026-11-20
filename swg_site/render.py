@@ -123,12 +123,26 @@ def tile_fig(cat: Catalog, tid: str, note: str, prefix: str) -> str:
                 note, f"{prefix}reference/tiles/#{tid}", "swg-guide__fig--tile")
 
 
+# First frame of each animated portrait (portrait path -> still path), filled in by swg-build.
+# Long lists show the still, so a page doesn't play a hundred animations at once; everywhere
+# else the animation plays, except for visitors who've asked their device to reduce motion.
+STILLS: dict[str, str] = {}
+
+
+def portrait_img(prefix: str, path: str, attrs: str = 'alt="" loading="lazy" decoding="async"', still: bool = False) -> str:
+    s = STILLS.get(path)
+    if still or not s:
+        return f'<img src="{prefix}{s if s else path}" {attrs}>'
+    return (f'<picture class="swg-pic"><source srcset="{prefix}{s}" media="(prefers-reduced-motion: reduce)">'
+            f'<img src="{prefix}{path}" {attrs}></picture>')
+
+
 def unit_fig(cat: Catalog, uid: str, note: str, guides: set[str], prefix: str, portraits: dict | None = None) -> str:
     """A unit in Partner units or Works well with: its portrait if there is one, otherwise its footprint."""
     u = cat.units[uid]
     grade = (u.get("grade") or "").lower()
     pic = portraits.get(uid) if portraits else None
-    frame = (f'<img src="{prefix}{pic}" alt="" loading="lazy" decoding="async">' if pic
+    frame = (portrait_img(prefix, pic) if pic
              else framed_shape(u.get("shape") or "", cat.unit_label(uid)))
     return _fig(frame,
                 f'{e(cat.unit_label(uid))} <span class="swg-cost">{u["price"]}</span>', note,
@@ -152,8 +166,18 @@ def _ranks(value) -> list[dict]:
     return [r for r in (value or []) if isinstance(r, dict)]
 
 
+def add_to_planner(uid: str, label: str, prefix: str, icon: bool = False) -> str:
+    """Link that puts a unit in the Board planner's To place tray. site.js adds it in place (the
+    saved board is kept) and shows a message; without JavaScript the link opens the planner."""
+    attrs = (f'class="swg-addplan{" swg-addplan--icon" if icon else ""}" href="{prefix}tools/planner/#add={uid}" '
+             f'data-add-unit="{uid}" data-name="{e(label)}"')
+    if icon:
+        return f'<a {attrs} title="Add to planner" aria-label="Add {e(label)} to the planner">+</a>'
+    return f'<a {attrs}>+ Add to planner</a>'
+
+
 def unit_guide(cat: Catalog, uid: str, fm: dict, intro: str, sections: list[str], boards: list[str],
-               guides: set[str], gear_images: dict, builds_meta: dict, prefix: str, portraits: dict | None = None) -> str:
+               guides: set[str], gear_images: dict, appears: list[dict], prefix: str, portraits: dict | None = None) -> str:
     """Whole unit guide page body. Order: header, then a two-column
     summary (footprint and upgrade costs | ranks, stopping points, overview), then the author's own
     ## sections, example builds, recommendations, and example boards."""
@@ -178,7 +202,8 @@ def unit_guide(cat: Catalog, uid: str, fm: dict, intro: str, sections: list[str]
               + (f'<p class="swg-guide__tagline">{e(str(tagline))}</p>' if tagline else "")
               + (f'<ul class="swg-guide__roles" aria-label="Grade, tags and roles">{"".join(chips)}</ul>' if chips else "")
               + f'<p class="swg-guide__price"><b>{p}</b> Soul Tokens · <b>{sale_price(p)}</b> on sale · sells for <b>{sell_price(p)}</b>'
-              + f' · <a href="{prefix}units/">All units</a></p></div>\n\n</header>')
+              + f' · <a href="{prefix}units/">All units</a></p>'
+              + f'<p class="swg-guide__actions">{add_to_planner(uid, label, prefix)}</p></div>\n\n</header>')
 
     # left column: footprint, where a portrait would be, and the upgrade costs
     up = upgrades_of(u)
@@ -186,7 +211,7 @@ def unit_guide(cat: Catalog, uid: str, fm: dict, intro: str, sections: list[str]
                + f'<tr class="swg-guide__up-total"><th>To +5</th><td>{sum(up)}</td></tr>') if up else ""
     if portrait:
         # the unit's art, with the footprint moved to a small row under it
-        top = (f'<div class="swg-guide__pic"><figure class="swg-guide__art"><img src="{prefix}{portrait}" alt="{e(label)}" width="168" height="200" decoding="async"></figure>'
+        top = (f'<div class="swg-guide__pic"><figure class="swg-guide__art">{portrait_img(prefix, portrait, f"alt={chr(34)}{e(label)}{chr(34)} width={chr(34)}168{chr(34)} height={chr(34)}200{chr(34)} decoding={chr(34)}async{chr(34)}")}</figure>'
                f'<figure class="swg-guide__footprint swg-guide__footprint--small"><span class="swg-guide__frame">{framed_shape(u.get("shape") or "", label)}</span>'
                f'<figcaption>Footprint</figcaption></figure></div>')
     else:
@@ -257,13 +282,17 @@ def unit_guide(cat: Catalog, uid: str, fm: dict, intro: str, sections: list[str]
 
     # recommendations: suggested builds and works well with
     groups = []
-    sugg = [(b, note) for b, note in map(_entry, fm.get("suggested_builds") or []) if b in builds_meta]
-    if sugg or fm.get("suggested_builds_note"):
-        items = "".join(f'<li><a href="{prefix}builds/{b}/">{e(builds_meta[b])}</a>'
-                        + (f'<em class="swg-guide__flex-note">{e(note)}</em>' if note else "") + "</li>" for b, note in sugg)
+    # Suggested builds: every team card on the site with this unit, grouped by page (built by swg-build)
+    if appears:
+        pages: dict[str, dict] = {}
+        for a in appears:
+            pages.setdefault(a["url"], {"title": a["title"], "cards": []})["cards"].append((a["card"], a["anchor"]))
+        items = "".join(
+            f'<li><a href="{prefix}{url}">{e(pg["title"])}</a><span class="swg-guide__rec-cards">'
+            + ", ".join(f'<a href="{prefix}{url}#{anchor}">{e(card)}</a>' for card, anchor in pg["cards"])
+            + "</span></li>" for url, pg in pages.items())
         groups.append('<div class="swg-guide__rec" id="suggested-builds"><div class="swg-guide__rec-label"><h2 class="swg-guide__label">Suggested builds</h2>'
-                      + (f'<p class="swg-guide__section-note">{e(str(fm["suggested_builds_note"]))}</p>' if fm.get("suggested_builds_note") else "")
-                      + "</div>" + (f'<ul class="swg-guide__rec-links">{items}</ul>' if items else "") + "</div>")
+                      f'</div><ul class="swg-guide__rec-links">{items}</ul></div>')
     wwith = [(w, note) for w, note in map(_entry, fm.get("works_well_with") or []) if w in cat.units]
     if wwith or fm.get("works_well_with_note"):
         groups.append('<div class="swg-guide__rec" id="works-well-with"><div class="swg-guide__rec-label"><h2 class="swg-guide__label">Works well with</h2>'
@@ -411,7 +440,47 @@ def normalize_board(cat: Catalog, spec: dict) -> tuple[dict, list[tuple[str, str
     return out, problems
 
 
-def board(cat: Catalog, spec: dict, guides: set[str], prefix: str, portraits: dict | None = None) -> str:
+def planner_link(cat: Catalog, spec: dict, rows: list[str], floor: list[str], pieces: dict[str, str],
+                 gear: dict[str, list]) -> str:
+    """The Board planner's #plan= hash for a board block, so a card can open in the planner.
+    Pieces drawn on the board keep their spot and turn; the rest go to the planner's tray."""
+    from urllib.parse import quote
+
+    def cells_of(grid: list[str], ch: str) -> list[tuple[int, int]]:
+        return [(r, c) for r, row in enumerate(grid) for c, x in enumerate(row) if x == ch]
+
+    parts = []
+    for ch, pid in pieces.items():
+        kind = "u" if pid in cat.units else "t" if pid in cat.tiles else ""
+        if not kind:
+            continue
+        cells = cells_of(rows, ch) or cells_of(floor, ch)
+        r = c = "-"
+        turn = 0
+        if cells:
+            r, c = min(x for x, _ in cells), min(y for _, y in cells)
+            norm = sorted((x - r, y - c) for x, y in cells)
+            shape = (cat.units if kind == "u" else cat.tiles)[pid].get("shape") or "#"
+            turn = next((t for t in range(4) if sorted(shape_cells(shape, t)) == norm), 0)
+        g = [x for x in gear.get(ch, []) if x in cat.gear] if kind == "u" else []
+        parts.append(".".join([kind, pid, str(r), str(c), str(turn)]) + ("." + ",".join(g) if g else ""))
+    if not parts:
+        return ""
+    name = str(spec.get("name") or "")
+    return "plan=" + "~".join(parts) + (f"&n={quote(name[:60], safe='')}" if name else "")
+
+
+def team_anchor(name: str, used: set[str]) -> str:
+    """id for a team card, unique on its page: "Season 3 Poison" -> "team-season-3-poison"."""
+    base = "team-" + (slug(name) or "board")
+    anchor, n = base, 2
+    while anchor in used:
+        anchor, n = f"{base}-{n}", n + 1
+    used.add(anchor)
+    return anchor
+
+
+def board(cat: Catalog, spec: dict, guides: set[str], prefix: str, portraits: dict | None = None, anchor: str = "") -> str:
     rows = [r.replace(" ", "") for r in str(spec.get("layout") or "").strip("\n").splitlines()]
     pieces: dict[str, str] = {str(k): str(v) for k, v in (spec.get("pieces") or {}).items()}
     gear: dict[str, list] = {str(k): (v if isinstance(v, list) else [v]) for k, v in (spec.get("gear") or {}).items()}
@@ -519,7 +588,7 @@ def board(cat: Catalog, spec: dict, guides: set[str], prefix: str, portraits: di
             f'<p class="swg-team__name">'
             + (f'<span class="swg-key swg-cell--unit swg-hue-{hue}">{e(letter)}</span>' if rows else "")
             + f'<span>{name}</span></p>'
-            + (f'<span class="swg-team__frame swg-team__frame--portrait"><img src="{prefix}{portraits[pid]}" alt="" loading="lazy" decoding="async"></span>'
+            + (f'<span class="swg-team__frame swg-team__frame--portrait">{portrait_img(prefix, portraits[pid])}</span>'
                if portraits and pid in portraits else
                f'<span class="swg-team__frame">{framed_shape(u.get("shape") or "", cat.unit_label(pid))}</span>')
             + f'<p class="swg-team__meta">{grade_badge(u.get("grade") or "")} <span class="swg-cost">{u["price"]}</span></p></div>'
@@ -545,15 +614,18 @@ def board(cat: Catalog, spec: dict, guides: set[str], prefix: str, portraits: di
     if season: eyebrow.append(e(season["name"]))
     if spec.get("total") is not False:  # total: false for "pick one of these" lists
         eyebrow.append(f"{total} Soul Tokens" + ("" if rows else " before upgrades"))
+    plan = planner_link(cat, spec, rows, floor, pieces, gear) if spec.get("total") is not False else ""
+    open_html = (f'<p class="swg-team__open"><a href="{prefix}tools/planner/#{e(plan)}">Open in planner</a></p>' if plan else "")
     board_html = (f'<figure class="swg-team__board"><div class="swg-build__board" role="img" aria-label="7 by 7 board layout for {name_txt}">{"".join(cells)}</div></figure>'
                   if rows else "")
     return f"""
-<section class="swg-team{' swg-team--board' if rows else ''}" aria-label="{name_txt}" markdown="0">
+<section{f' id="{anchor}"' if anchor else ''} class="swg-team{' swg-team--board' if rows else ''}" aria-label="{name_txt}" markdown="0">
   <header class="swg-team__header">
     <div class="swg-team__intro">
       <p class="swg-team__eyebrow">{" · ".join(eyebrow)}</p>
       <p class="swg-team__title">{name_txt}</p>
       {f'<p class="swg-team__summary">{e(str(spec["summary"]))}</p>' if spec.get('summary') else ''}
+      {open_html}
     </div>
     {board_html}
   </header>
@@ -569,7 +641,7 @@ def _thumb(uid: str, portraits: dict) -> str:
     """Small portrait at the start of a Units table row. Rows without one keep an empty frame,
     so names still line up."""
     pic = portraits.get(uid)
-    inner = f'<img src="../{pic}" alt="" loading="lazy" decoding="async">' if pic else ""
+    inner = portrait_img("../", pic, still=True) if pic else ""
     return f'<span class="swg-thumb{"" if pic else " swg-thumb--empty"}" aria-hidden="true">{inner}</span>'
 
 
@@ -579,23 +651,47 @@ def units_page(cat: Catalog, guides: set[str], portraits: dict | None = None) ->
     has_tags = any(u.get("tags") for u in cat.units.values())
     has_up = any(upgrades_of(u) for u in cat.units.values())
     has_shape = any(parse_shape(u.get("shape") or "") for u in cat.units.values())
+    rank = {g: i for i, g in enumerate(cat.meta.get("grades", []))}  # lowest grade first
     rows = []
     for uid, u in sorted(cat.units.items(), key=lambda kv: (kv[1]["character"], kv[1]["costume"])):
         p = u["price"]
+        shape_rows = parse_shape(u.get("shape") or "")
+        up = upgrades_of(u)
+        # sort keys for the Sort menu and the clickable headers (blank = sorts last)
+        sort_keys = (f'data-char="{e(u["character"].lower())}" data-costume="{e(u["costume"].lower())}" '
+                     f'data-rank="{rank.get(u.get("grade") or "", "")}" '
+                     f'data-cells="{"".join(shape_rows).count("#") if shape_rows else ""}" data-up="{sum(up) if up else ""}"')
         unit_name = f'{u["character"]}, {u["costume"]}'
         has = uid in guides
         name = f'<a href="{uid}/">{e(u["costume"])}</a>' if has else e(u["costume"])
         rows.append(
-            f'<tr data-search="{e(search_text(u["character"], u["costume"]))}" data-price="{p}" '
+            f'<tr data-search="{e(search_text(u["character"], u["costume"]))}" data-price="{p}" {sort_keys} '
             f'data-grade="{e(u.get("grade") or "")}" data-tags="{e("|".join(u.get("tags") or []))}">'
             f'<td class="swg-unit-char">{_thumb(uid, portraits) if portraits else ""}{e(u["character"])}</td><td class="swg-unit-costume">{name}</td>'
             + (f'<td class="swg-fit swg-unit-shape">{shape_svg(u.get("shape") or "", unit_name, 10, 2) or "<span class=swg-missing>–</span>"}</td>' if has_shape else "")
             + (f'<td>{grade_badge(u.get("grade") or "")}</td>' if has_grade else "")
             + (f'<td>{tag_pills(u.get("tags"))}</td>' if has_tags else "")
             + _unit_price_cell(p, uid)
-            + (_upgrade_cells(upgrades_of(u)) if has_up else "") + "</tr>")
+            + (_upgrade_cells(upgrades_of(u)) if has_up else "")
+            + f'<td class="swg-unit-add">{add_to_planner(uid, unit_name, "../", icon=True)}</td></tr>')
     grades = "".join(f'<option>{e(g)}</option>' for g in cat.meta.get("grades", []))
     tags = "".join(f'<option>{e(t)}</option>' for t in cat.meta.get("tags", []))
+    sorts = [("char:asc", "Character, A to Z", True), ("char:desc", "Character, Z to A", True),
+             ("costume:asc", "Costume, A to Z", True), ("costume:desc", "Costume, Z to A", True),
+             ("price:asc", "Cheapest first", True), ("price:desc", "Priciest first", True),
+             ("rank:asc", "Lowest grade first", has_grade), ("rank:desc", "Highest grade first", has_grade),
+             ("cells:asc", "Smallest shape first", has_shape), ("cells:desc", "Largest shape first", has_shape),
+             ("up:asc", "Cheapest upgrades", has_up), ("up:desc", "Priciest upgrades", has_up)]
+    sort_menu = _sort_menu([(v, label) for v, label, ok in sorts if ok])
+
+    def th(key: str, label: str, cls: str = "", extra: str = "") -> str:
+        return _sort_th(key, label, cls, extra, active=key == "char")
+    head = (th("char", "Character") + th("costume", "Costume")
+            + (th("cells", "Shape") if has_shape else "") + (th("rank", "Grade") if has_grade else "")
+            + ("<th>Tags</th>" if has_tags else "")
+            + th("price", "Price", "num", ' <span class="swg-up__key">on sale, sells for</span>')
+            + (th("up", "Upgrades", "swg-up", ' <span class="swg-up__key">+1 to +5, total</span>') if has_up else "")
+            + '<th class="swg-unit-add"><span class="swg-vh">Add to planner</span></th>')
     return f"""---
 title: Units
 description: Every unit piece in the Soul Wager Battle Shop with price, sale price and sell value.
@@ -615,13 +711,14 @@ Prices are in Soul Tokens. **On sale** is the 10%-chance half-price offer. **Sel
   <label>Max price<input type="number" data-f="max" min="1" max="30" placeholder="Any"></label>
   <div class="swg-filter__opts">
     {'<label class="swg-check"><input type="checkbox" data-toggle="swg-show-up"> Show upgrade costs</label>' if has_up else ''}
+    {sort_menu}
     <output data-count aria-live="polite"></output>
   </div>
 </div>
 
 <div class="swg-table" markdown="0">
 <table id="swg-units" class="swg-stack">
-<thead><tr><th>Character</th><th>Costume</th>{'<th>Shape</th>' if has_shape else ''}{'<th>Grade</th>' if has_grade else ''}{'<th>Tags</th>' if has_tags else ''}<th class="num">Price <span class="swg-up__key">on sale, sells for</span></th>{_upgrade_head() if has_up else ''}</tr></thead>
+<thead><tr>{head}</tr></thead>
 <tbody>
 {chr(10).join(rows)}
 </tbody></table>
@@ -661,6 +758,32 @@ def _img(src: str, alt: str, cls: str) -> str:
     return f'<img class="{cls}" src="{e(src)}" alt="{e(alt)}" loading="lazy">'
 
 
+def _sort_th(key: str, label: str, cls: str = "", extra: str = "", active: bool = False) -> str:
+    """A column header that sorts the table (site.js). `active` marks the starting sort, A to Z."""
+    return (f'<th{f" class={chr(34)}{cls}{chr(34)}" if cls else ""} data-sort="{key}"{" aria-sort=" + chr(34) + "ascending" + chr(34) if active else ""}>'
+            f'<button type="button" class="swg-sort">{label}</button>{extra}</th>')
+
+
+def _sort_menu(sorts: list[tuple[str, str]], inline: bool = True) -> str:
+    """The Sort menu in a filter bar: [(key:dir, label)]. Works on phones, where headers are hidden.
+    inline: label beside the menu, in the bar's second row (Units); otherwise it's a field like Search."""
+    return (f'<label{" class=" + chr(34) + "swg-filter__sort" + chr(34) if inline else ""}>Sort<select data-sort-by>'
+            + "".join(f'<option value="{v}">{label}</option>' for v, label in sorts) + "</select></label>")
+
+
+def _simple_filter(target: str, placeholder: str, sorts: list[tuple[str, str]]) -> str:
+    """Filter bar for the Gear and Tiles tables: search, max price and sort."""
+    return f"""<div class="swg-filter" data-target="{target}" markdown="0">
+  <label>Search<input type="search" data-f="q" placeholder="{placeholder}"></label>
+  <label>Max price<input type="number" data-f="max" min="1" max="30" placeholder="Any"></label>
+  {_sort_menu(sorts, inline=False)}
+  <div class="swg-filter__opts">
+    <output data-count aria-live="polite"></output>
+  </div>
+</div>
+"""
+
+
 def _price_cells(p: int, rid: str) -> str:
     return (f'<td class="num swg-price" data-label="Price">{p}</td>'
             f'<td class="num swg-price" data-label="On sale">{sale_price(p)}</td>'
@@ -673,10 +796,6 @@ def _unit_price_cell(p: int, uid: str) -> str:
             f'<span class="swg-price__sub">sale {sale_price(p)}, sells {sell_price(p, uid)}</span></td>')
 
 
-def _upgrade_head() -> str:
-    return '<th class="swg-up">Upgrades <span class="swg-up__key">+1 to +5, total</span></th>'
-
-
 def _upgrade_cells(up) -> str:
     """One cell: the five upgrade costs in a row, then the total to reach +5."""
     if not up:
@@ -687,7 +806,7 @@ def _upgrade_cells(up) -> str:
 
 
 def _table_page(cat: Catalog, title: str, desc: str, fname: str, head: str, rows: list[str], note: str = "",
-                table_class: str = "", icon: str = "") -> str:
+                table_class: str = "", icon: str = "", table_id: str = "", filters: str = "") -> str:
     return f"""---
 title: {title}
 description: {desc}
@@ -697,9 +816,10 @@ description: {desc}
 # {title}
 
 {note}
+{filters}
 <div class="swg-table" markdown="0">
-<table{f' class="{table_class}"' if table_class else ''}>
-<thead><tr>{head}<th class="num">Price</th><th class="num">On sale</th><th class="num">Sells for</th></tr></thead>
+<table{f' id="{table_id}"' if table_id else ''}{f' class="{table_class}"' if table_class else ''}>
+<thead><tr>{head}{_sort_th("price", "Price", "num") if table_id else '<th class="num">Price</th>'}<th class="num">On sale</th><th class="num">Sells for</th></tr></thead>
 <tbody>
 {chr(10).join(rows)}
 </tbody></table>
@@ -715,13 +835,20 @@ def tiles_page(cat: Catalog, images: dict[str, str]) -> str:
         art = (_img("../" + images[tid], t["name"], "swg-tile-img") if tid in images
                else '<span class="swg-missing">No image yet</span>')
         shape = shape_svg(t.get("shape") or "", t["name"]) or '<span class="swg-missing">Not set</span>'
-        rows.append(f'<tr id="{tid}"><td class="swg-tile-name">{e(t["name"])}</td>'
+        rows_ = parse_shape(t.get("shape") or "")
+        rows.append(f'<tr id="{tid}" data-search="{e(search_text(t["name"], t.get("effect") or ""))}" data-price="{t["price"]}" '
+                    f'data-name="{e(t["name"].lower())}" data-cells="{"".join(rows_).count("#") if rows_ else ""}">'
+                    f'<td class="swg-tile-name">{e(t["name"])}</td>'
                     f'<td class="swg-fit swg-tile-art">{art}</td><td class="swg-fit swg-tile-shape">{shape}</td>'
                     + (f'<td>{rich(t.get("effect") or "")}</td>' if has_effect else "")
                     + _price_cells(t["price"], tid) + "</tr>")
-    head = '<th>Name</th><th>Tile</th><th>Shape</th>' + ("<th>Effect</th>" if has_effect else "")
+    head = (_sort_th("name", "Name", active=True) + '<th>Tile</th>' + _sort_th("cells", "Shape")
+            + ("<th>Effect</th>" if has_effect else ""))
+    sorts = [("name:asc", "Name, A to Z"), ("name:desc", "Name, Z to A"), ("price:asc", "Cheapest first"),
+             ("price:desc", "Priciest first"), ("cells:asc", "Smallest shape first"), ("cells:desc", "Largest shape first")]
     return _table_page(cat, "Tiles", "Every tile with its artwork, footprint, price and sell value.", "tiles.yaml", head, rows,
-                       table_class="swg-stack", icon="lucide/grid-2x2")
+                       table_class="swg-stack", icon="lucide/grid-2x2", table_id="swg-tiles",
+                       filters=_simple_filter("swg-tiles", "Name or effect", sorts))
 
 
 def gear_page(cat: Catalog, images: dict[str, str]) -> str:
@@ -730,12 +857,16 @@ def gear_page(cat: Catalog, images: dict[str, str]) -> str:
     for gid, g in sorted(cat.gear.items(), key=lambda kv: kv[1]["name"]):
         icon = (_img("../" + images[gid], "", "swg-gear-icon") if gid in images
                 else '<span class="swg-gear-icon swg-gear-icon--empty" aria-hidden="true"></span>')
-        rows.append(f'<tr id="{gid}"><td class="swg-gear-name"><span class="swg-named">{icon}<span>{e(g["name"])}</span></span></td>'
+        rows.append(f'<tr id="{gid}" data-search="{e(search_text(g["name"], g.get("effect") or ""))}" data-price="{g["price"]}" '
+                    f'data-name="{e(g["name"].lower())}"><td class="swg-gear-name"><span class="swg-named">{icon}<span>{e(g["name"])}</span></span></td>'
                     + (f'<td class="swg-effect">{rich(g.get("effect") or "")}</td>' if has_effect else "")
                     + _price_cells(g["price"], gid) + "</tr>")
-    head = "<th>Name</th>" + ("<th>Effect</th>" if has_effect else "")
+    head = _sort_th("name", "Name", active=True) + ("<th>Effect</th>" if has_effect else "")
+    sorts = [("name:asc", "Name, A to Z"), ("name:desc", "Name, Z to A"),
+             ("price:asc", "Cheapest first"), ("price:desc", "Priciest first")]
     return _table_page(cat, "Gear", "Every gear piece with its icon, effects, price and sell value.", "gear.yaml", head, rows,
-                       table_class="swg-stack", icon="lucide/shield")
+                       table_class="swg-stack", icon="lucide/shield", table_id="swg-gear",
+                       filters=_simple_filter("swg-gear", "Name or effect, like Poison", sorts))
 
 
 def statuses_page(cat: Catalog, images: dict[str, str]) -> str:
@@ -756,7 +887,7 @@ icon: lucide/flask-conical
 
 # Buffs and debuffs
 
-All values are per stack. Write `[[Name]]` in any description or guide to show a status's icon there, with its name on hover.
+
 
 ## Buffs
 
@@ -772,7 +903,9 @@ All values are per stack. Write `[[Name]]` in any description or guide to show a
 """
 
 
-def seasons_page(cat: Catalog) -> str:
+def seasons_page(cat: Catalog, strategies: dict[str, str] | None = None) -> str:
+    """strategies: season id -> the page with what the site recommended that season."""
+    strategies = strategies or {}
     parts = []
     for s in reversed(cat.seasons):
         if s.get("end"):
@@ -788,7 +921,7 @@ def seasons_page(cat: Catalog) -> str:
         if s is cat.current_season:
             span += ", in progress"
         parts.append(f"""<section class="swg-season" markdown="0">
-  <header><h2 id="{s['id']}">{e(s['name'])}</h2><p>{span}</p></header>
+  <header><h2 id="{s['id']}">{e(s['name'])}</h2><p>{span}</p>{f'<p class="swg-season__strategy"><a href="{strategies[s["id"]]}">{"Strategy for this season" if s is cat.current_season else "What we recommended"}</a></p>' if s["id"] in strategies else ""}</header>
   <div class="swg-season__cols">
     <div><h3>Boards</h3><ul>{boards}</ul></div>
     <div><h3>What changed</h3><ul>{changes}</ul>{f'<p class="swg-sources">{sources}</p>' if sources else ''}</div>
@@ -814,7 +947,7 @@ def season_card(cat: Catalog, prefix: str = "", strategy_link: bool = True) -> s
     end = s.get("end") or s.get("expected_end")
     approx = "" if s.get("end") else "about "
     changes = "".join(f"<li>{e(c)}</li>" for c in s["changes"][:4])
-    return f"""<section class="swg-now" markdown="0" data-season-start="{s['start'].isoformat()}" data-season-end="{end.isoformat() if end else ''}" data-approx="{1 if approx else 0}">
+    return f"""<section class="swg-now" markdown="0" data-name="{e(s['name'])}" data-season-start="{s['start'].isoformat()}" data-season-end="{end.isoformat() if end else ''}" data-approx="{1 if approx else 0}">
   <div class="swg-now__head">
     <h2>{e(s['name'])} is running</h2>
     <p class="swg-now__dates">Started {fmt_date(s['start'])}{f", ends {approx}{fmt_date(end)}" if end else ""}.</p>
@@ -835,7 +968,8 @@ def planner(cat: Catalog, guides: set[str], plain, portraits: dict | None = None
         "units": [{"id": uid, "name": cat.unit_label(uid), "price": u["price"], "grade": u.get("grade") or "",
                    "tags": u.get("tags") or [], "shape": u.get("shape") or "#", "guide": uid in guides,
                    # the planner lives at tools/planner/, two folders below the site root
-                   **({"img": "../../" + portraits[uid]} if portraits and uid in portraits else {})}
+                   **({"img": "../../" + portraits[uid], "still": "../../" + STILLS.get(portraits[uid], portraits[uid])}
+                      if portraits and uid in portraits else {})}
                   for uid, u in cat.units.items() if u.get("shape") and parse_shape(u["shape"])],
         "tiles": [{"id": tid, "name": t["name"], "price": t["price"], "shape": t.get("shape") or "#",
                    "effect": plain(str(t.get("effect") or "")).strip()}

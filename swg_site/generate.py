@@ -173,7 +173,72 @@ class Generator:
         if missing:
             self.err(base, None, f"{len(missing)} unit guide(s) have no portrait yet: {', '.join(missing)}. "
                      f"Add lib/images/portraits/<unit-id>.avif; until then the guide shows the footprint.", "warning")
+        # portraits should be 128x128 with the figure trimmed and centred; reading the size is cheap.
+        # Animated ones also get a first-frame still for long lists (written in run()).
+        render.STILLS.clear()
+        self.stills: dict[str, tuple[Path, str]] = {}
+        try:
+            from PIL import Image
+            off = []
+            for uid, rel in sorted(found.items()):
+                with Image.open(LIB / rel) as im:
+                    if im.size != (128, 128):
+                        off.append(f"{uid} ({im.width}×{im.height})")
+                    if getattr(im, "is_animated", False):
+                        still = f"images/portraits/still/{uid}.avif"
+                        render.STILLS[rel] = still
+                        self.stills[uid] = (LIB / rel, still)
+            if off:
+                self.err(base, None, f"{len(off)} portrait(s) aren't 128×128: {', '.join(off)}. "
+                         "Run uv run swg-portraits to trim, resize and centre them.", "warning")
+        except ImportError:
+            pass
         return found
+
+    def social_image(self, uid: str) -> str | None:
+        """A PNG of the unit's portrait for link previews: Discord, Reddit and X don't read AVIF.
+        Returns the path from the site root, or None (the page then uses the default card)."""
+        if uid not in self.portraits:
+            return None
+        try:
+            from PIL import Image
+            with Image.open(LIB / self.portraits[uid]) as im:
+                im = im.convert("RGBA")
+                box = im.getchannel("A").getbbox()  # trim empty margins so the figure fills the card
+                if box:
+                    im = im.crop(box)
+                scale = min(260 / im.width, 260 / im.height)
+                im = im.resize((max(1, round(im.width * scale)), max(1, round(im.height * scale))), Image.LANCZOS)
+                card = Image.new("RGBA", (300, 300), (240, 238, 233, 255))  # the site's paper colour
+                card.alpha_composite(im, ((300 - im.width) // 2, (300 - im.height) // 2))
+                out = self.dest / "images" / "social" / f"{uid}.png"
+                out.parent.mkdir(parents=True, exist_ok=True)
+                card.convert("RGB").save(out, optimize=True)
+            return f"images/social/{uid}.png"
+        except Exception as exc:  # unreadable image: keep building, use the default card
+            self.err(LIB / self.portraits[uid], None, f"couldn't make a link-preview image ({exc}); the page uses the default card.", "warning")
+            return None
+
+    def write_stills(self):
+        """First frame of each animated portrait, as images/portraits/still/<id>.avif. Kept in
+        .cache/stills/ between builds, so live preview doesn't re-encode them on every save."""
+        if not getattr(self, "stills", None):
+            return
+        from PIL import Image
+        cache = LIB.parent / ".cache" / "stills"
+        cache.mkdir(parents=True, exist_ok=True)
+        for uid, (src, rel) in self.stills.items():
+            st = src.stat()
+            cached = cache / f"{uid}-{st.st_mtime_ns}-{st.st_size}.avif"
+            if not cached.exists():
+                for old in cache.glob(f"{uid}-*.avif"):
+                    old.unlink()
+                with Image.open(src) as im:
+                    im.seek(0)
+                    im.convert("RGBA").save(cached, format="AVIF", quality=85)
+            out = self.dest / rel
+            out.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(cached, out)
 
     # ---------- [[Name]] icon shortcodes ----------
     def symbol_html(self, kind: str, rid: str, prefix: str, with_name: bool = False) -> str:
@@ -225,6 +290,8 @@ class Generator:
 
     # ---------- board fences ----------
     def expand_boards(self, path: Path, body: str, line_offset: int, prefix: str) -> str:
+        used: set[str] = set()  # card ids on this page
+
         def repl(m: re.Match) -> str:
             line = body.count("\n", 0, m.start()) + line_offset + 1
             try:
@@ -232,6 +299,7 @@ class Generator:
             except yaml.YAMLError as ex:
                 self.err(path, line, f"board fence isn't valid YAML: {ex}")
                 return m.group(0)
+            anchor = render.team_anchor(str(spec.get("name") or "Untitled build"), used) if isinstance(spec, dict) else ""
             team = "members" in spec or "tiles" in spec
             if team:
                 for k in spec:
@@ -241,7 +309,7 @@ class Generator:
                 for msg, level in problems:
                     self.err(path, line, msg, level)
             self.validate_board(path, line, spec, team)
-            return render.board(self.cat, spec, self.guides, prefix, self.portraits)
+            return render.board(self.cat, spec, self.guides, prefix, self.portraits, anchor)
         return FENCE_RE.sub(repl, body)
 
     def validate_board(self, path: Path, line: int, spec: dict, team: bool = False):
@@ -304,6 +372,9 @@ class Generator:
             body = self.unit_guide(src, fm, body)
             fm = {"title": self.cat.unit_label(fm["unit"]) if fm.get("unit") in self.cat.units else rel.stem,
                   "description": fm.get("tagline") or fm.get("summary") or "", **{k: v for k, v in fm.items() if k in ("order",)}}
+            social = self.social_image(rel.stem)
+            if social:
+                fm["image"] = social  # link previews (Discord, Reddit) show the portrait
         else:
             for k in ("title", "description"):
                 if not fm.get(k):
@@ -392,11 +463,11 @@ class Generator:
                        '<thead><tr><th>Item</th><th class="num">Price</th><th class="num">Limit</th><th class="num">To buy all</th></tr></thead>'
                        f'<tbody>{"".join(rows)}</tbody><tfoot><tr><th colspan="3">Everything with a limit</th><th class="num">{cell(all_cost)}</th></tr></tfoot></table></div>')
             known = None if (not clears or None in earned) else sum(earned)
-            if known is not None and all_cost is not None:
-                diff = known - all_cost
-                verdict = (f"Clearing every Board gives <b>{known:,}</b> Alea Chips and the limited items cost <b>{all_cost:,}</b>, "
-                           + (f"so you have <b>{diff:,}</b> left over for unlimited items." if diff >= 0 else f"so you're <b>{-diff:,}</b> short. Skip the lowest-value items."))
-                out.append(f'<p class="swg-rewards-sum" markdown="0">{verdict}</p>')
+            # if known is not None and all_cost is not None:
+            #     diff = known - all_cost
+            #     verdict = (f"Clearing every Board gives <b>{known:,}</b> Alea Chips and the limited items cost <b>{all_cost:,}</b>, "
+            #                + (f"so you have <b>{diff:,}</b> left over for unlimited items." if diff >= 0 else f"so you're <b>{-diff:,}</b> short. Skip the lowest-value items."))
+            #     out.append(f'<p class="swg-rewards-sum" markdown="0">{verdict}</p>')
 
         if missing:
             self.err(path, None, f"{len(missing)} value(s) not recorded yet, like {missing[0]}. The page shows ? for them.", "warning")
@@ -443,10 +514,10 @@ class Generator:
                 self.check_id(src, None, "unit", wid, cat.units)
         for w in ids(fm.get("works_well_with")):
             self.check_id(src, None, "unit", w, cat.units)
-        builds_meta = self.builds_meta()
-        for bid in ids(fm.get("suggested_builds")):
-            if bid not in builds_meta:
-                self.err(src, None, f"suggested_builds: no build page lib/builds/{bid}.md.{suggest(bid, list(builds_meta))}")
+        for k in ("suggested_builds", "suggested_builds_note"):
+            if k in fm:
+                self.err(src, None, f"{k} isn't used any more: Suggested builds now lists every team card on the site "
+                         "that has this unit. Delete the line.", "warning")
         template = (LIB.parent / "templates" / "unit.md").read_text(encoding="utf-8")
         tfm, template_body, _ = split_front_matter(template)
         leftovers = [ln.strip() for ln in template_body.splitlines()
@@ -477,17 +548,45 @@ class Generator:
         parts.append("\n".join(current))
         intro, sections = parts[0], [p for p in parts[1:] if p.strip()]
         prefix = "../"
-        return render.unit_guide(cat, uid, fm, intro, sections, boards, self.guides, self.gear_images, builds_meta, prefix, self.portraits)
+        appears = [a for a in self.team_index().get(uid, []) if a["src"] != src]
+        return render.unit_guide(cat, uid, fm, intro, sections, boards, self.guides, self.gear_images, appears, prefix, self.portraits)
 
-    def builds_meta(self) -> dict[str, str]:
-        """Build page slug -> title, for unit guides' suggested_builds."""
-        if not hasattr(self, "_builds_meta"):
-            self._builds_meta = {}
-            for p in sorted((LIB / "builds").glob("*.md")):
-                if p.name != "index.md":
-                    fm, _, _ = split_front_matter(p.read_text(encoding="utf-8"))
-                    self._builds_meta[p.stem] = str(fm.get("title") or p.stem)
-        return self._builds_meta
+    def team_index(self) -> dict[str, list[dict]]:
+        """Unit id -> every team card (```board block) on the site that has the unit, for the
+        Suggested builds list on unit guides. Build pages first, then guide pages, then other units."""
+        if hasattr(self, "_team_index"):
+            return self._team_index
+        found: dict[str, list[dict]] = {}
+        rank = {"builds": 0, "guide": 1, "units": 2}
+        files = sorted((p for p in LIB.rglob("*.md") if p.relative_to(LIB).as_posix() != "builds/index.md"),
+                       key=lambda p: (rank.get(p.relative_to(LIB).parts[0], 3), p.relative_to(LIB).as_posix()))
+        for p in files:
+            rel = p.relative_to(LIB)
+            fm, body, _ = split_front_matter(p.read_text(encoding="utf-8"))
+            if rel.parts[0] == "units" and fm.get("unit") in self.cat.units:
+                title = self.cat.unit_label(fm["unit"])
+            else:
+                title = self.plain(str(fm.get("title") or rel.stem))
+            url = "" if rel.as_posix() == "index.md" else (rel.parent.as_posix() + "/" if rel.name == "index.md"
+                                                          else rel.with_suffix("").as_posix() + "/")
+            used: set[str] = set()
+            for m in FENCE_RE.finditer(body):
+                try:
+                    spec = yaml.safe_load(m.group(1)) or {}
+                except yaml.YAMLError:
+                    continue
+                if not isinstance(spec, dict):
+                    continue
+                name = str(spec.get("name") or "Untitled build")
+                anchor = render.team_anchor(name, used)  # same order and ids as expand_boards gives the cards
+                if "members" in spec or "tiles" in spec:
+                    units = [str(x.get("unit")) for x in spec.get("members") or [] if isinstance(x, dict)]
+                else:
+                    units = [str(v) for v in (spec.get("pieces") or {}).values()]
+                for uid in dict.fromkeys(u for u in units if u in self.cat.units):
+                    found.setdefault(uid, []).append({"src": p, "url": url, "title": title, "card": name, "anchor": anchor})
+        self._team_index = found
+        return found
 
     def write(self, rel: str, text: str):
         path = self.dest / rel
@@ -543,10 +642,13 @@ class Generator:
         # Units and Builds sit inside the Guide section so the theme draws them as collapsible
         # items (icon, label linking to the list page, separate arrow button).
         # Section headings themselves can't collapse.
+        reference = ["reference/gear.md", "reference/tiles.md", "reference/statuses.md", "seasons.md"]
+        if section("archive"):  # strategy pages from past seasons (swg-new-season), newest first
+            reference.append({"Past season strategies": section("archive")})
         return [
             {"Home": "index.md"},
             {"Guide": section("guide") + [{"Units": section("units")}, {"Builds": section("builds")}]},
-            {"Reference": ["reference/gear.md", "reference/tiles.md", "reference/statuses.md", "seasons.md"]},
+            {"Reference": reference},
             {"Tools": section("tools")},
             {"Changelog": "changelog.md"},
         ]
@@ -568,12 +670,15 @@ class Generator:
                 (self.dest / rel).parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(src, self.dest / rel)
 
+        self.write_stills()
         cat = self.cat
         self.write("units/index.md", render.units_page(cat, self.guides, self.portraits))
         self.write("reference/gear.md", render.gear_page(cat, self.gear_images))
         self.write("reference/tiles.md", render.tiles_page(cat, self.tile_images))
         self.write("reference/statuses.md", render.statuses_page(cat, self.status_images))
-        self.write("seasons.md", render.seasons_page(cat))
+        strategies = {p.stem[: -len("-strategy")]: f"archive/{p.stem}/" for p in sorted((LIB / "archive").glob("*-strategy.md"))}
+        strategies[cat.current_season["id"]] = "guide/current-season/"
+        self.write("seasons.md", render.seasons_page(cat, strategies))
         self.builds_index()
 
         if write_config:
