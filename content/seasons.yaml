@@ -13,28 +13,25 @@ seasons:
     name: Trial Season 1
     start: 2026-07-15
     end: 2026-08-25
-    boards:
-      - { number: 5, name: Tainted Hunting Grounds, phases: 15 }
+
     changes:
       - The Soul Wager launches. Unlocks after clearing every Edge of Dimension main quest.
     sources:
-      - https://dotgg.gg/brown-dust-2/%F0%9F%8E%B2-the-soul-wager-challenge-event-%F0%9F%8E%B2/
+      - https://www.browndust2.com/en-us/news/view?id=01KXJ4TNX0XTWSNRNVC548H9QP
 
   - id: s2
     name: Trial Season 2
     start: 2026-08-26
     end: 2026-10-20
-    boards: []
     changes:
       - Cost and stat changes to a number of unit pieces (values published as images in the official notice).
     sources:
-      - https://dotgg.gg/brown-dust-2/%F0%9F%93%A2-the-soul-wager-trial-season-2-unit-piece-balance-changes/
+      - https://www.browndust2.com/en-us/news/view?id=01M0VVTQ9WXECQMMKECGTGDTH5
 
   - id: s3
     name: Trial Season 3
     start: 2026-10-21
-    expected_end: 2026-12-15
-    boards: []
+    expected_end: 2026-12-16
     changes:
       - New Unique-grade pieces added.
       - Cost and stat changes to some existing pieces.
@@ -42,5 +39,5 @@ seasons:
       - "Justia, Blood Glutton: her ★ condition now only counts units that act on a cooldown."
       - "Dalvi, Summer Vacation: Laceration now applies only when an attack hits, not on every cooldown action."
     sources:
-      - https://dotgg.gg/brown-dust-2/%F0%9F%93%A2-the-soul-wager-trial-season-3-unit-piece-balance-changes/
-      - https://dotgg.gg/brown-dust-2/%F0%9F%93%8B54th-developer-notes-october-update/
+      - https://www.browndust2.com/en-us/news/view?id=01M596YE2NBGCVBPVHBHRE5QZJ
+      - https://www.browndust2.com/en-us/news/view?id=01M3R3D19KJ39VDW1KHWQSJZN9
