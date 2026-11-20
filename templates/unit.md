@@ -11,6 +11,9 @@
 # (footprint and upgrade costs on the left; ranks, stopping points and your overview
 # on the right) → your ## sections → example builds → suggested builds and
 # works well with → example boards.
+#
+# Suggested builds fills itself: it lists every team card (```board block) on the site
+# that has this unit, on build pages, guide pages and other unit guides.
 unit: celia-the-curse
 
 # One line under the name, in italics. Also used in search results and link previews.
@@ -44,10 +47,6 @@ builds:
   - name: Budget filler
     gear: [mercenary-staff]
     note: When the shop gives you nothing better, she still adds 3 Poison at battle start.
-
-# Build pages this unit belongs in (file names in lib/builds/, without .md).
-# Entries can carry a note.
-suggested_builds: [{ id: poison-stack, note: Her best board }]
 
 # Units that pair well, drawn with their footprint and grade. Entries can carry a note.
 works_well_with: [liatris-rodevs-star, { id: rubia-thorn-of-the-desert, note: Cheaper }, refithea-pure-white-blessing]

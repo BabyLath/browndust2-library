@@ -44,7 +44,8 @@ total in the header. Delete any line you don't need; only unit and tile are requ
 
 Give pieces an "at" and the card draws the board; units must stand on tiles. The easiest
 way to get positions is the Board planner (Tools): lay out the board, press "Copy board
-block" and paste it here. -->
+block" and paste it here. The card gets an "Open in planner" link either way; pieces
+without "at" wait in the planner's To place tray. -->
 
 ```board
 name: Build name
