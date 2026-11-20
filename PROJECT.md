@@ -21,6 +21,11 @@ lib/**         ─┘          │
 
 `swg-check` runs steps 1 and 2 into a temporary folder and reports problems without building.
 
+After the build, two checks guard every deploy:
+
+- `swg-linkcheck` (`swg_site/linkcheck.py`) reads `site/` the way GitHub Pages serves it, under the folder in `site_url`, and fails on any link, image, script or `#anchor` that doesn't resolve. A root-relative link like `/units/` fails here because it breaks under `/browndust2-library/`.
+- `tests/` holds Playwright browser tests (pytest). `conftest.py` serves `site/` under the same folder, with `404.html` for missing pages, and picks test pieces from `content/` so data edits don't break the tests. Touch drags go through Chrome's DevTools protocol (`touch_drag`). When you change the planner's markup, update the selectors in `conftest.Planner`.
+
 ## Design decisions
 
 **One source of truth.** A unit's name and price live only in `content/units.yaml`. Guides, builds and tables look them up, so a price change is one edit.

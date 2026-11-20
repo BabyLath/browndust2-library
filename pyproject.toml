@@ -9,6 +9,7 @@ description = "BrownDust II Library: fan guides and data for Brown Dust 2."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+  "pillow>=11.3",
   "pyyaml>=6.0.2",
   "tomli-w>=1.2.0",
   "zensical==0.0.74",
@@ -19,6 +20,19 @@ swg-check = "swg_site.cli:check_main"
 swg-serve = "swg_site.cli:serve_main"
 swg-build = "swg_site.cli:build_main"
 swg-new-unit = "swg_site.cli:new_unit_main"
+swg-linkcheck = "swg_site.linkcheck:main"
+swg-portraits = "swg_site.portraits:main"
+swg-new-season = "swg_site.season:main"
 
 [tool.setuptools]
 packages = ["swg_site"]
+
+[dependency-groups]
+dev = [
+    "playwright==1.63.0",
+    "pytest>=8",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

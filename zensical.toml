@@ -5,7 +5,7 @@
 [project]
 site_name = "BrownDust II Library"
 site_url = "https://babylath.github.io/browndust2-library/"
-site_description = "Guides and data for Brown Dust 2, starting with The Soul Wager: unit prices, builds, seasons and calculators."
+site_description = "Guides and data for Brown Dust 2: The Soul Wager"
 site_author = "babylath"
 copyright = "Fan site. Brown Dust 2 is a trademark of NEOWIZ and GAMFS N; not affiliated with or endorsed by them. Mechanics adapted from BD2 Tactical Compendium (CC BY 4.0)."
 
@@ -48,6 +48,10 @@ toggle.name = "Switch to dark mode"
 
 [project.extra]
 generator = false
+# Visitor stats with GoatCounter (free, no cookies). Sign up at https://www.goatcounter.com,
+# pick a code (the "mycode" in mycode.goatcounter.com) and put it here. Empty = no stats.
+# Counts only on the live site, never in local previews.
+goatcounter = "babylath"
 
 [[project.extra.social]]
 icon = "fontawesome/brands/github"

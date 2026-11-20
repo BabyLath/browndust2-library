@@ -20,6 +20,10 @@ uv sync --locked
 | `uv run swg-check` | Validates catalogs, pages and board fences. Run it before you commit. |
 | `uv run swg-build` | Production build into `site/`. Stops if `swg-check` finds errors. |
 | `uv run swg-new-unit <id>` | Creates `lib/units/<id>.md` from the template, ready for the unit's effect and guide. |
+| `uv run swg-new-season` | Starts the next season: adds it to `content/seasons.yaml`, closes the old one, saves the old strategy page under Past season strategies and adds a changelog line. Asks for the name and dates, with suggestions. `--dry-run` shows what it would do. |
+| `uv run swg-portraits` | Trims, resizes and centres every portrait in `lib/images/portraits/` to 128×128 AVIF, animations included. Add a folder to bring images in from elsewhere: `uv run swg-portraits ~/Downloads/chibis`. `--dry-run` shows what it would do. |
+| `uv run swg-linkcheck` | After a build: checks every link, image and file on every page, as GitHub Pages will serve them. |
+| `uv run pytest` | Builds the site and runs the browser tests: the Board planner (mouse and finger), the tables, Add to planner and the page-not-found page. Takes about half a minute. The first time, run `uv run playwright install chromium` to download the test browser. |
 
 `swg-check` prints the file and line of every problem and suggests the closest id when you mistype one:
 
@@ -34,9 +38,18 @@ Never edit `generated-docs/`, `site/` or `.zensical.generated.toml`. They're reb
 
 ## Deploying to GitHub Pages
 
-1. Create the repo `github.com/babylath/browndust2-library` and push this folder to it. The site will be at `https://babylath.github.io/browndust2-library/`. If you pick a different repo name, update `site_url`, `repo_url`, `repo_name` and the social link in `zensical.toml`, and the issue link in `lib/index.md`.
+1. Create the repo `github.com/babylath/browndust2-library` and push this folder to it. The site will be at `https://babylath.github.io/browndust2-library/`. If you pick a different repo name, update `site_url` and the social link in `zensical.toml`, and the issue link in `lib/index.md`.
 2. Repo **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. Every push to `main` runs `.github/workflows/deploy.yml`, which builds and publishes. Pull requests run `check.yml` instead, so a broken id can't reach `main`.
+3. Every push to `main` runs `.github/workflows/deploy.yml`: it builds the site, runs `swg-linkcheck` and the browser tests, and publishes only if all of them pass. If one fails, the live site stays as it was; open the failed run under the repo's **Actions** tab to see which check and why. Pull requests run the same checks in `check.yml`.
+
+### Visitor stats
+
+The site can count visits with [GoatCounter](https://www.goatcounter.com): free for a site this size, no cookies, no consent banner needed. To turn it on:
+
+1. Sign up at goatcounter.com and pick a code, for example `bd2library` (your stats will live at `bd2library.goatcounter.com`).
+2. In `zensical.toml`, set `goatcounter = "bd2library"` under `[project.extra]`, then push.
+
+It only counts visits on the live site, never previews on your computer. Set it back to `""` to turn it off.
 
 ## Where things live
 
@@ -57,13 +70,16 @@ Never edit `generated-docs/`, `site/` or `.zensical.generated.toml`. They're reb
 | A page's sidebar icon | `icon: lucide/<name>` in its front matter; names from [lucide.dev](https://lucide.dev/icons) |
 | Current season strategy | `lib/guide/current-season.md`. Rewrite it each season |
 | Alea Chip rewards and shop prices | `content/rewards.yaml`. Blank values show as ? on the page and the check lists them |
-| Board planner | Nothing to edit. It reads units, tiles and gear from `content/` on every build |
+| Board planner | Nothing to edit. It reads units, tiles and gear from `content/` on every build. Saved boards live in each visitor's own browser |
+| Suggested builds on unit guides | Nothing to edit. swg-build lists every team card on the site that has the unit |
 | Hover definitions for terms | `includes/abbreviations.md` |
 | Buff and debuff icons | `lib/images/statuses/<status-id>.png` |
 | Unit tag icons | `lib/images/tags/<tag>.png`, e.g. `close-range-attack.png` |
 | Tile pictures | `lib/images/tiles/<tile-id>.png` (footprints come from `shape` in `content/tiles.yaml`) |
 | Gear icons | `lib/images/gear/<gear-id>.png` |
-| Unit portraits | `lib/images/portraits/<unit-id>.avif`, 168×200 or any image with that shape. Used on the unit's guide, as a thumbnail in the Units table, in Partner units and Works well with on other guides, on board cards, and in the Board planner. PNG or AVIF with a transparent background looks best on the planner board |
+| Unit portraits | `lib/images/portraits/<unit-id>.avif`, 128×128 with a transparent background; animated AVIFs work. Drop the files in, named by unit id, and run `uv run swg-portraits` to trim, resize and centre them. Used on the unit's guide, as a thumbnail in the Units table, in Partner units and Works well with on other guides, on board cards, and in the Board planner |
+| Link previews (Discord, Reddit, X) | `lib/images/social-card.png`, 1200×630, for every page except unit guides. A unit guide with a portrait uses that portrait (swg-build makes a PNG copy, since those sites don't read AVIF) and its tagline. The tags themselves are in `overrides/main.html` |
+| Page-not-found page | `overrides/404.html`. Its "Maybe you meant" list fills itself from the site's search index |
 | Site changelog | `lib/changelog.md` |
 
 The sidebar builds itself from these folders. Guide pages sort by `order:` in their front matter.
@@ -74,12 +90,16 @@ The right-hand "On this page" column only appears on pages with two or more `##`
 
 This is the routine that keeps the data current.
 
-1. Add the season to the end of `content/seasons.yaml` with its `start`, an `expected_end`, and a `changes` line per balance note. Link the official notice under `sources`.
-2. Set the previous season's `end`.
+1. Run `uv run swg-new-season`. It asks for the last day of the season that's ending, and the new season's name, id, first day and expected last day, suggesting each one (press Enter to accept). Then it:
+   - sets the old season's `end` and adds the new season to `content/seasons.yaml`;
+   - saves `lib/guide/current-season.md` as `lib/archive/<old id>-strategy.md`, so last season's advice stays readable under **Reference → Past season strategies** and is linked from the Seasons page;
+   - adds a line to `lib/changelog.md`.
+
+   If anything doesn't check out afterwards, it puts every file back. You can run it before the season starts: until the first day, the home page says the season "starts soon" and counts down to it.
+2. In `content/seasons.yaml`, fill in the new season's `changes` (one line per balance note) and link the official notice under `sources`.
 3. Update changed prices, add new units to `content/units.yaml`, and add any new grade to `content/meta.yaml`.
 4. Rewrite `lib/guide/current-season.md` for the new season.
-5. Add a line to `lib/changelog.md`.
-6. `uv run swg-check`, then commit.
+5. `uv run swg-check`, then commit.
 
 The home page countdown is worked out in the visitor's browser from the season dates, so it stays right between deploys. Only the dates themselves need a rebuild.
 
@@ -165,7 +185,7 @@ That creates `lib/units/levia-overheat.md` from `templates/unit.md`. A guide pag
 2. **Summary:** the footprint and upgrade costs on the left. On the right are the rank boxes, stopping points and your overview (the text before the first `##`).
 3. **Your sections:** every `##` heading becomes a full-width section, such as Effect, How to Play and Teambuilding.
 4. **Example builds:** one section per build, with Tiles, Gear and Partner units columns.
-5. **Suggested builds** and **Works well with.**
+5. **Suggested builds** and **Works well with.** Suggested builds fills itself: it links every team card on the site that has the unit, grouped by page.
 6. **Example boards:** any `board` block you write in the guide is moved here.
 
 | Front matter | Shows as |
@@ -175,14 +195,13 @@ That creates `lib/units/levia-overheat.md` from `templates/unit.md`. A guide pag
 | `ranks.damage` / `ranks.support` | Rank boxes: a tier letter (S to F) coloured by tier, with a short note. A list gives several ranks in one box |
 | `stopping_points`, `stopping_note` | Upgrade levels worth stopping at, like +0 · +3 · +5 |
 | `builds` | Example build sections: `tiles`, `tiles_note`, `gear`, `with` (partner units) and `note` |
-| `suggested_builds`, `suggested_builds_note` | Links to build pages, by file name in `lib/builds/` |
 | `works_well_with`, `works_well_with_note` | Partner units with their footprint and grade |
 
-Any entry in `tiles`, `gear`, `with`, `suggested_builds` or `works_well_with` can be an id or `{ id: …, note: … }`. The note shows under it in small italics.
+Any entry in `tiles`, `gear`, `with` or `works_well_with` can be an id or `{ id: …, note: … }`. The note shows under it in small italics.
 
 Grade, tags, footprint, upgrade costs and price come from `content/units.yaml`. In the text, each line shows as its own line, `**bold**` marks condition lines and `[[Poison]]` shows an icon. Gear without an image in `lib/images/gear/` shows its initials until you add one.
 
-**Portrait:** put the unit's art at `lib/images/portraits/<unit-id>.avif`, for example `lib/images/portraits/celia-the-curse.avif`. It fills the top of the left column, cropped from the top to a 168×200 shape, with the footprint moved to a small row under it. Until a guide has a portrait, the footprint takes its place, and `swg-check` lists the guides still missing one. AVIF keeps the file small; WebP, PNG and JPG also work if you have those instead.
+**Portrait:** put the unit's art at `lib/images/portraits/<unit-id>.avif`, for example `lib/images/portraits/celia-the-curse.avif`, then run `uv run swg-portraits`. It crops each image to the figure (one box for the whole animation, so it doesn't wobble), scales it so the longer side is 128 px, centres it on a transparent 128×128 square and saves it as AVIF with every frame and its timing. PNG, WebP, GIF and JPG files are converted to AVIF the same way. Files that are already right are left alone, and anything it replaces is copied to `.cache/portrait-originals/` first. The portrait fills the top of the guide's left column, with the footprint moved to a small row under it. Until a guide has a portrait, the footprint takes its place; `swg-check` lists guides still missing one, and portraits that aren't 128×128 yet.
 
 Every field is optional, so a guide can start with just a tagline and grow. `swg-check` warns if the page still contains the template's example text or values.
 
@@ -228,6 +247,7 @@ notes: Optional tip at the bottom of the card.
 - **`tiles`** lists the tiles. Only `tile` is required. Add `count` for several copies and `note` for a short line.
 - **`at` and `turn`** are optional on any member or tile. `at` is the position on the 7×7 board as `[row, column]`, counted from 1 at the top left; it's the top-left corner of the rectangle around the piece's footprint after turning, which can be an empty corner for shapes like the Curse Tile. `turn` is how many quarter turns clockwise the piece is rotated. Several copies of a tile take a list: `at: [[1, 5], [7, 7]]`. If pieces have positions, the card draws the board in its header, and every unit needs tiles under it. Pieces without `at` are still listed, just not drawn.
 - **Getting positions:** the easiest way is the [Board planner](https://babylath.github.io/browndust2-library/tools/planner/). Lay out the board, press **Copy board block** and paste it in; it writes `at` and `turn` for you.
+- **Open in planner:** every team card gets this link, which loads the team into the Board planner. Pieces with `at` are placed; the rest wait in the planner's To place tray. Cards with `total: false` (pick-one lists) don't get the link.
 - **`total: false`** hides the token total, for "pick one of these" lists.
 - Put the block at the start of a line, not inside a list or quote.
 
@@ -236,7 +256,7 @@ notes: Optional tip at the bottom of the card.
 ## Contributing
 
 - **Found wrong data?** Open an issue with the "Data correction" form. A screenshot of the in-game shop or Codex is the fastest way to get it fixed.
-- **Collaborators:** small fixes can be made directly in the file on GitHub. For anything bigger, clone, run `swg-serve`, edit, run `swg-check`, commit, push.
+- **Collaborators:** small fixes can be made directly in the file on GitHub. For anything bigger, clone, run `swg-serve`, edit, run `swg-check` (and `uv run pytest` if you touched the planner or `lib/javascripts/`), commit, push.
 - **Everyone else:** fork, branch, make the change, open a pull request. The Check workflow runs on it automatically.
 
 ## Credits and licences

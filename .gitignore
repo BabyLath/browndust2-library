@@ -8,3 +8,6 @@ generated-docs/
 .venv/
 __pycache__/
 *.egg-info/
+
+# tests
+.pytest_cache/
