@@ -1,4 +1,5 @@
-# Runs the validator on pull requests so broken ids and layouts never reach main.
+# Runs the validator, link check and browser tests on pull requests, so problems show up
+# before they're merged. (Pushes straight to main run the same checks in Deploy.)
 name: Check
 
 on:
@@ -12,3 +13,9 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - run: uv sync --locked
       - run: uv run swg-check
+      - run: uv run swg-build
+      - run: uv run swg-linkcheck
+      - run: uv run playwright install --with-deps chromium
+      - run: uv run pytest
+        env:
+          SWG_TEST_NO_BUILD: "1"

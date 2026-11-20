@@ -1,4 +1,4 @@
-# Builds and publishes the site to GitHub Pages on every push to main.
+# Builds, checks and publishes the site to GitHub Pages on every push to main.
 # One-time setup: repo Settings -> Pages -> Source: "GitHub Actions".
 name: Deploy
 
@@ -26,6 +26,13 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - run: uv sync --locked
       - run: uv run swg-build
+      # Nothing goes live with a broken link or a broken planner: either check failing stops
+      # the deploy, and the site stays as it was. The run's log says what failed.
+      - run: uv run swg-linkcheck
+      - run: uv run playwright install --with-deps chromium
+      - run: uv run pytest
+        env:
+          SWG_TEST_NO_BUILD: "1"   # tests the site built two steps up
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
