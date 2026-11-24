@@ -38,7 +38,6 @@ members:
   - unit: celia-the-curse
     role: Core / Debuffer
     note: Poison on half her cooldowns. Buy her on sight.
-    gear: [knights-necklace]
   - unit: refithea-poolside-fairy
     role: Cleanse
     note: A mandatory Costume to take as the enemy stacks [[Laceration]] on you.
@@ -48,6 +47,7 @@ members:
   - unit: cynthia-warmth-within-the-severe-cold
     role: Frost Debuffer
     note: Frost helps stop getting your buffs stolen and getting debuffed fast.
+    gear: [knights-necklace]
 
 notes: Mercenary Sword and Mercenary Staff do the same thing. Buy whichever the shop has and give the first one to your attacker.
 ```
