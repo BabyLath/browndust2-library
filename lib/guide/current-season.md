@@ -54,16 +54,13 @@ notes: Mercenary Sword and Mercenary Staff do the same thing. Buy whichever the 
 
 ## What to buy first
 
-Celia, Refithea, Liatris and Rubia are Basic or Rare grade, so they can show up from Phase 1. Buy in this order:
+Recommendations on what to get first, do not take it literally and as it is.
 
 1. **Celia, The Curse**. Your cheap poison unit. Buy on sight.
-2. **Liatris or Rubia** (6). Whichever comes first. Don't buy both.
-3. **Knight's Necklace** (5). Goes on Celia, nobody else.
-4. **Mercenary Staff or Sword** (4). First one on your attacker, second on Refithea.
-5. **Protection Tiles** (2). Whenever you need floor.
-6. **Refithea, Pure White Blessing** (4) and **Liberta, Onsen Manager** (6).
-7. **Curse Tile** (6). Under Celia.
-8. **Upgrades**, once the board above is complete.
+2. **Knight's Necklace** (5). Goes on (NOT) an attacking unit
+3. **Mercenary Staff or Sword** (4). First one on your attacker.
+4. **Liberta, Onsen Manager** (6).
+5. **Curse Tile** (6). Under Celia.
 
 **Can't afford it?** Tap the price tag to reserve it. It stays through the next shop refresh.
 
